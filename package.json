@@ -1,0 +1,14 @@
+{
+    "name": "racer-mw",
+    "version": "0.0.1",
+    "dependencies": {
+        "racer": "*",
+        "lodash": "*",
+        "sugar" : "*"
+    },
+    "devDependencies": {
+        "LiveScript": "*",
+        "mocha": "*",
+        "should": "*"
+    }
+}
