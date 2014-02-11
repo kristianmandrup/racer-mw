@@ -4,9 +4,10 @@
     "description":  "middleware for Racer.js",
     "main":         "index.js",
     "dependencies": {
-        "racer": "~0.5.12",
-        "lodash": "*",
-        "sugar" : "*"
+        "racer":    "~0.5.12",
+        "lodash":   "*",
+        "sugar" :   "*",
+        "jsclass":  "~4.0.0"
     },
     "devDependencies": {
         "LiveScript": "*",

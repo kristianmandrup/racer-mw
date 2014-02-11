@@ -2,6 +2,9 @@
 
 # The following are mainly some ideas for integration with Angular.js and Racer.js
 
+Class   = require('jsclass/src/core').Class
+Module  = require('jsclass/src/core').Module
+
 racer = require 'racer'
 store = racer.store
 
