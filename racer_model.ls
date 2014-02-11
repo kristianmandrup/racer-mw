@@ -3,79 +3,127 @@
 # The following are mainly some ideas for integration with Angular.js and Racer.js
 
 racer = require 'racer'
+store = racer.store
 
-module.exports = ->
-  base =
-    ids: ->
-      racer.get(@collection).map (item) ->
-        item._id
+# This is needed, in order to populate objects returned from DataLayer with actual
+# behavior
 
-    error: (msg, args) ->
-      new Error(msg, args)
+app = {}
+app.model = store.createModel!
 
-  # ids is optional array of ids, if empty, do for all
-  getAll: (model, ids) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'getAll', model: model, ->
-          racer.get(@collection)
-        )
+RacerSync = new Class(
+  initialize (@context) ->
+    unless _.is-type 'Object', @context
+      throw Error "Context object must be a Hash, was: #{@context}"
 
-  get: (model, id) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'getAll', model: model, ->
-          racer.get(@collection + '.' + id);
-        )
+    @model      = @context.model || app.model
 
-  getOwn: (model, id) ->
-    self = @
-    _.extend {}, base,
-      exec: ->
-        obj = self.get(model, id).exec()
-        if (obj.user && obj.user.id == @currentUser.id)
-          obj
-        else
-          @error 'You are not the owner of', model, id
+    throw Error "Must take a collection hash argument" unless @context.collection
+    @collection = @context.collection
+    @ids        = @context.ids
+    @id         = @context.id     || @ids.first
+    @items      = @context.items
+    @item       = @context.item   || @items.first
 
-  create: (model, data) ->
-    self = @
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'create', model: model, ->
-          # , data
-          racer.add(self.collection, data);
-        )
+  current-user: ->
+    # the model of the session user
+    @user ||= model.get '_session.user'
 
-  update: (model, id, data) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'update one', model: model, ->
-          racer.set(@collection + '.' + id, data);
-        )
-    # ids is optional array of ids, if empty, do for all
+  racer-middleware: ->
+    @mw ||= new Middleware('model').use(auth: authorize-mw, validate: validate-mw, racer: racer-mw)
 
-  updateAll: (model, ids, data) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'update many', model: model, ->
-          if ids.empty? then @updateList(@ids, @data) else @updateList(ids, data)
-        )
+  item-path: ->
+    @spath ||= @collection + '.' + @item
 
-  updateList: (ids, data) ->
-    for id in ids
-      racer.set(@collection + '.' + id, data);
+  # generator function to be used on some other query
+  own: (query, args) ->
+    # own-key = args.key || @owner-key
+    own-key = @owner-key
+    lo.extend @[query](args), "#{own-key}": @current-user!.id
 
-  delete: (model, id) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'delete one', model: model, ->
-          racer.delete(@collection + '.' + id);
-        )
-  # ids is optional array of ids, if empty, do for all
-  deleteAll: (model, ids) ->
-    _.extend {}, base,
-      exec: ->
-        mwRunner(action: 'delete many', model: model, ->
-          if ids.empty? then deleteAll() else deleteList(ids)
-        )
+  perform: (act, items) ->
+    switch typeof items
+    case 'array'
+      items.each (item) ->
+        @perform act, item
+
+    case 'string'
+      @model[act] @item-path
+    case void
+      @model[act] @collection
+    default
+      throw Error "Unknown type of item: #{items} to #{act} on"
+
+  exec: (args) ->
+    @racer-middleware.run args
+)
+
+# model.query returns and abstract query. You have to pass it as argument to model.subscribe or model.fetch to get the results. Try this:
+
+# query = model.query 'users', where: {name: 'Lars'}
+# model.subscribe query, (err, users) ->
+  # console.log users.get()
+
+Models = {}
+
+Models.Get = new Class(RacerSync,
+  one: ->
+    throw Error "No id set for #{@collection}" unless @id
+    @res = @perform 'at', @id
+
+  all: ->
+    @res = @perform 'get'
+
+  # allow combination such as own selected, f.ex via passing generator function
+  selected: ->
+    return @all! unless _.is-type 'Array', @ids
+    @res = model.query _id: {$in: @ids}
+
+  exec: (select) ->
+    @callSuper action: 'read', data: @[select], collection: @collection
+
+  # private methods!
+  # TODO: in module?
+
+  get-one: ->
+    @res.get!
+
+  get-all: ->
+    @res.fetch (err) ->
+      throw Error "Error: Get.one #{err}" if err
+      items.get!
+)
+
+
+Models.Set = new Class(RacerSync,
+  one: ->
+    @perform 'set', @item
+
+  # should be generator function to be used on
+  own: (fun, key) ->
+    @my-own(@[fun], @item)
+
+  # push array
+  many: ->
+    @perform 'set', @items
+)
+
+Models.Delete = new Class(RacerSync,
+  initialize (@context) ->
+    @callSuper!
+    @getter = new Models.Get @context
+
+  one: ->
+    @perform 'del', @getter.one!
+
+  # delete array
+  selected: ->
+    selection @getter.selected!
+
+  selection: (list) ->
+    list.each (item) ->
+      @one item._id
+
+  all: ->
+    model.destroy!
+)

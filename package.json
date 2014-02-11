@@ -1,8 +1,10 @@
 {
-    "name": "racer-mw",
-    "version": "0.0.1",
+    "name":         "racer-mw",
+    "version":      "0.0.1",
+    "description":  "middleware for Racer.js",
+    "main":         "index.js",
     "dependencies": {
-        "racer": "*",
+        "racer": "~0.5.12",
         "lodash": "*",
         "sugar" : "*"
     },
