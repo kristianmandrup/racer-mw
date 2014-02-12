@@ -1,19 +1,49 @@
-# See authorize-mw for real middleware code!
+# See authorize-mw and validator-mw etc. (on my github: kristianmandrup) for real functioning middleware code!
 
 # The following are mainly some ideas for integration with Angular.js and Racer.js
+# The code is written in LiveScript, very similar to CoffeeScript (only much better!!)
+# see http://livescript.net
 
 Class   = require('jsclass/src/core').Class
 Module  = require('jsclass/src/core').Module
 Module  = require('jsclass/src/core').Hash
 
+_ = require 'prelude-ls'
 racer = require 'racer'
+
+middleware = require 'middleware'
+Middleware = middleware.Middleware
+
+# https://github.com/kristianmandrup/authorize-mw
+authorize-mw = require('authorize-mw').AuthorizeMw
+
+# https://github.com/kristianmandrup/validator-mw
+validate-mw = require('validator-mw').ValidateMw
+
+# TODO: fix this!
 store = racer.store
 
-# This is needed, in order to populate objects returned from DataLayer with actual
-# behavior
-
-app = {}
+app ||= {}
 app.model = store.createModel!
+
+crud =
+  utils : void
+
+
+# model.query returns and abstract query. You have to pass it as argument to model.subscribe or model.fetch to get the results. Try this:
+
+# query = model.query 'users', where: {name: 'Lars'}
+# model.subscribe query, (err, users) ->
+  # console.log users.get()
+
+crud.utils.Getter =
+  get-one: ->
+    @res.get!
+
+  get-all: ->
+    @res.fetch (err) ->
+      throw Error "Error: Get.one #{err}" if err
+      items.get!
 
 RacerSync = new Class(
   initialize: (@context) ->
