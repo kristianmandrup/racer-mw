@@ -15,7 +15,7 @@ app = {}
 app.model = store.createModel!
 
 RacerSync = new Class(
-  initialize (@context) ->
+  initialize: (@context) ->
     unless _.is-type 'Object', @context
       throw Error "Context object must be a Hash, was: #{@context}"
 
@@ -67,27 +67,10 @@ RacerSync = new Class(
 # model.subscribe query, (err, users) ->
   # console.log users.get()
 
-Models = {}
+Models =
+  Utils : void
 
-Models.Get = new Class(RacerSync,
-  one: ->
-    throw Error "No id set for #{@collection}" unless @id
-    @res = @perform 'at', @id
-
-  all: ->
-    @res = @perform 'get'
-
-  # allow combination such as own selected, f.ex via passing generator function
-  selected: ->
-    return @all! unless _.is-type 'Array', @ids
-    @res = model.query _id: {$in: @ids}
-
-  exec: (select) ->
-    @callSuper action: 'read', data: @[select], collection: @collection
-
-  # private methods!
-  # TODO: in module?
-
+Models.Utils.Getter =
   get-one: ->
     @res.get!
 
@@ -95,10 +78,37 @@ Models.Get = new Class(RacerSync,
     @res.fetch (err) ->
       throw Error "Error: Get.one #{err}" if err
       items.get!
+
+Models.Get = new Class(RacerSync,
+  include: Models.Utils.Getter
+
+  extend:
+    create: (collection, ids) ->
+      new @ collection: collection, ids: ids
+
+  one: (id) ->
+    id ||= @id
+    throw Error "No id set for #{@collection}" unless id
+    @res = @perform 'at', id
+
+  all: ->
+    @res = @perform 'get'
+
+  # allow combination such as own selected, f.ex via passing generator function
+  these: (ids) ->
+    ids ||= @ids
+    return @all! unless _.is-type 'Array', ids
+    @res = model.query _id: {$in: ids}
+
+  exec: (select) ->
+    @callSuper action: 'read', data: @[select], collection: @collection
 )
 
-
 Models.Set = new Class(RacerSync,
+  extend:
+    create: (collection, items) ->
+      new @ collection: collection, items: items
+
   one: ->
     @perform 'set', @item
 
@@ -112,9 +122,13 @@ Models.Set = new Class(RacerSync,
 )
 
 Models.Delete = new Class(RacerSync,
-  initialize (@context) ->
+  initialize: (@context) ->
     @callSuper!
     @getter = new Models.Get @context
+
+  extend:
+    create: (collection, ids) ->
+      new @ collection: collection, ids: ids
 
   one: ->
     @perform 'del', @getter.one!
@@ -130,3 +144,31 @@ Models.Delete = new Class(RacerSync,
   all: ->
     model.destroy!
 )
+
+Models.Crud = new Class(
+  initialize (@collection) ->
+    @model = app.model
+
+  extend:
+    create: (args) ->
+      # new @
+
+  ctx: (ctx) ->
+    lo.extend {collection: @collection}, ctx
+
+  get: (context)->
+    new Models.Get @ctx(context)
+
+  set: (context)->
+    new Models.Set @ctx(context)
+
+  delete: (context)->
+    new Models.Delete @ctx(context)
+)
+
+crud = (collection) ->
+  new Models.Crud collection
+
+
+crud('users').get(id).one
+crud('users').get!.one(id)
