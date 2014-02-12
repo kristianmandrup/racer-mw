@@ -1,11 +1,27 @@
 # TODO:
 # See https://github.com/Sebmaster/racer-example and change accordingly :)
+# Also see http://derbyjs.com/#models
 
-derby = require('derby');
-express = require('express');
+racer = require('racer')
+express = require('express')
 
-liveDbMongo = require('livedb-mongo');
-MongoStore = require('connect-mongo')(express);
+app = express!
+http = require('http')
+server = http.createServer(app)
+
+# Get Mongo configuration
+mongoUrl = process.env.MONGO_URL || process.env.MONGOHQ_URL || 'localhost:27017/test?auto_reconnect'
+
+app.use(express.static(__dirname + '/public'))
+app.use(require('racer-browserchannel')(store))
+liveDbMongo = require('livedb-mongo')
+MongoStore = require('connect-mongo')(express)
+
+store = racer.createStore(
+  server: server
+  db: require('livedb-mongo')(mongoUrl, safe: true)
+  redis: require('redis-url').connect(process.env.REDISCLOUD_URL)
+)
 
 # Get Redis configuration
 if (process.env.REDIS_HOST)
@@ -17,31 +33,19 @@ else if (process.env.REDISCLOUD_URL)
   redis.auth(redisUrl.auth.split(":")[1])
 else
   redis = require('redis').createClient()
-redis.select(process.env.REDIS_DB || 1);
-
-# Get Mongo configuration
-mongoUrl = process.env.MONGO_URL || process.env.MONGOHQ_URL ||
-  'mongodb://localhost:27017/project'
-
-# The store creates models and syncs data
-# do we really need this!?
-store = derby.createStore(
-  db: liveDbMongo(mongoUrl + '?auto_reconnect', {safe: true})
-, redis: redis
-)
+redis.select(process.env.REDIS_DB || 1)
 
 # when using express
 createUserId(req, res, next) ->
   model = req.getModel()
-  userId = req.session.userId || (req.session.userId = model.id());
-  model.set('_session.userId', userId);
+  userId = req.session.userId || (req.session.userId = model.id())
+  model.set('_session.userId', userId)
 
 #  .use(express.session(
 #    secret: process.env.SESSION_SECRET || 'YOUR SECRET HERE'
 #  , store: new MongoStore(url: mongoUrl, safe: true)
 #  ))
 #  .use(createUserId)
-
 
 crud = (collection) ->
   new Models.Crud collection
