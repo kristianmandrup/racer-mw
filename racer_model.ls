@@ -4,6 +4,7 @@
 
 Class   = require('jsclass/src/core').Class
 Module  = require('jsclass/src/core').Module
+Module  = require('jsclass/src/core').Hash
 
 racer = require 'racer'
 store = racer.store
@@ -33,7 +34,17 @@ RacerSync = new Class(
     @user ||= model.get '_session.user'
 
   racer-middleware: ->
-    @mw ||= new Middleware('model').use(auth: authorize-mw, validate: validate-mw, racer: racer-mw)
+    @mw ||= new Middleware('model').use mw-stack!
+
+  mw-stack: ->
+    new Hash auth: authorize-mw, validate: validate-mw, racer: racer-mw
+
+  # hash
+  stack: (mws) ->
+    lo.extend @call-super, mws
+
+  # TODO
+  stack-before: (mws) ->
 
   item-path: ->
     @spath ||= @collection + '.' + @item
@@ -86,6 +97,9 @@ Models.Get = new Class(RacerSync,
     create: (collection, ids) ->
       new @ collection: collection, ids: ids
 
+  mw-stack: ->
+    stack decorate: middlewares.decorate-mw
+
   one: (id) ->
     id ||= @id
     throw Error "No id set for #{@collection}" unless id
@@ -108,6 +122,13 @@ Models.Set = new Class(RacerSync,
   extend:
     create: (collection, items) ->
       new @ collection: collection, items: items
+
+  # marshal-mw
+  # filters any local data that should not be stored (depending on context)
+  # similar to decorator
+  # should be used after validation before racer-mw
+  mw-stack: ->
+    stack-before 'racer-mw', marshal: middlewares.marshal-mw
 
   one: ->
     @perform 'set', @item
