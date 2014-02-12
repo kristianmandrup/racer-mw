@@ -60,7 +60,6 @@ RacerSync = new Class(
     case 'array'
       items.each (item) ->
         @perform act, item
-
     case 'string'
       @model[act] @item-path
     case void
@@ -177,14 +176,21 @@ Models.Crud = new Class(
   ctx: (ctx) ->
     lo.extend {collection: @collection}, ctx
 
-  get: (context)->
-    new Models.Get @ctx(context)
+  factory: (name) ->
+    switch typeof arguments
+    case 'object'
+      new Models.call(name) @ctx arguments
+    default
+      Models.call(name).create @collection, arguments
 
-  set: (context)->
-    new Models.Set @ctx(context)
+  get: ->
+    factory 'Get', arguments
+
+  set: ->
+    factory 'Set', arguments
 
   delete: (context)->
-    new Models.Delete @ctx(context)
+    factory 'Delete', arguments
 )
 
 crud = (collection) ->
@@ -193,3 +199,8 @@ crud = (collection) ->
 
 crud('users').get(id).one
 crud('users').get!.one(id)
+
+users = crud('users')
+users.get!.one(id)
+users.get!.by(name: name).first
+users.get!.by(name: name).all
