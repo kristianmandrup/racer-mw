@@ -2,14 +2,14 @@ require 'rekuire'
 require 'requires'
 
 crud = 
-  Edit: requires.crud 'edit'
+  Get: requires.crud 'get'
   
-describe crud.Edit ->
-  editors = {}
+describe crud.Get ->
+  getters = {}
   
   before ->
-    editors.basic = new crud.Edit
+    getters.basic = new crud.Get
     
   describe 'created instance' ->
     specify 'has middleware stack' ->
-      expect(editors.basic.mw-stack!.constructor).to.eql Middleware
+      expect(getters.basic.mw-stack!.constructor).to.eql Middleware
