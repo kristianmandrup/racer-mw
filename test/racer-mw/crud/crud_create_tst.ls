@@ -1,5 +1,15 @@
-/**
- * User: kmandrup
- * Date: 13/02/14
- * Time: 08:05
- */
+require 'rekuire'
+require 'requires'
+
+crud = 
+  Create: requires.crud 'create'
+  
+describe crud.Create ->
+  creators = {}
+  
+  before ->
+    creators.basic = new crud.Create
+    
+  describe 'created instance' ->
+    specify 'has middleware stack' ->
+      expect(creators.basic.mw-stack!.constructor).to.eql Middleware
