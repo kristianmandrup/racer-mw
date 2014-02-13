@@ -1,10 +1,14 @@
-Class   = require('jsclass/src/core').Class
-Module  = require('jsclass/src/core').Module
-Hash    = require('jsclass/src/core').Hash
+Class       = require('jsclass/src/core').Class
+Module      = require('jsclass/src/core').Module
+Hash        = require('jsclass/src/core').Hash
 
-Getter  = require('crud/utils').Getter
+rek         = require 'rekuire'
+requires    = rek 'requires'
+lo          = require 'lodash'
+_           = require 'prelude-ls'
 
-_ = require 'prelude-ls'
+RacerSync   = requires.crud 'racer_sync'
+Getter      = requires.crud('crud/utils').Getter
 
 module.exports = new Class(RacerSync,
   include: Getter

@@ -1,7 +1,16 @@
+Class       = require('jsclass/src/core').Class
+Module      = require('jsclass/src/core').Module
+Hash        = require('jsclass/src/core').Hash
+
+rek         = require 'rekuire'
+requires    = rek 'requires'
+lo          = require 'lodash'
+_           = require 'prelude-ls'
+
 crud =
-  Get:    require 'crud/crud_get'
-  Set:    require 'crud/crud_set'
-  Delete: require 'crud/crud_delete'
+  Get:    requires.crud 'crud_get'
+  Set:    requires.crud 'crud_set'
+  Delete: requires.crud 'crud_delete'
 
 module.exports = new Class(
   initialize (@collection) ->

@@ -1,8 +1,13 @@
-Class   = require('jsclass/src/core').Class
-Module  = require('jsclass/src/core').Module
-Hash    = require('jsclass/src/core').Hash
+Class       = require('jsclass/src/core').Class
+Module      = require('jsclass/src/core').Module
+Hash        = require('jsclass/src/core').Hash
 
-_ = require 'prelude-ls'
+rek         = require 'rekuire'
+requires    = rek 'requires'
+lo          = require 'lodash'
+_           = require 'prelude-ls'
+
+RacerSync   = requires.crud 'racer_sync'
 
 module.exports = new Class(RacerSync,
   initialize: (@context) ->
