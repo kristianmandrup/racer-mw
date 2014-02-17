@@ -18,7 +18,10 @@ Also see the [middleware](https://github.com/kristianmandrup/middleware) project
 
 Improve main API to support all (or most) model methods
 
- * createModel
+ * store.createModel ( options )
+
+model
+
  * at
  * scope
  * parent
@@ -27,6 +30,8 @@ Improve main API to support all (or most) model methods
  * id
  * query
  * ...
+
+Also must support subscribing for model change events ;)
 
 ## Contributing
 
@@ -49,6 +54,3 @@ Easy :)
 
 MIT
 Copyright 2014 Kristian Mandrup
-
-
-
