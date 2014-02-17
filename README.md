@@ -12,7 +12,7 @@ Also see the [middleware](https://github.com/kristianmandrup/middleware) project
 
 ## Crud
 
-The Crud should enable something like this
+The Crud should enable something like this:
 
 ```LiveScript
 Crud = require 'crud'
@@ -26,16 +26,38 @@ crud('users').get!.one id
 users = crud 'users'
 user = users.get!.one(id)
 users.get!.by(name: name).first
+# optimize DSL
+users.get-by(name: name).first
+# will first do authorization
+# => decorate model.query('_page.users.admin', {name: name, $limit: 1}).get!
 
 user.set name: 'another name', age: 42
 
-admin-users = users.query.find admin: true
+admin-users = users.query!.find admin: true
+# optimize DSL
+admin-users = users.find(admin: true).all
+# will first do authorization!
+# => decorate model.query('_page.users.admin', {name: name, $limit: 1}).get!
+
+users.set!.path('admin').add admin-user, (res) ->
+# optimize DSL
+users.at('admin').add admin-user, (res) ->
+# will first do authorization, validation and marshalling!!
+# => model.add '_page.users.admin' admin-user, (res) ->
 
 guest-users-ref = users.query.get-live-update role: 'guest'
+# optimize DSL
+guest-users-ref = users.live-for role: 'guest'
+
+# Now operate directly on Resource (decorated data object with Resource API methods)
 user.delete
 ```
 
-This *Crud API* should further be wrapped in a `Resource` API for real data-aware models, similar to Angular *$resource* perhaps.
+The above APIs are partly implemented but also contains some thoughts and ideas yet to be finalized...
+Ideas/suggestions for improvement are more than welcome!
+
+This *Crud API* should further be wrapped in a `Resource` API for real data-aware models,
+similar to Angular *$resource* perhaps.
 
 ## TODO
 

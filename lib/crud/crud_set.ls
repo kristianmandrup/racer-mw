@@ -57,7 +57,13 @@ module.exports = new Class(RacerSync,
     @perform 'increment', byNum, cb
 
   # id = model.add ( path, object, [callback] )
+
+  # example
+  # users.set!.path('admin').add admin-user, (res) ->
   add: (obj, cb) ->
     @perform 'add', obj, cb
 
+  # coolness :)
+  path: (@subpath) ->
+    @
 )
