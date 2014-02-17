@@ -6,6 +6,9 @@ of setting paths etc.
 See [derby-model](http://derbyjs.com/#models) and [racer-example](https://github.com/Sebmaster/racer-example)
 for inspiration and information on how to improve this project...
 
+Please see [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/The-big-picture) for a general idea of the design/architecture and goals of this project...
+
+
 ## TODO
 
  * Test suite
