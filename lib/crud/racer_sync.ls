@@ -41,7 +41,7 @@ module.exports = new Class(
     unless _.is-type 'Object', @context
       throw Error "Context object must be a Hash, was: #{@context}"
  
-    @model      = @context.model || app.model
+    @store-model  = @context.model || app.model
  
     throw Error "Must take a collection hash argument" unless @context.collection
     @collection = @context.collection
@@ -96,9 +96,9 @@ module.exports = new Class(
       items.each (item) ->
         @perform act, item
     case 'string'
-      @model[act] @item-path
+      @store-model[act] @item-path
     case void
-      @model[act] @collection
+      @store-model[act] @collection
     default
       throw Error "Unknown type of item: #{items} to #{act} on"
  

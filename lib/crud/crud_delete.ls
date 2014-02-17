@@ -21,9 +21,11 @@ module.exports = new Class(RacerSync,
   # validation not needed on delete!
   mw-stack: ->
     @create-stack 'authorize-mw', 'racer-mw'
- 
-  one: ->
-    @perform 'del', @getter.one!
+
+  # obj = model.del ( path, [callback] )
+  # Returns the deleted object
+  one: (cb) ->
+    @perform 'del', @getter.one!, cb
  
   # delete array
   selected: ->
@@ -32,7 +34,4 @@ module.exports = new Class(RacerSync,
   selection: (list) ->
     list.each (item) ->
       @one item._id
- 
-  all: ->
-    @model.destroy!
 )
