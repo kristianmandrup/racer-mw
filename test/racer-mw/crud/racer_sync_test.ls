@@ -4,7 +4,9 @@ require 'requires'
 Hash      = require('jsclass/src/core').Hash
 RacerSync = requires.crud 'racer_sync'
 
-describe RacerSync
+describe 'RacerSync' ->
+  middlewares = {}
+
   describe 'user-id' ->
     specify 'should be user: kris' ->
       expect(sync.user-id).to.eql users.kris.id

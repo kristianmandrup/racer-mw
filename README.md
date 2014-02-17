@@ -12,30 +12,20 @@ Also see the [middleware](https://github.com/kristianmandrup/middleware) project
 
 ## TODO
 
+Improve
+
  * Test suite
- * Documentation design/architecture DSLs, APIs
- * debugging
+ * Documentation
+ * DSL
 
-Improve main API to support all (or most) model methods
+Support
 
- * store.createModel ( options )
-
-model
-
- * at
- * scope
- * parent
- * path
- * leaf
- * id
- * query
- * ...
-
-Also must support subscribing for model change events ;)
+ * all Racers [model](https://github.com/kristianmandrup/racer-mw/wiki/Racer-model-explained) methods
+ * [subscriptions](https://github.com/kristianmandrup/racer-mw/wiki/Racer-model-subscriptions) to model change events ;)
 
 ## Contributing
 
-Please do!
+Please :) Any help is greatly appreciated!
 
 ## Testing
 
