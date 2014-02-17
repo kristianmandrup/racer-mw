@@ -12,10 +12,10 @@ _           = require 'prelude-ls'
 String = Module(
 
   # model.stringInsert ( path, index, text, [callback] )
-  insert: (subpath, index, text, cb) ->
+  insert: (index, text, cb) ->
     @perform 'stringInsert', subpath, index, text, cb
 
   # model.stringRemove ( path, index, howMany, [callback] )
-  remove: (subpath, index, howMany, cb) ->
+  remove: (index, howMany, cb) ->
     @perform 'stringRemove', subpath, index, howMany, cb
 )

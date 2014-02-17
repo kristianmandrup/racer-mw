@@ -15,7 +15,15 @@ _           = require 'prelude-ls'
 # How to improve? Fx, for some methods no object(s) are passed to perform, for others there are
 # Should we move methods to other classes? Hmm...
 
-UpdateList = Class(
+# How do we authorize all these operations?
+# We need to group them
+
+# - get/query/filter = read
+# - update list/set = update
+# - delete
+# - add/create = create
+
+UpdateList = Class(RacerSync,
   initialize (@path) ->
 
   # length = model.push ( path, value, [callback] )

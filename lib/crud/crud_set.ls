@@ -24,7 +24,7 @@ module.exports = new Class(RacerSync,
   one: ->
     @perform 'set', @item
  
-  # should be generator function to be used on
+  # TODO: should be generator function, using currying style
   own: (fun, key) ->
     @my-own(@[fun], @item)
 
@@ -37,10 +37,12 @@ module.exports = new Class(RacerSync,
    @perform 'set', value
 
   # model.setEach ( path, object, [callback] )
+  # TODO: can we make the pipeline support data in form of an Array of the same model!?
   each: (value) ->
     @perform 'setEach', value
 
   # obj = model.setNull ( path, value, [callback] )
+  # set only if null
   if-null: (value) ->
     @perform 'setNull', value
 
@@ -52,10 +54,6 @@ module.exports = new Class(RacerSync,
 
     @perform 'setDiff' value, options, callback
 
-  # num = model.increment ( path, [byNum], [callback] )
-  increment: (by-num, cb) ->
-    @perform 'increment', byNum, cb
-
   # id = model.add ( path, object, [callback] )
 
   # example
@@ -63,7 +61,4 @@ module.exports = new Class(RacerSync,
   add: (obj, cb) ->
     @perform 'add', obj, cb
 
-  # coolness :)
-  path: (@subpath) ->
-    @
 )

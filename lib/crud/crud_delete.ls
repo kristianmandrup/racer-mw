@@ -28,8 +28,8 @@ module.exports = new Class(RacerSync,
     @perform 'del', @getter.one!, cb
  
   # delete array
-  selected: ->
-    selection @getter.selected!
+  selected: (ids) ->
+    selection @getter.selected || ids
  
   selection: (list) ->
     list.each (item) ->

@@ -65,7 +65,12 @@ module.exports = new Class(
     names.each (name) ->
       stack[name] = middlewares[name]
     stack
- 
+
+   # coolness :)
+  path: (@subpath) ->
+    @set-item-path @subpath
+    @
+
   # hash
   stack: (mws) ->
     lo.extend @call-super, mws
@@ -78,9 +83,13 @@ module.exports = new Class(
   doc-path: ->
     @collection || @document-path
 
+  # TODO: use Array join
+  # Add utility class for path handling
   item-path: ->
     @spath ||= @doc-path + '.' + @item
- 
+
+  set-item-path: (path) ->
+    @spath = [item-path, path].join '.'
 
   # generator function to be used on some other query
   # should use currying!
