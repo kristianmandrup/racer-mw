@@ -66,6 +66,7 @@ Improve
  * Test suite
  * Documentation
  * DSL
+ * Resource API as more "classical" model wrapper on loaded data
 
 Support
 
