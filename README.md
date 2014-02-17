@@ -8,6 +8,7 @@ for inspiration and information on how to improve this project...
 
 Please see [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/The-big-picture) for a general idea of the design/architecture and goals of this project...
 
+Also see the [middleware](https://github.com/kristianmandrup/middleware) project for a better understanding of the underlying "mechanics" of the pipeline.
 
 ## TODO
 
