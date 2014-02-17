@@ -10,6 +10,33 @@ Please see [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/Th
 
 Also see the [middleware](https://github.com/kristianmandrup/middleware) project for a better understanding of the underlying "mechanics" of the pipeline.
 
+## Crud
+
+The Crud should enable something like this
+
+```LiveScript
+Crud = require 'crud'
+
+crud = (collection) ->
+  new Crud collection
+
+crud('users').get(id).one
+crud('users').get!.one id
+
+users = crud 'users'
+user = users.get!.one(id)
+users.get!.by(name: name).first
+
+user.set name: 'another name', age: 42
+
+admin-users = users.query.find admin: true
+
+guest-users-ref = users.query.get-live-update role: 'guest'
+user.delete
+```
+
+This *Crud API* should further be wrapped in a `Resource` API for real data-aware models, similar to Angular *$resource* perhaps.
+
 ## TODO
 
 Improve

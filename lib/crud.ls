@@ -9,6 +9,7 @@ _           = require 'prelude-ls'
 
 crud =
   Get:    requires.crud 'crud_get'
+  Query:  requires.crud 'crud_query'
   Set:    requires.crud 'crud_set'
   Delete: requires.crud 'crud_delete'
 
@@ -30,7 +31,10 @@ module.exports = new Class(
       new crud[name] @ctx(arguments)
     default
       crud[name].create @collection, arguments
- 
+
+  query: ->
+    factory 'Query', arguments
+
   get: ->
     factory 'Get', arguments
  

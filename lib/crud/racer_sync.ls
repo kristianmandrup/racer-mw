@@ -72,11 +72,19 @@ module.exports = new Class(
  
   # TODO
   stack-before: (mws) ->
- 
+
+  document-path: void
+
+  doc-path: ->
+    @collection || @document-path
+
   item-path: ->
-    @spath ||= @collection + '.' + @item
+    @spath ||= @doc-path + '.' + @item
  
+
   # generator function to be used on some other query
+  # should use currying!
+  # test and improve this!
   own: (query, args) ->
     # own-key = args.key || @owner-key
     own-key = @owner-key

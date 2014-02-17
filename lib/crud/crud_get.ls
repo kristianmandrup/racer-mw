@@ -2,8 +2,7 @@ Class       = require('jsclass/src/core').Class
 Module      = require('jsclass/src/core').Module
 Hash        = require('jsclass/src/core').Hash
 
-rek         = require 'rekuire'
-requires    = rek 'requires'
+requires    = require '../../requires'
 lo          = require 'lodash'
 _           = require 'prelude-ls'
 
@@ -21,21 +20,24 @@ module.exports = new Class(RacerSync,
   # must decorate loaded model
   mw-stack: ->
     @create-stack 'authorize-mw', 'racer-mw', 'decorate-mw'
-    
+
+  # returns scoped model
   one: (id) ->
     id ||= @id
     throw Error "No id set for #{@collection}" unless id
     @res = @perform 'at', id
- 
+
+  # returns set of scoped models
   all: ->
     @res = @perform 'get'
  
   # allow combination such as own selected, f.ex via passing generator function
+  # returns set of scoped models
   these: (ids) ->
     ids ||= @ids
     return @all! unless _.is-type 'Array', ids
-    @res = model.query _id: {$in: ids}
- 
+    @res = @query _id: {$in: ids}
+
   exec: (select) ->
     @callSuper action: 'read', data: @[select], collection: @collection
 )
