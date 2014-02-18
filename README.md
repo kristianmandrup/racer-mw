@@ -24,7 +24,7 @@ crud('users').get(id).one
 crud('users').get!.one id
 
 users = crud 'users'
-user = users.get!.one(id)
+
 users.get!.by(name: name).first
 # optimize DSL
 users.get-by(name: name).first
@@ -49,15 +49,55 @@ guest-users-ref = users.query.get-live-update role: 'guest'
 # optimize DSL
 guest-users-ref = users.live-for role: 'guest'
 
+# decorated and made into a "Resource" upon retrieval
+user-resource = users.get!.one(id)
+
 # Now operate directly on Resource (decorated data object with Resource API methods)
-user.delete
+user-resource.delete
 ```
 
 The above APIs are partly implemented but also contains some thoughts and ideas yet to be finalized...
 Ideas/suggestions for improvement are more than welcome!
 
+The main idea is that a Crud instance encapsulate the following conceptual entities:
+
+ - collection, such as `users`
+ - transparent access to the store model to execute operation on
+ - the path to that collection
+   - avoid repetition of path on every operation on same path/collection
+   - avoid hard coded strings all over
+
+ - middleware stack to be applied on all operations
+
+ - authorize access appropriately depending on operation (container or Document itself)
+ - validate any Document inserted into that location (location can be part of context for validator)
+ - marshalling of any values stored in the model (so as to filter sensitive data, encrypt, remove temporal states etc)
+ - decorate any Document on retrieval (and turn into Resource)
+
+For this to work effectively, we have to group each model operation into place-holders.
+Work has been started on this, but it needs more thought... see comments in code etc. Please help out!
+
 This *Crud API* should further be wrapped in a `Resource` API for real data-aware models,
-similar to Angular *$resource* perhaps.
+similar to Angular [$resource](http://docs.angularjs.org/api/ngResource/service/$resource) perhaps:
+
+
+```javascript
+var Todo = $resource('/api/1/todo/:id');
+
+//create a todo
+var todo1 = new Todo();
+todo1.foo = 'bar';
+todo1.something = 123;
+todo1.$save();
+
+//get and update a todo
+var todo2 = Todo.get({id: 123});
+todo2.foo += '!';
+todo2.$save();
+
+//delete a todo
+Todo.$delete({id: 123});
+```
 
 See [Crud design](https://github.com/kristianmandrup/racer-mw/lib/Design.md) for some more thoughts...
 
