@@ -59,6 +59,8 @@ Ideas/suggestions for improvement are more than welcome!
 This *Crud API* should further be wrapped in a `Resource` API for real data-aware models,
 similar to Angular *$resource* perhaps.
 
+See [Crud design](https://github.com/kristianmandrup/racer-mw/lib/Design.md) for some more thoughts...
+
 ## TODO
 
 Improve
