@@ -24,13 +24,16 @@ module.exports = new Class(RacerSync,
 
   # obj = model.del ( path, [callback] )
   # Returns the deleted object
+  # authorize, Delete
   one: (cb) ->
     @perform 'del', @getter.one!, cb
  
   # delete array
+  # authorize, Delete
   selected: (ids) ->
     selection @getter.selected || ids
- 
+
+  # authorize, Delete
   selection: (list) ->
     list.each (item) ->
       @one item._id

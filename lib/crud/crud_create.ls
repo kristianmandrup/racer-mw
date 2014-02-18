@@ -14,6 +14,8 @@ _ = require 'prelude-ls'
 
 module.exports = new Class(CrudSet,
 
-  one: ->
-    @perform 'createModel', @item
+  # authorize, Create
+  # validate model
+  one: (model)->
+    @perform 'createModel', model
 )

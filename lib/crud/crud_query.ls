@@ -22,9 +22,11 @@ Query = new Class(RacerSync,
     @create-stack 'decorator-mw'
 
   # query = model.query ( collectionName, [databaseQuery or path] )
+  # authorize on collection
   find: (query) ->
     @res = @perform 'query', @doc-path, query
 
+  # decorate results
   get: (query) ->
     @query query if query
     @results ||= decorate @res.get!
@@ -34,6 +36,8 @@ Query = new Class(RacerSync,
       decorate-stack.run data: doc
 
   # path: Local path at which to create an updating refList of the queries results
+  # how/where to decorate results from live update?
+  # authorize on collection/path ?
   get-live-update (path, query) ->
     @query query if query
     @res.ref path

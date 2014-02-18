@@ -20,10 +20,13 @@ module.exports = new Class(RacerSync,
   # should be used after validation before racer-mw
   mw-stack: ->
     @create-stack 'authorize-mw', 'validate-mw', 'marshal-mw', 'racer-mw'
- 
-  one: ->
-    @perform 'set', @item
- 
+
+  # previous = model.set ( path, value, [callback] )
+  # authorize on container and value if Document, Update
+  # validate on container and value if Document
+  set: (value) ->
+    @perform 'set', value
+
   # TODO: should be generator function, using currying style
   own: (fun, key) ->
     @my-own(@[fun], @item)

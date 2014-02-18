@@ -33,9 +33,12 @@ middlewares =
 # TODO: fix this!
 store = racer.store
 
+# TODO: this is BAD!
 app ||= {}
 app.model = store.createModel!
 
+# TODO: Split into modules/classes and use include ??
+# Not all Crud classes need all this. Must be possible to select pieces to assemble for each!
 module.exports = new Class(
   initialize: (@context) ->
     unless _.is-type 'Object', @context

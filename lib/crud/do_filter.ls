@@ -36,6 +36,8 @@ _           = require 'prelude-ls'
 # Array methods can only be used on paths set to arrays, null, or undefined.
 # If the path is null or undefined, the path will first be set to an empty
 # array before applying the method.
+
+# No middleware application!!
 Filter = Module(
   # filter = model.filter ( inputPath, [name] )
   filter: (fn-name) ->

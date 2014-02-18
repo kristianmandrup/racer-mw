@@ -11,10 +11,14 @@ _           = require 'prelude-ls'
 # array before applying the method.
 String = Module(
 
+  # authorize on container
+  # validate on container
   # model.stringInsert ( path, index, text, [callback] )
   insert: (index, text, cb) ->
     @perform 'stringInsert', subpath, index, text, cb
 
+  # authorize on container
+  # validate on container
   # model.stringRemove ( path, index, howMany, [callback] )
   remove: (index, howMany, cb) ->
     @perform 'stringRemove', subpath, index, howMany, cb

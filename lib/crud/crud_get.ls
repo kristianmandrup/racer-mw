@@ -19,15 +19,23 @@ module.exports = new Class(RacerSync,
   # validation not needed
   # must decorate loaded model
   mw-stack: ->
-    @create-stack 'authorize-mw', 'racer-mw', 'decorate-mw'
+    @create-stack 'authorize-mw', 'racer-mw'
+
+  # when getting values from scoped models returned
+  scoped-stack: ->
+    @create-stack 'decorate-mw'
 
   # returns scoped model
+  # authorize
+  # only decorate when getting values from scope!
   one: (id) ->
     id ||= @id
     throw Error "No id set for #{@collection}" unless id
     @res = @perform 'at', id
 
   # returns set of scoped models
+  # authorize
+  # only decorate when getting values from scope!
   all: ->
     @res = @perform 'get'
  
