@@ -31,22 +31,36 @@ UpdateList = Class(RacerSync,
     @perform 'push' value, cb
 
   # length = model.unshift ( path, value, [callback] )
+
+  # authorize container and value if Document
+  # validate container and value if Document
+  # marshal value (simple or Document)
   unshift: (value, cb) ->
     @perform 'unshift', value, cb
 
   # length = model.insert ( path, index, values, [callback] )
+
+  # authorize container and value if Document
+  # validate container and value if Document
+  # marshal value (simple or Document)
   insert: (index, values, cb) ->
     @perform 'insert', value, cb
 
   # length = model.insert ( path, index, values, [callback] )
+
+  # authorize container and value if Document (Delete, Read)
+  # decorate popped value
   pop: (cb) ->
     @perform 'pop', cb
 
   # item = model.shift ( path, [callback] )
+
+  # authorize container, Update
   shift: (cb) ->
     @perform 'shift', cb
 
   # removed = model.remove ( path, index, [howMany], [callback] )
+  # authorize container, Delete
   remove: (index, opts) ->
     if opts
       how-many = opts['how-many']
@@ -58,6 +72,7 @@ UpdateList = Class(RacerSync,
       @perform 'remove', index, cb
 
   # moved = model.move ( path, from, to, [howMany], [callback] )
+  # authorize container, Update
   move: (ifrom, ito, opts) ->
     if opts
       how-many = opts['how-many']
