@@ -120,4 +120,239 @@ The key is to allow the developer to configure this as required while facilitati
 We should not apply too strict conventions, at least until we have uncovered typical repetitive usage patterns
 that can be encapsulated.
 
+## Resources
+
+As we can now start to see...
+
+```
+users = collection('users')
+user  = users.get-by name: name
+
+page = container('_page')
+current-user = page.attribute('current').model('user').get-by email: user.email
+current-user.$save!
+current-user.$set name: 'unknown'
+
+# should try to add to 'projects'
+current-user.$add(project)
+
+current-user.$set current-project: project
+current-user.$get 'project', {status: 'done'}
+
+current-user.$add('my-projects', project)
+current-user.$delete!
+
+admin-user = {
+  name: 'Kris'
+  role: 'admin'
+  clazz: 'user'
+}
+
+page.attribute('current').model(admin-user).set role: 'guest'
+
+# get all admin users since past 3 days
+page.collection(admin-user).query $date: {$gte: days(3).before(new Date) }}
+```
+
+The Resource should contain the following
+
+admin-user = {
+  name: 'Kris'
+  role: 'admin'
+
+  $clazz: 'user'
+
+  $save: ->
+  $set: (value-hash) ->
+  $get: (model, query)
+  $delete: ->
+  $parent: parent
+}
+```
+
+```
+users.path('current.admin').model(admin-user)
+
+# collection
+users-col = {
+  $collection: 'users'
+  $calc-path: ->
+    @collection
+}
+
+current-admin-path = {
+  $path: 'current.admin'
+  $parent: users-col
+
+  # Note: we should only generate this method only when we need it, in one of the Resource methods such as $save!
+  $calc-path: ->
+    new PathResolver(@).full-path
+
+}
+
+admin-user = {
+  $class: 'user'
+  $parent: current-admin-path
+}
+```
+
+So we need a PathResolver to resolve the full path at each step in the hierarchy.
+This way we extract this functionality (Single Responsibility) and avoid cluttering
+ each Resource with source logic
+
+```
+PathResolver = Class(
+  initialize: (@model-obj) ->
+    @collection = @pluralize model-obj.clazz
+    @parent = model-obj.$parent
+
+  obj-path: ->
+    @collection
+
+  parent-path: ->
+    if @parent? then @parent.calc-path else void
+
+  full-path: ->
+    [@parent-path, @obj-path].compact!.join '.'
+)
+```
+
+Now that we can calculate the paths at any step, we need to implement the main Resource methods
+
+### $set current model object as-is
+
+```
+# set with current values
+$save: ->
+  $set @
+```
+
+### $set model object
+
+```
+# perform should be responsible for generating the path to be used
+# should first authorize, validate and marshal
+# it should generate $calc-path which runs in the context of @ being the Resource obj
+$set: (value-hash) ->
+  @perform 'set', value-hash
+```
+
+### $set attribute with value
+
+```
+$set: (attribute, value) ->
+  vhash = {}
+  vhash[attribute] = value
+  $set vhash
+```
+
+```
+# same as $set but using 'if-null' method, setting only if null (not present yet!)
+$set-null: (attribute, value, opts) ->
+```
+
+### $get model
+
+```
+# should first authorize
+$get: (model)
+  @perform 'get', @get-for(model)
+```
+
+### $get query
+
+```
+# query under current path
+# should first authorize
+$get: (q: query)
+  @perform 'get', @get-for(model)
+``
+
+```
+# should first authorize
+$delete: ->
+  @perform 'del'
+```
+
+## Extras
+
+### $inc attribute
+
+```
+# should first authorize
+$inc: (attribute) ->
+  @perform 'increment', attribute
+```
+
+### $push model-obj
+
+If parent is a collection
+
+```
+$push: ->
+  @perform 'push', value
+```
+
+As we see here, path or perform should create a new Execution object,
+decoupled from the Resource itself, only referencing it
+
+Path coupled with the current path should add up to path that points to collection
+If no value as 2nd arg, then use self (model obj)
+
+```
+$push: (path) ->
+  @path(path).perform 'push', value
+```
+
+If no value as 2nd arg, then push this
+
+```
+$push: (path, value) ->
+  @path(path).perform 'push', value
+```
+
+values can be a list of args or an array
+
+```
+$push: (path, values) ->
+  @path(path).perform 'push', values.flatten!.compact!
+```
+
+To avoid cluttering the model with all these Resource methods, we should have them in one place
+
+```
+user = {
+  $clazz: 'user'
+  $res: ->
+    @$resource ||= new Resource @
+}
+
+user.$res!.save!
+user-res = user.$res!
+user-res.save!
+user-res.del!
+```
+
+or even
+
+`res = $resource(user).$save!.has(email: email)`
+
+Where `$resource` returns the resource of the user
+
+Very advanced chaining DSL !!
+
+`$resource(user).$set(age: 27).$push('projects', project).$delete('project').from('archived-projects').where('oldest')`
+
+Note this part:
+
+`$delete('project').from('archived-projects').where('oldest')`
+
+Here we are taking advantage of a named query.
+
+```
+user.$resource.$queries.add = {
+  oldest: {date: {$gte: Date() + days(3).before('today')} }
+}
+```
+
 Please add more thoughts/ideas... :)
