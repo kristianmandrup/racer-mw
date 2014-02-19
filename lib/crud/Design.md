@@ -253,6 +253,12 @@ users-col.$mw.on! # turn all mw on
 users-col.$a(model: admin-user).$mw.off!.$a(...)
 ```
 
+## Marshalling
+
+We have added a few `$` prefixed properties and methods to the Resouce model.
+You don't want these values to be stored in the DB. So the marshalling should ensure that any $ value
+is always discarded and then they will be put back on by the Resource decorator :)
+
 ### Path resolution
 
 ```
