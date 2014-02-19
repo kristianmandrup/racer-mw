@@ -99,6 +99,8 @@ Example
 
 Add new Document (model obj) to an attribute (List) of container Document (model obj).
 
+### Adv. Validation
+
 The validation could take the container object, the attribute and the item obj and validate whether
 the container obj allows this item obj to be inserted into the list.
 This could be based either on the type of container and item object or even on the state of the container object (which
@@ -109,5 +111,9 @@ could be set up to live-update subscribe to changes in the model).
 Of course this could later be optimized to a nicer DSL if need be
 
 `mw-stack('container').validate-on(container).add-to(attribute, item)`
+
+### Adv. Authorization
+
+`mw-stack('container').authorize.can 'add', data: item, ctx: {container: container, attribute: attribute}`
 
 Please add more thoughts/ideas... :)
