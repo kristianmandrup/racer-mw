@@ -254,11 +254,28 @@ PipeFactory = new Class(
       @value-object.$resource.mw-stack.remove types: ['validator', 'authorizer']
 
   pipe: ->
+    walk = (meth, steps) ->
+        if steps > 10
+          throw Error "You should NEVER have more than 10 pipes in a model pipeline!!!"
+        step = 0
+        location = @[meth]!
+        while step < steps and locations isnt void
+          location = location.@[meth]!
+        location
     {
       $type   : @type
       $parent : @parent
       $child  : void
-      $value-object: @object
+      $prev   : (steps) ->
+        walk '$parent', steps
+      $next    : (steps) ->
+        walk '$child', steps
+      $root: ->
+        walk '$parent', 9
+      $end: ->
+        walk '$child', 9
+
+      $value-object: @value-object
       $calc-path: ->
         new PathResolver @§value-object
     }
