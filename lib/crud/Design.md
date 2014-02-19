@@ -79,4 +79,35 @@ model.stringInsert '_page.text-area', 'hello'
 No collection really. Should allow for this case too! can the text area in this case still have its own validation
 In this case `_page` becomes the container ('page' model?).
 
-Please add more... :)
+## More advanced pipelining
+
+From the above analysis we can see the following conclusions taking shape...
+
+We need two middleware pipelines.
+
+- container-stack
+- item-stack
+
+For some operations, it is the container model object that determines whether the operation is allowed
+For others it is the item itself, being inserted into some named collection (not a model object).
+
+The container-stack will always be simple, since it will never have to bother about marshalling or decoration.
+It will thus only concern authorization and validation of the operation.
+Most often it will likely be a "by-pass" operation... ;)
+
+Example
+
+Add new Document (model obj) to an attribute (List) of container Document (model obj).
+
+The validation could take the container object, the attribute and the item obj and validate whether
+the container obj allows this item obj to be inserted into the list.
+This could be based either on the type of container and item object or even on the state of the container object (which
+could be set up to live-update subscribe to changes in the model).
+
+`mw-stack('container').validate container: container, attribute: attribute, item: item`
+
+Of course this could later be optimized to a nicer DSL if need be
+
+`mw-stack('container').validate-on(container).add-to(attribute, item)`
+
+Please add more thoughts/ideas... :)
