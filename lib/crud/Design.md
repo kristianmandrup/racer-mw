@@ -125,7 +125,7 @@ that can be encapsulated.
 As we can now start to see...
 
 ```
-users = collection('users')
+users-col = collection('users')
 user  = users.get-by name: name
 
 page = container('_page')
@@ -148,10 +148,14 @@ admin-user = {
   clazz: 'user'
 }
 
-page.attribute('current').model(admin-user).set role: 'guest'
+
+To chain, simply use `$a` stands for a <something> or simply short for "add" ;)
+This should build you the whole path model with all the cool logic buried inside...
+
+page.$a(attribute: 'current').$a(model: admin-user).$set role: 'guest'
 
 # get all admin users since past 3 days
-page.collection(admin-user).query $date: {$gte: days(3).before(new Date) }}
+page.$a(collection: admin-user).$query date: {$gte: days(3).before(new Date) }}
 ```
 
 The Resource should contain the following
@@ -171,18 +175,24 @@ admin-user = {
 ```
 
 ```
-users.path('current.admin').model(admin-user)
+users-col.path('current.admin').model(admin-user)
 
-# collection
+# collection (same as path)
 users-col = {
-  $collection: 'users'
+  $type: 'collection'
+  $path: 'users'
   $calc-path: ->
     @collection
 }
 
+# path
 current-admin-path = {
+  $type: 'path'
   $path: 'current.admin'
   $parent: users-col
+
+  # for chaining - should be included/inherited
+  $a: (hash) ->
 
   # Note: we should only generate this method only when we need it, in one of the Resource methods such as $save!
   $calc-path: ->
@@ -190,15 +200,60 @@ current-admin-path = {
 
 }
 
+# model-obj (Resource)
 admin-user = {
+  $type:  'resource'
   $class: 'user'
   $parent: current-admin-path
 }
 ```
 
-So we need a PathResolver to resolve the full path at each step in the hierarchy.
-This way we extract this functionality (Single Responsibility) and avoid cluttering
- each Resource with source logic
+Note that a model-obj (Resource) can also act as a "collection" or "user"
+
+```
+users-col.$a(model: admin-user).$a(model: project)
+
+project = {
+  $type:  'resource'
+  $class: 'project'
+  $parent: admin-user
+}
+```
+
+### Validation
+
+This fact is important for validation purposes. When we validate, we should validate the action with respect
+to all the parents. They also have are allowed say whether the data is valid in that context.
+However mostly the parents don't care and leave the child to do its own thing as long as it
+stays within its own boundaries...
+
+### Authorization
+
+For authorization we should also send in the list of parents as part of the context in which to authorize in.
+The permit (or any othr authorization logic) is then free to use this information to decide.
+
+We need a PathResolver to resolve the full path at each step in the hierarchy.
+This way we extract this functionality (Single Responsibility) and avoid cluttering each Resource with source logic...
+
+Note that in both cases, if the parent is a model-object, it could beset up to *live-update*.
+Hence when doing validation/authorization we can be sure it is with respect to its latest state and not some old state
+no longer "in touch" with the server. Perhaps we should enforce this somehow (or at least make it default)
+
+## Enable/Disable validation and authorization
+
+In some (most?) cases, there is no need to consult the parent(s) for Auth and Val. It should thus be easy
+to disable Auth and Val for any "piece in the puzzle".
+
+```
+# turn off validation
+users-col.$mw.off 'v'
+users-col.$mw.off! # turn all mw off
+users-col.$mw.on! # turn all mw on
+
+users-col.$a(model: admin-user).$mw.off!.$a(...)
+```
+
+### Path resolution
 
 ```
 PathResolver = Class(
