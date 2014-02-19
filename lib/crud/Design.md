@@ -209,7 +209,13 @@ admin-user-container = {
 }
 
 ```
-# ags: Hash - key = type, value = object
+
+### $p and $pipeline constructors
+
+Here we design the $p and $pipeline for chaining
+
+```livescript
+# args: Hash - key = type, value = object
 # creates a new pipe of the given type from the value
 $p = (hash) ->
   parent = @
@@ -228,14 +234,16 @@ $pipe = (hash) ->
 
 And now the pipe factory :)
 
-```
-PipeFactory = Class(
+```livescript
+PipeFactory = new Class(
   initialize: (@object, @options = {}) ->
   @type     = @options.type
   @parent   = @options.parent
 
   create-pipe: ->
     @object.$pipe = pipe!
+    @object.$p = $p # from local Node module scope
+    @object
 
   set-mw: ->
     switch @type
@@ -250,11 +258,15 @@ PipeFactory = Class(
       $child  : void
     }
 )
+
+module.exports = PipeFactory
 ```
 
 Sure looks pretty sweet and workable!
 
-``
+The `project` is an "end-pipe" with the parent resource-pipe (container) `admin-user`
+
+```livescript
 project = {
   $pipe
     $type:  'resource'
@@ -265,44 +277,45 @@ project = {
 }
 ```
 
-Come to think of it, does it even make sense with this syntax:
+Come to think of it...
 
 `users-col.$a(model: admin-user).$a(model: project)`
 
 The top levels are always some sort of containers. They only have different behavior depending on whether
 they are a full resource-pipe or just a simple-pipe. Their position in the pipeline determines their relative behavior
-with respect to the pipeline. So really no need for the `type` part I think.
-Simplify to: (using `$p` for pipe)
+with respect to the pipeline. So really no need for the `type` part
+Can be simplified to:
 
 `$pipe('users').$p(admin-user).$p('deeper.path').$p(project)`
 
-Much better! We could allow the type variant just for decorative/debugging purposes.
+We should still allow the type variant for decorative/debugging
+purposes (and better conceptual understanding of the code, i.e a clearer DSL).
 
 ### Validation
 
-This fact is important for validation purposes. When we validate, we should validate the action with respect
-to all the parents. They also have are allowed say whether the data is valid in that context.
+When we validate, we should validate the action with respect to all the parents of the end-pipe in question.
+They also are allowed have a say whether the data is valid in that given context.
 However mostly the parents don't care and leave the child to do its own thing as long as it
-stays within its own boundaries...
+stays within its own boundaries... mostly it is only the closest parent who gives a damn (in this context!)
 
 ### Authorization
 
 For authorization we should also send in the list of parents as part of the context in which to authorize in.
-The permit (or any othr authorization logic) is then free to use this information to decide.
+The permit (or other authorization) is then free to use this information to authorize.
 
 We need a PathResolver to resolve the full path at each step in the hierarchy.
 This way we extract this functionality (Single Responsibility) and avoid cluttering each Resource with source logic...
 
-Note that in both cases, if the parent is a model-object, it could beset up to *live-update*.
-Hence when doing validation/authorization we can be sure it is with respect to its latest state and not some old state
-no longer "in touch" with the server. Perhaps we should enforce this somehow (or at least make it default)
+Note that in both cases, if the parent is a model-object (or resource), it could be set to *live-update*.
+Then when doing validation/authorization we can be sure it is with respect to its latest state and not some old state
+no longer "in touch" with the server state. Perhaps we should enforce this somehow (or at least make it default)
 
 ## Enable/Disable validation and authorization
 
-In some (most?) cases, there is no need to consult the parent(s) for Auth and Val. It should thus be easy
-to disable Auth and Val for any "piece in the puzzle".
+In some (most?) cases, there is no need to consult the parent(s) for Auth and/or Val.
+It should be easy to disable Auth and Val for any "piece in the puzzle".
 
-```
+```livescript
 # turn off validation
 users-col.$mw.off 'v'
 users-col.$mw.off! # turn all mw off
@@ -314,13 +327,14 @@ users-col.$a(model: admin-user).$mw.off!.$a(...)
 ## Marshalling
 
 We have added a few `$` prefixed properties and methods to the Resouce model.
-You don't want these values to be stored in the DB. So the marshalling should ensure that any $ value
+You don't want these values to be stored in the DB. So the marshalling (marshal-mw) should ensure that any `$` value
 is always discarded and then they will be put back on by the Resource decorator :)
+At least it should always discard `$resource` and `$pipe`.
 
 ### Path resolution
 
-```
-PathResolver = Class(
+```livescript
+PathResolver = new Class(
   initialize: (@model-obj) ->
     @collection = @pluralize model-obj.$resource.$class
     @parent = model-obj.$parent
@@ -340,56 +354,64 @@ Now that we can calculate the paths at any step, we need to implement the main R
 
 ### $set current model object as-is
 
-```
-# set with current values
+set with current values
+
+```livescript
 $save: ->
   $set @
 ```
 
 ### $set model object
 
-```
-# perform should be responsible for generating the path to be used
-# should first authorize, validate and marshal
-# it should generate $calc-path which runs in the context of @ being the Resource obj
+Perform should be responsible for generating the path to be used
+It should first authorize, validate and marshal and then use $calc-path to
+calculate the full path (via PathResolver)
+
+```livescript
 $set: (value-hash) ->
   @perform 'set', value-hash
 ```
 
 ### $set attribute with value
 
-```
+```livescript
 $set: (attribute, value) ->
-  vhash = {}
-  vhash[attribute] = value
+  vhash = {}; vhash[attribute] = value
   $set vhash
 ```
 
+same as $set but using 'if-null' method, setting only if null (not present yet!)
+
 ```
-# same as $set but using 'if-null' method, setting only if null (not present yet!)
 $set-null: (attribute, value, opts) ->
+  @perform 'if-null', ...
 ```
 
 ### $get model
 
-```
-# should first authorize
+Should first authorize, then decorate (if get value). Also allow subscript and live-update (ref)
+See *CrudGet* ;)
+
+```livescript
 $get: (model)
   @perform 'get', @get-for(model)
 ```
 
 ### $get query
 
-```
-# query under current path
-# should first authorize
+Query under current path..
+
+```livescript
 $get: (q: query)
   @perform 'get', @get-for(model)
 ``
 
-```
-# should first authorize
-$delete: ->
+### Delete
+
+Should first authorize
+
+```livescript
+$delete: (path) ->
   @perform 'del'
 ```
 
@@ -397,19 +419,21 @@ $delete: ->
 
 ### $inc attribute
 
-```
-# should first authorize
-$inc: (attribute) ->
+Should first authorize and validate (but only if container is synced?)
+
+```livescript
+$inc: (attribute, path) ->
   @perform 'increment', attribute
 ```
 
 ### $push model-obj
 
-If parent is a collection
+If parent is a collection. Note that `@value-object!` is necessary to get the real value, as we are calling
+ from withing the context of a `Resource`.
 
-```
+```livescript
 $push: ->
-  @perform 'push', value
+  @perform 'push', @value-object!
 ```
 
 As we see here, path or perform should create a new Execution object,
@@ -418,28 +442,28 @@ decoupled from the Resource itself, only referencing it
 Path coupled with the current path should add up to path that points to collection
 If no value as 2nd arg, then use self (model obj)
 
-```
+```livescript
 $push: (path) ->
-  @path(path).perform 'push', value
+  @path(path).perform 'push', @value-object!
 ```
 
 If no value as 2nd arg, then push this
 
-```
+```livescript
 $push: (path, value) ->
-  @path(path).perform 'push', value
+  @path(path).perform 'push', @value-object!
 ```
 
 values can be a list of args or an array
 
-```
+```livescript
 $push: (path, values) ->
   @path(path).perform 'push', values.flatten!.compact!
 ```
 
 To avoid cluttering the model with all these Resource methods, we should have them in one place
 
-```
+```livescript
 user = {
   $class: 'user'
   $res: ->
@@ -458,9 +482,71 @@ or even
 
 Where `$resource` returns the resource of the user
 
-Very advanced chaining DSL !!
+## Resource: advanced chaining DSL
 
 `$resource(user).$set(age: 27).$push('projects', project).$delete('project').from('archived-projects').where('oldest', 10)`
+
+Let's attempt designing the Resource now!
+
+```livescript
+Resource = new Class(
+  # value-object
+  initialize: (@value-object)
+
+  $save: ->
+    @$set @value-object
+
+  $set: ->
+    # clever args handling...
+)
+```
+
+We must combine multiple setters into one..
+
+```livescript
+  $set: (value-hash) ->
+    @perform 'set', value-hash
+
+  $set: (attribute, value) ->
+    vhash = {}; vhash[attribute] = value
+    $set vhash
+
+  $set: ->
+    #...
+```
+
+We can subclass `RacerSync` to get @perform, however subclassing is a little too "heavy-handed" as we get too much mixed into
+the Resource. Baaad! Better to
+
+```livescript
+Resource = new Class(RacerSync,
+  $set: ->
+    switch arguments.length
+    case 0
+      @$set @value-object
+    case 1
+      @perform 'set', value-hash
+    case 2
+      vhash = {}; vhash[attribute] = value
+      @$set vhash
+```
+
+Better like this:
+
+```livescript
+Resource = new Class(
+  sync: ->
+    @my-sync ||= new RacerSync @
+
+  perform: ->
+    @sync!.perform arguments
+```
+
+Perhaps we could even use `Forwardable` from *jsclass* ?
+
+Pure Awesomeness!!
+
+## Reusable "smart" queries
 
 Note this part:
 
@@ -468,7 +554,7 @@ Note this part:
 
 Here we are taking advantage of a named query.
 
-```
+```livescript
 user.$resource.$queries.add = {
   oldest: -> {date: {$gte: Date() + days(3).before('today')} }
 }
