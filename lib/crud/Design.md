@@ -26,16 +26,7 @@ users.1.user.admins.1.admin-user.tags = ['abra', 'ca', 'dabra']
 ```
 
 What if we move or pop an element from the tags collection (simple String values).
-Should we validate with respect to the `admin-user`
-
-
-**Operates on a simple attribute**
-
-```
-model.stringInsert 'users.1.user.text-area', 'hello'
-```
-
-Should authorize and validate on container Document `user`...
+Should we validate with respect to the `admin-user` container? Yeah...
 
 ## More advanced pipelining
 
@@ -53,7 +44,7 @@ The container-stack will always be simple, since it will never have to bother ab
 It will thus only concern authorization and validation of the operation.
 Most often it will likely be a "by-pass" operation... ;)
 
-Example
+*Example*
 
 Add new Document (model obj) to an attribute (List) of container Document (model obj).
 
@@ -70,7 +61,7 @@ Of course this could later be optimized to a nicer DSL if need be
 
 `mw-stack('container').validate-on(container).add-to(attribute, item)`
 
-Note: See below, this can be vastly simplified by employing a hierachical model to reflect this
+This can be vastly simplified by employing a hierachical model to reflect this
 and then have each level "do its thing". Then each layer will have at most one mw-stack!
 
 ### Adv. Authorization
@@ -85,12 +76,12 @@ that can be encapsulated.
 
 As we can now start to see...
 
-```
+```livescript
 users-col = collection('users')
 user  = users.get-by name: name
 
-page = container('_page')
-current-user = page.attribute('current').model('user').get-by email: user.email
+page = $pipe(container: '_page')
+current-user = page.$p(attribute: 'current').$p(model: 'user').get-by email: user.email
 current-user.$save!
 current-user.$set name: 'unknown'
 
@@ -108,79 +99,96 @@ admin-user = {
   role: 'admin'
   clazz: 'user'
 }
+```
 
-
-To chain, simply use `$a` stands for a <something> or simply short for "add" ;)
+To chain, simply use `$p` stands for pipe ;)
 This should build you the whole path model with all the cool logic buried inside...
 
-page.$a(attribute: 'current').$a(model: admin-user).$set role: 'guest'
+```livescript
+$pipes = {}
+
+$pipes.admin-user = $pipe('_page').$p(attribute: 'current').$p(model: admin-user)
+
+$pipes.admin-user.$set role: 'guest'
 
 # get all admin users since past 3 days
-page.$a(collection: admin-user).$query date: {$gte: days(3).before(new Date) }}
+$pipes.admin-user.$query date: {$gte: days(3).before(new Date) }}
 ```
 
 The Resource should contain the following
 
+```livescript
 admin-user = {
   name: 'Kris'
   role: 'admin'
 
   $clazz: 'user'
 
-  $save: ->
-  $set: (value-hash) ->
-  $get: (model, query)
-  $delete: ->
-  $parent: parent
+  $pipe
+    $parent: parent
+
+  $resource:
+    $save: ->
+    $set: (value-hash) ->
+    $get: (model, query) ->
+      # ...
+    $delete: ->
+      # ...
 }
 ```
 
-```
+More...
+
+```livescript
 users-col.$a(path: 'current.admin').$a(model: admin-user)
 
 # collection (same as path)
 users-col = {
-  $type: 'collection'
-  $path: 'users'
-  $calc-path: ->
-    @collection
+  $pipe:
+    $type: 'collection'
+    $path: 'users'
 }
 
 # path
+
 current-admin-path = {
-  $type: 'path'
-  $path: 'current.admin'
-  $parent: users-col
+  $pipe:
+    $type: 'path'
+    $path: 'current.admin'
+    $parent: users-col
 
   # for chaining - should be included/inherited
-  $a: (hash) ->
-
-  # Note: we should only generate this method only when we need it, in one of the Resource methods such as $save!
-  $calc-path: ->
-    new PathResolver(@).full-path
-
+  $p: (hash) ->
+    # ...
+  $resource:
+    # ...
 }
 
+
 # model-obj (Resource)
+# we should encourage setting class on the $resource instead and use the $class
 admin-user = {
-  $type:  'resource'
-  $class: 'user'
-  $parent: current-admin-path
+  $pipe:
+    $type:  'resource'
+    $parent: current-admin-path
+
+  $resource:
+    $class: 'user'
 }
 ```
 
 Note that a model-obj (Resource) can also act as a "collection" or "user"
 
 In the following we use `admin-user` both as an "end" pipe and a container "pipe" (better term than pipe?).
-We should not share the reference, so the call to `$a`must be a constructor, and `admin-user` must be cloned by value
+We should not share the reference, so the call to `$p` must be a constructor, and `admin-user` must be cloned by value
  or just the relevant values extracted when used as a container.
 
-So the call to `.$a(model: project)` on the model obj for `admin-user` must turn it into a container, without affecting
+So the call to `.$p(model: project)` on the model obj for `admin-user` must turn it into a container, without affecting
 the `$pipes.admin.user`. In turn, as a container, the mw-stack should be changed, so as to not marshal or decorate.
 the Validator step should also be different, such that it sends something like: `container: @, data: @.$child`
 
 
-```
+```livescript
 $pipes.admin.user     = users-col.$a(model: admin-user)
 $pipes.admin.project  = users-col.$a(model: admin-user).$a(model: project)
 ```
@@ -188,32 +196,43 @@ $pipes.admin.project  = users-col.$a(model: admin-user).$a(model: project)
 So we can see we need a `$child` for the `admin-user-container` that points to the next item in the pipe.
 To avoid too pipe-specific properties/methods in the core data/behavior namespace, we should create
  a namespace `$pipe` to contain them.
-```
+
+```livescript
 admin-user-container = {
-  $class: 'user'
   $pipe:
     $type:  'container'
     $parent: current-admin-path
     $child: project
+
+  $resource:
+    $class: 'user'
 }
 
 ```
 # ags: Hash - key = type, value = object
 # creates a new pipe of the given type from the value
-$a = (hash) ->
-  self = @
+$p = (hash) ->
+  parent = @
   keys = _.keys(hash)
   throw Error "Must only have one key/value entry, was #{keys}"
-  keys.each (type)
-    @$pipe.child = new PipeFactory(self, type, hash[type]).create-pipe
-  @$pipe.child
+  type = keys.first
+  obj = hash[type]
+  @$pipe.child = new PipeFactory(obj, parent: parent, type: type).create-pipe
+
+$pipe = (hash) ->
+  keys = _.keys(hash)
+  throw Error "Must only have one key/value entry, was #{keys}"
+  type = keys.first
+  new PipeFactory(hash[type], type: type).create-pipe
 ```
 
 And now the pipe factory :)
 
 ```
 PipeFactory = Class(
-  initialize: (@parent, @type, @object) ->
+  initialize: (@object, @options = {}) ->
+  @type     = @options.type
+  @parent   = @options.parent
 
   create-pipe: ->
     @object.$pipe = pipe!
@@ -237,11 +256,12 @@ Sure looks pretty sweet and workable!
 
 ``
 project = {
-  $class: 'project'
   $pipe
     $type:  'resource'
     $parent: admin-user
     $child  : void
+  $resource:
+    $class: 'project'
 }
 ```
 
@@ -302,7 +322,7 @@ is always discarded and then they will be put back on by the Resource decorator 
 ```
 PathResolver = Class(
   initialize: (@model-obj) ->
-    @collection = @pluralize model-obj.clazz
+    @collection = @pluralize model-obj.$resource.$class
     @parent = model-obj.$parent
 
   obj-path: ->
@@ -421,7 +441,7 @@ To avoid cluttering the model with all these Resource methods, we should have th
 
 ```
 user = {
-  $clazz: 'user'
+  $class: 'user'
   $res: ->
     @$resource ||= new Resource @
 }
@@ -440,7 +460,7 @@ Where `$resource` returns the resource of the user
 
 Very advanced chaining DSL !!
 
-`$resource(user).$set(age: 27).$push('projects', project).$delete('project').from('archived-projects').where('oldest')`
+`$resource(user).$set(age: 27).$push('projects', project).$delete('project').from('archived-projects').where('oldest', 10)`
 
 Note this part:
 
@@ -450,8 +470,20 @@ Here we are taking advantage of a named query.
 
 ```
 user.$resource.$queries.add = {
-  oldest: {date: {$gte: Date() + days(3).before('today')} }
+  oldest: -> {date: {$gte: Date() + days(3).before('today')} }
 }
+
+user.$resource.$queries =
+  oldest: (num) ->
+    {date: {$gte: Date() + days(3).before('today')} }.extend @limit(num)
+
+  youngest(num): ->
+    { $sort: {asc: 'age'} }.extend @limit(num)
+
+  limit: (num) ->
+    { $limit: num }
 ```
+
+Pretty awesome!!!
 
 Please add more thoughts/ideas... :)
