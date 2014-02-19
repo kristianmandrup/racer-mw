@@ -72,18 +72,11 @@ model.stringInsert 'users.1.user.text-area', 'hello'
 
 Should authorize and validate on container Document `user`...
 
-```
-model.stringInsert '_page.text-area', 'hello'
-```
-
-No collection really. Should allow for this case too! can the text area in this case still have its own validation
-In this case `_page` becomes the container ('page' model?).
-
 ## More advanced pipelining
 
 From the above analysis we can see the following conclusions taking shape...
 
-We need two middleware pipelines.
+We might need two middleware pipelines.
 
 - container-stack
 - item-stack
@@ -111,6 +104,9 @@ could be set up to live-update subscribe to changes in the model).
 Of course this could later be optimized to a nicer DSL if need be
 
 `mw-stack('container').validate-on(container).add-to(attribute, item)`
+
+Note: See below, this can be vastly simplified by employing a hierachical model to reflect this
+and then have each level "do its thing". Then each layer will have at most one mw-stack!
 
 ### Adv. Authorization
 
@@ -175,7 +171,7 @@ admin-user = {
 ```
 
 ```
-users-col.path('current.admin').model(admin-user)
+users-col.$a(path: 'current.admin').$a(model: admin-user)
 
 # collection (same as path)
 users-col = {
@@ -210,15 +206,92 @@ admin-user = {
 
 Note that a model-obj (Resource) can also act as a "collection" or "user"
 
-```
-users-col.$a(model: admin-user).$a(model: project)
+In the following we use `admin-user` both as an "end" pipe and a container "pipe" (better term than pipe?).
+We should not share the reference, so the call to `$a`must be a constructor, and `admin-user` must be cloned by value
+ or just the relevant values extracted when used as a container.
 
+So the call to `.$a(model: project)` on the model obj for `admin-user` must turn it into a container, without affecting
+the `$pipes.admin.user`. In turn, as a container, the mw-stack should be changed, so as to not marshal or decorate.
+the Validator step should also be different, such that it sends something like: `container: @, data: @.$child`
+
+
+```
+$pipes.admin.user     = users-col.$a(model: admin-user)
+$pipes.admin.project  = users-col.$a(model: admin-user).$a(model: project)
+```
+
+So we can see we need a `$child` for the `admin-user-container` that points to the next item in the pipe.
+To avoid too pipe-specific properties/methods in the core data/behavior namespace, we should create
+ a namespace `$pipe` to contain them.
+```
+admin-user-container = {
+  $class: 'user'
+  $pipe:
+    $type:  'container'
+    $parent: current-admin-path
+    $child: project
+}
+
+```
+# ags: Hash - key = type, value = object
+# creates a new pipe of the given type from the value
+$a = (hash) ->
+  self = @
+  keys = _.keys(hash)
+  throw Error "Must only have one key/value entry, was #{keys}"
+  keys.each (type)
+    @$pipe.child = new PipeFactory(self, type, hash[type]).create-pipe
+  @$pipe.child
+```
+
+And now the pipe factory :)
+
+```
+PipeFactory = Class(
+  initialize: (@parent, @type, @object) ->
+
+  create-pipe: ->
+    @object.$pipe = pipe!
+
+  set-mw: ->
+    switch @type
+    case 'model'
+    default
+      @object.$resource.mw-stack.remove types: ['validator', 'authorizer']
+
+  pipe: ->
+    {
+      $type   : @type
+      $parent : @parent
+      $child  : void
+    }
+)
+```
+
+Sure looks pretty sweet and workable!
+
+``
 project = {
-  $type:  'resource'
   $class: 'project'
-  $parent: admin-user
+  $pipe
+    $type:  'resource'
+    $parent: admin-user
+    $child  : void
 }
 ```
+
+Come to think of it, does it even make sense with this syntax:
+
+`users-col.$a(model: admin-user).$a(model: project)`
+
+The top levels are always some sort of containers. They only have different behavior depending on whether
+they are a full resource-pipe or just a simple-pipe. Their position in the pipeline determines their relative behavior
+with respect to the pipeline. So really no need for the `type` part I think.
+Simplify to: (using `$p` for pipe)
+
+`$pipe('users').$p(admin-user).$p('deeper.path').$p(project)`
+
+Much better! We could allow the type variant just for decorative/debugging purposes.
 
 ### Validation
 
