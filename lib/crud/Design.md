@@ -156,6 +156,8 @@ current-admin-path = {
     $type: 'path'
     $path: 'current.admin'
     $parent: users-col
+    $calc-path: ->
+      # ...
 
   # for chaining - should be included/inherited
   $p: (hash) ->
@@ -236,26 +238,29 @@ And now the pipe factory :)
 
 ```livescript
 PipeFactory = new Class(
-  initialize: (@object, @options = {}) ->
+  initialize: (@value-object, @options = {}) ->
   @type     = @options.type
   @parent   = @options.parent
 
   create-pipe: ->
-    @object.$pipe = pipe!
-    @object.$p = $p # from local Node module scope
-    @object
+    @value-object.$pipe = pipe!
+    @value-object.$p = $p # from local Node module scope
+    @value-object
 
   set-mw: ->
     switch @type
     case 'model'
     default
-      @object.$resource.mw-stack.remove types: ['validator', 'authorizer']
+      @value-object.$resource.mw-stack.remove types: ['validator', 'authorizer']
 
   pipe: ->
     {
       $type   : @type
       $parent : @parent
       $child  : void
+      $value-object: @object
+      $calc-path: ->
+        new PathResolver @§value-object
     }
 )
 
@@ -277,9 +282,9 @@ project = {
 }
 ```
 
-Come to think of it...
+### DSL optimization
 
-`users-col.$a(model: admin-user).$a(model: project)`
+`users-col.$p(model: admin-user).$p(model: project)`
 
 The top levels are always some sort of containers. They only have different behavior depending on whether
 they are a full resource-pipe or just a simple-pipe. Their position in the pipeline determines their relative behavior
@@ -290,6 +295,40 @@ Can be simplified to:
 
 We should still allow the type variant for decorative/debugging
 purposes (and better conceptual understanding of the code, i.e a clearer DSL).
+
+### Path resolution
+
+```livescript
+PathResolver = new Class(
+  initialize: (@model-obj) ->
+    @collection = @pluralize model-obj.$resource.$class
+    @parent = model-obj.$pipe.$parent
+
+  obj-path: ->
+    @collection
+
+  parent-path: ->
+    if @parent? then @parent.$pipe.$calc-path else void
+
+  full-path: ->
+    [@parent-path, @obj-path].compact!.join '.'
+)
+``
+
+Remember, a piped `project` looks like this...
+
+```livescript
+project = {
+  # ...
+  $pipe:
+    # ...
+    $value-object: project
+    $calc-path: ->
+      new PathResolver @$value-object
+```
+
+Now that we can calculate the paths at any step, we need to implement the main Resource methods.
+However first we will look at how Validation and Authorization fits in with Pipes and Resources...
 
 ### Validation
 
@@ -330,27 +369,6 @@ We have added a few `$` prefixed properties and methods to the Resouce model.
 You don't want these values to be stored in the DB. So the marshalling (marshal-mw) should ensure that any `$` value
 is always discarded and then they will be put back on by the Resource decorator :)
 At least it should always discard `$resource` and `$pipe`.
-
-### Path resolution
-
-```livescript
-PathResolver = new Class(
-  initialize: (@model-obj) ->
-    @collection = @pluralize model-obj.$resource.$class
-    @parent = model-obj.$parent
-
-  obj-path: ->
-    @collection
-
-  parent-path: ->
-    if @parent? then @parent.calc-path else void
-
-  full-path: ->
-    [@parent-path, @obj-path].compact!.join '.'
-)
-```
-
-Now that we can calculate the paths at any step, we need to implement the main Resource methods
 
 ### $set current model object as-is
 
@@ -521,14 +539,18 @@ the Resource. Baaad! Better to
 ```livescript
 Resource = new Class(RacerSync,
   $set: ->
-    switch arguments.length
+    @$scoped = switch arguments.length
     case 0
       @$set @value-object
     case 1
-      @perform 'set', value-hash
+      @perform 'set', arguments[0]
     case 2
-      vhash = {}; vhash[attribute] = value
+      vhash = {}
+      vhash[arguments[0]] = arguments[1]
       @$set vhash
+
+    default
+      throw Error "Too many arguments #{arguments.length}, must be 0-2 for $set"
 ```
 
 Better like this:
@@ -545,6 +567,80 @@ Resource = new Class(
 Perhaps we could even use `Forwardable` from *jsclass* ?
 
 Pure Awesomeness!!
+
+## Live updates and subscriptions
+
+And how about live updates (refs) and subscriptions to model change events?
+
+Derby docs [subscriptions](http://derbyjs.com/#subscriptions)
+
+The `subscribe`, `fetch`, `unsubscribe`, and `unfetch` methods are used to load and unload data from a model.
+These methods don’t return data directly. Rather, they load the data into the model.
+The data are then accessed via model getter methods.
+
+`subscribe` and `fetch` both return data initially, but subscribe also registers with *PubSub* on the server to
+receive ongoing updates as the data change.
+
+```
+model.subscribe ( items..., callback(err) )
+model.fetch ( items..., callback(err) )
+model.unsubscribe ( items..., callback(err) )
+model.unfetch ( items..., callback(err) )
+```
+
+`items`: Accepts one or more subscribable items, including a path, scoped model, or query
+
+`callback`: Calls back once all of the data for each query and document has been loaded or when an error is encountered
+
+"subscribable items, including a path, scoped model, or query"
+
+To make it easier, we should always return and use scoped models.
+
+To access it `user.$resource.$scoped` or shortcut, simply `user.$scoped!`
+
+```
+user = {
+  $scoped: ->
+    $resource.$scoped
+  $resource:
+    $perform: (action, path, args...) ->
+      subject = if path then @$calc-path(path) else @$scoped
+      @sync.perform action, subject, args
+
+    $scoped: void
+    $subscribe: (cb, path) ->
+      @perform 'subscribe', path, cb
+
+    # model.ref path, to
+    $live: (path)->
+        @perform 'ref', path
+
+    $remove-live: (path) ->
+      @perform 'ref', path
+
+    $get: (path) ->
+      @perform 'get', path
+
+    $at: (id) ->
+      @id ||= id
+      throw Error "No id set for #{@collection}" unless @id
+      @$scoped = @perform 'at', @id
+
+    save: ->
+      # ...
+
+    $set: ->
+      # ...
+}
+```
+
+So now we can do `user.$resource.$subscribe` to have its `scoped` live update.
+
+## Resources that are not value objects
+
+Note: A resource can also be part of a piped `collection`, `attribute` or `path`.
+In that case it operates just the same, except there is no value-object for the resource.
+Also there is no middleware stack. Thus it is a simple-resource.
 
 ## Reusable "smart" queries
 
