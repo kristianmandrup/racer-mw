@@ -116,4 +116,8 @@ Of course this could later be optimized to a nicer DSL if need be
 
 `mw-stack('container').authorize.can 'add', data: item, ctx: {container: container, attribute: attribute}`
 
+The key is to allow the developer to configure this as required while facilitating certain common patterns.
+We should not apply too strict conventions, at least until we have uncovered typical repetitive usage patterns
+that can be encapsulated.
+
 Please add more thoughts/ideas... :)
