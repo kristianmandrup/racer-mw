@@ -37,6 +37,12 @@ Pipe = new Class(
       $end: ->
         walk '$child', 9
 
+      $detach: ->
+        @$parent = void
+
+      $attach: (pipe) ->
+        @$parent = pipe
+
       $calc-path: ->
         new PathResolver(@value-object).full-path!
 )

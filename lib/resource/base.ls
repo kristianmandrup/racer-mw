@@ -1,4 +1,6 @@
-Class       = require('jsclass/src/core').Class
+Class     = require('jsclass/src/core').Class
+
+Query     = requires.lib 'query'
 
 BaseResource = new Class(
   # value-object
@@ -7,61 +9,86 @@ BaseResource = new Class(
   sync: ->
     @my-sync ||= new RacerSync @
 
-  perform: (action, path, args) ->
+  perform: (action, hash) ->
+    path = hash.delete 'path'
     subject = if path then @$calc-path(path) else @$scoped
-    @sync.perform action, subject, args
-    update-model: (live-obj) ->
-      new LiveDecorator(@value-object).decorate live-obj
+    @sync.perform action, subject, hash.values
+    @
+
+  update-model: (live-obj) ->
+    new LiveDecorator(@value-object).decorate live-obj
+
+  mutate: (action, hash) ->
+    @perform action, hash
+
+  scoped: (action, hash) ->
+    @$scoped = @perform action, hash
+    @
+
+  $scoped: void
 
   $save: ->
     @$set @value-object
 
   $set: ->
-    @$scoped = switch arguments.length
+    switch arguments.length
     case 0
       @$set @value-object
     case 1
-      @perform 'set', arguments[0]
+      @mutate 'set', arguments[0]
     case 2
-      vhash = {}
-      vhash[arguments[0]] = arguments[1]
-      @$set vhash
+      @mutate arguments[0], arguments[1]
     default
       throw Error "Too many arguments #{arguments.length}, must be 0-2 for $set"
 
-  $push: (path) ->
-    @perform 'push', path
-
   $set-null: (path) ->
-    @perform 'if-null', path
+    @mutate 'if-null', path: path
 
-  $inc: (path) ->
-    @perform 'increment', path
+  # fn-name: optional
+  $filter: (path, fn-name) ->
+    @perform 'filter', path: path, name: fn-name
 
-  $alive: void
-  $scoped: void
+  # filter = model.sort ( inputPath, [name] )
+  $sort: (path, fn-name) ->
+    @perform 'sort', path: path, name: fn-name
 
   $subscribe: (cb, path) ->
-    @perform 'subscribe', path, cb
+    @perform 'subscribe', path: path, cb: cb
+
+  $scope: (path)->
+    @scoped 'scope', path: path
+
+  $parent: (lvs)->
+    @scoped 'parent', lvs: lvs
+
+  $query: (collection, hash) ->
+    unless typeof hash is 'object'
+      throw Error "Must be an Object, was: #{hash}"
+
+    hash = if hash.path then {path: hash.path} else {q: hash.q}
+    query = @perform 'query', collection, hash
+    new Query(@,  query)
 
   # model.ref path, to
-  $live: (path)->
-      $alive = @perform 'ref', path
-      @update-model($alive)
+  $ref: (path, hash)->
+    @scoped 'ref', path: path, to: to
 
-  $remove-live: (path) ->
-    $alive = @perform 'refRemove', path
+  $removeRef: (path) ->
+    @perform 'removeRef', path: path
+
+  $removeAllRefs: (path) ->
+    @perform 'removeAllRefs', path: path
 
   $delete: (path) ->
-    @perform 'del', path
+    @perform 'del', path: path
 
   $get: (path) ->
-    @perform 'get', path
+    @perform 'get', path: path
 
   $at: (id) ->
     @id ||= id
-    throw Error "No id set for #{@collection}" unless @id
-    @$scoped = @perform 'at', @id
+    throw Error "Missing id" unless @id
+    @scoped 'at', @id
 )
 
 module.exports = BaseResource

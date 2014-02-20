@@ -35,8 +35,17 @@ module.exports =
   model: (...paths) ->
     require model-path(...paths)
 
+  lib: (...paths) ->
+    require lib-path(...paths)
+
   crud: (...paths) ->
     require crud-path(...paths)
+
+  pipe: (...paths) ->
+    require crud-path(...paths)
+
+  resource: (...paths) ->
+    require resource-path(...paths)
 
   fixture: (path) ->
     @test 'fixtures', path
