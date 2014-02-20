@@ -438,7 +438,7 @@ Query under current path..
 
 ```livescript
 $get: (q: query)
-  @perform 'get', @get-for(model)
+  @perform 'get', query
 ``
 
 ### Delete
@@ -565,7 +565,6 @@ Resource = new Class(RacerSync,
       vhash = {}
       vhash[arguments[0]] = arguments[1]
       @$set vhash
-
     default
       throw Error "Too many arguments #{arguments.length}, must be 0-2 for $set"
 ```
@@ -613,27 +612,36 @@ model.unfetch ( items..., callback(err) )
 
 To make it easier, we should always return and use scoped models.
 
-To access it `user.$resource.$scoped` or shortcut, simply `user.$scoped!`
+To access it `user.$resource.$scoped` or shortcut, simply `user.$scoped!`, same with `user.$alive` for the
+live updated model.
 
 ```
 user = {
   $scoped: ->
     $resource.$scoped
+  $alive: ->
+    $resource.$alive
+
   $resource:
     $perform: (action, path, args...) ->
       subject = if path then @$calc-path(path) else @$scoped
       @sync.perform action, subject, args
 
+    update-model: (live-obj) ->
+      new LiveDecorator(@value-object).decorate live-obj
+
+    $alive: void
     $scoped: void
     $subscribe: (cb, path) ->
       @perform 'subscribe', path, cb
 
     # model.ref path, to
     $live: (path)->
-        @perform 'ref', path
+        $alive = @perform 'ref', path
+        @update-model($alive)
 
     $remove-live: (path) ->
-      @perform 'ref', path
+      $alive = @perform 'refRemove', path
 
     $get: (path) ->
       @perform 'get', path
@@ -651,7 +659,22 @@ user = {
 }
 ```
 
-So now we can do `user.$resource.$subscribe` to have its `scoped` live update.
+So now we can do `user.$resource.$subscribe` and have `scoped` models with *live update*.
+
+Here is a simple (default) implementation of `LiveDecorator`, used to update the value-object
+with the incoming "live data" from the data store.
+
+```livescript
+LiveDecorator = new Class(
+  initialize: (@vo)
+
+  decorate: (live-obj) ->
+    lo.extend @vo, live-obj
+
+)
+```
+
+
 
 ## Resources that are not value objects
 
