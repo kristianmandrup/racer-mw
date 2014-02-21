@@ -16,7 +16,9 @@ CollectionResource = new Class(BaseResource,
   # $pipe(collection: 'users').push(users)
   # $pipe(collection: 'users').$pipe(collection: '1.admins').push users)
   # $pipe(collection: 'users').push('1.admins', users)    
-  # $pipe(collection: 'users').model(user: 1).push('admins', users)
+  # $pipe(collection: 'users').$model(user: 1).push('admins', users)
+  # $collection('users').$model(user: 1).push('admins', users)
+  # $collection('users').$model(user: 1).$collection('admins').push users)
   
   $push: (args) ->
     @perform 'push', args
