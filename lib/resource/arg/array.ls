@@ -3,14 +3,12 @@ module.exports =
     required:
       * 'value'
     optional:
-      * 'path'
       * 'cb'
     result: 'length'
   unshift:
     required:
       * 'value'
     optional:
-      * 'path'
       * 'cb'
     result: 'length'
   insert:
@@ -18,21 +16,17 @@ module.exports =
       * 'index'
       * 'values'
     optional:
-      * 'path'
       * 'cb'
     result: 'length'
   pop:
     optional:
-      * 'path'
       * 'cb'
   shift:
     optional:
-      * 'path'
       * 'cb'
     result: 'item'
   move:
     optional:
-      * 'path'
       * 'howMany'
       * 'cb'
     required:
@@ -41,7 +35,6 @@ module.exports =
     result: 'moved'
   remove:
     optional:
-      * 'path'
       * 'how-many'
       * 'cb'
     required: 'index'

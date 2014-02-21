@@ -8,8 +8,18 @@ AttributeResource = new Class(BaseResource,
   # value-object
   initialize: (@value-object)
 
-  $inc: (num, path) ->
-    @perform 'increment', path, by: num
+  self-commands:
+    * 'get'
+    * 'set'
+    * 'ref'
+    * 'remove-ref'
+
+  number-commands:
+    * 'inc'
+
+  string-commands:
+    * 'string-insert'
+    * 'string-remove'
 )
 
 module.exports = AttributeResource
