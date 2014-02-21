@@ -1,12 +1,29 @@
+
+Filter  = requires.resource 'filter'
+Query   = requires.resource 'query'
+
 ResourceCommand = new Class(
-  initialize: (@value-object)
+  initialize: (@resource)
 
   sync: ->
     @my-sync ||= new RacerSync @
 
+  get-path: ->
+    @resource.get-path! # calculate or get cached ;)
+
   perform: (action, hash) ->
-    path = hash.delete 'path'
-    subject = if path then @$calc-path(path) else @$scoped
-    @sync.perform action, subject, hash.values
+    @sync.perform action, @get-path!, hash
     @
+
+  scoped: (command, hash) ->
+    @scope = @perform command, hash
+
+  on-values:
+    * 'scope' # looks for on-scope
+    * 'query'
+    * 'filter'
+
+  create:
+    query:  Query   # new Query   @resource, @query
+    filter: Filter  # new Filter  @resource, @filter
 )

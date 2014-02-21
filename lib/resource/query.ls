@@ -1,11 +1,9 @@
-Query = new Class(
-  initialize: (resource, query) ->
-    # ...
+Query = new Class(ResourceCommand,
 
-  $ref: (path) ->
-    @perform 'ref', path: path
+  initialize: (@resource, @query) ->
 
-  $get: ->
-    @perform 'get'
-
+  commands:
+    on-query:
+      * 'ref'
+      * 'get'
 )

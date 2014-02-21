@@ -14,25 +14,57 @@ ArgsStore = new Class(
 )
 
 ArgValidator = new Class(
-  initialize: (@resource, @command, @args) ->
-    @valid-args = @arg-store![@command]
+  initialize: (@resource, @command-name, @args) ->
+    @command = @arg-store![@command]
     @arg-keys = _.keys @args
 
-    @optional = [@valid-args.optional].compact!
-    @required = [@valid-args.required].compact!
+  error: ->
+    @err-handler ||= @create-error-handler
+
+  create-error-handler: ->
+    ErrorHandler = requires.resource 'arg/error_handler'
+    new ErrorHandler @command-name, @command, @args
+
+  types-map: ->
+    @types ||= requires.resource 'type_map'
 
   arg-store: ->
     @store ||= new ArgStore.all
 
   validate: ->
-    validate-required! and has-no-invalid-args!
+    validate-required!
+    detect-invalid!
+    validate-types!
+
+  validate-types: ->
+    lo.for-own @args, (key, value) ->
+      validate-type key, value
+
+  validate-type: (key, value) ->
+    unless is-valid key, value
+      @error.invalid-type key, value, valid-types
+
+  is-valid: (key, value) ->
+    valid-types-for(key).any (valid-type) ->
+      typeof value is valid-type
+
+  valid-types-for: (key) ->
+    [types-map![key]].flatten
 
   validate-required: ->
-    @required.each (name) ->
+    @command.required.each (name) ->
       unless lo.contains @arg-keys, name
-        throw Error "Required value for #{name} is missing in #{@args}"
+        @error!.required name
+
+  detect-invalid: ->
+    @arg-keys.each (name) ->
+      unless matches('optional', name) or matches('required', name)
+        @error!.invalid-name name
+
+  matches: (list, name) ->
+    lo.contains @command[list], name
 
   has-no-invalid-args: ->
-    lo.intersection(@arg-keys, @optional).length > 0 or lo.intersection(@arg-keys, @required).length > 0
+    lo.intersection(@arg-keys, @command.optional).length > 0 or lo.intersection(@arg-keys, @command.required).length > 0
 )
 

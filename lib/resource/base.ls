@@ -5,15 +5,14 @@ require = require '../../requires'
 BaseResource = new Class(
   initialize: ->
     # should use path to always pre-resolve scope
-    @scoped(@perform 'path')
+    @scoped 'path'
 
   commands:
-    scoped:
-      * 'at'
-      * 'scope'
-      * 'parent'
-      * 'path'
-      * 'leaf'
+    * 'at'
+    * 'scope'
+    * 'parent'
+    * 'path'
+    * 'leaf'
 
   save: ->
     @set @value-object

@@ -1,15 +1,13 @@
 module.exports =
   'stringInsert'
     optional:
-      * 'path'
-      * cb
+      * 'cb'
     required:
       * 'index'
       * 'text'
   'stringRemove'
     optional:
-      * 'path'
-      * cb
+      * 'cb'
     required:
       * 'index'
       * 'how-many'

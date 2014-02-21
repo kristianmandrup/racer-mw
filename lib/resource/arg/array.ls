@@ -27,7 +27,7 @@ module.exports =
     result: 'item'
   move:
     optional:
-      * 'howMany'
+      * 'how-many'
       * 'cb'
     required:
       * 'from'

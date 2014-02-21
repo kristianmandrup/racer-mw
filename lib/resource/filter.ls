@@ -3,6 +3,7 @@ Filter = new Class(ResourceCommand,
   initialize: (@resource, @filter) ->
 
   commands:
-    * 'ref'
-    * 'get'
+    on-filter:
+      * 'ref'
+      * 'get'
 )

@@ -10,20 +10,17 @@ requires.resource 'base'
 
 ModelResource = new Class(BaseResource,
   # value-object
-  initialize: (@value-object)
+  initialize: (args)
 
   commands:
-    * 'get'
-    * 'set'
-    * 'set-null'
-    * 'set-diff'
-    * 'del'
-    * 'ref'
-    * 'remove-ref'
-
-  save: ->
-    @set @value-object
-
+    on-scope:
+      * 'get'
+      * 'set'
+      * 'set-null'
+      * 'set-diff'
+      * 'del'
+      * 'ref'
+      * 'remove-ref'
 )
 
 module.exports = ModelResource

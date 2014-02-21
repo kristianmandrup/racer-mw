@@ -2,10 +2,5 @@ modules.exports =
   query:
     required:
       * 'collection'
-    result: 'query'
-  db-query:
-    required:
-      * 'collection'
-    optional:
-      * 'q'
+      * 'where'
     result: 'query'
