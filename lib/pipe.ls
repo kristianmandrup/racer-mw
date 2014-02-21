@@ -7,6 +7,9 @@ walk = (meth, steps) ->
           location = location[meth]!
         location
 
+# A Pipe can have one parent but many children. Pipes can thus be made into a tree.
+# Each pipe reflect the type of object at that particular position in the model, thus
+# it can act as a complete abstraction layer over the model.
 Pipe = new Class(
       initialize: (@value-object)
 
@@ -16,8 +19,9 @@ Pipe = new Class(
           keys = _.keys(hash)
           throw Error "Must only have one key/value entry, was #{keys}"
           type = keys.first
-          obj = hash[type]
-          @$pipe.child = new PipeFactory(obj, parent: parent, type: type).create-pipe
+          obj = hash['type']
+          name = hash['name'] || obj.name
+          @$pipe.children[name] = new PipeFactory(obj, parent: parent, type: type).create-pipe
 
         $pipe = (hash) ->
           keys = _.keys(hash)
@@ -27,15 +31,11 @@ Pipe = new Class(
 
       $type   : @type
       $parent : @parent
-      $child  : void
+      $children  : {}
       $prev   : (steps) ->
         walk '$parent', steps
-      $next    : (steps) ->
-        walk '$child', steps
       $root: ->
         walk '$parent', 9
-      $end: ->
-        walk '$child', 9
 
       $detach: ->
         @$parent = void
