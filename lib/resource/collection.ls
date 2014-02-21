@@ -11,6 +11,13 @@ CollectionResource = new Class(BaseResource,
 
   # length = model.push ( path, value, [callback] )
   # args is a hash> path: path, value: value
+  
+  # API usage examples: (which to allow?)
+  # $pipe(collection: 'users').push(users)
+  # $pipe(collection: 'users').$pipe(collection: '1.admins').push users)
+  # $pipe(collection: 'users').push('1.admins', users)    
+  # $pipe(collection: 'users').model(user: 1).push('admins', users)
+  
   $push: (args) ->
     @perform 'push', args
 
