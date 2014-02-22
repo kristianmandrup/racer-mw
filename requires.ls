@@ -1,6 +1,4 @@
 require 'sugar'
-
-rek = require 'rekuire'
 _   = require 'prelude-ls'
 
 underscore = (...items) ->
@@ -12,6 +10,9 @@ underscore = (...items) ->
 full-path = (base, ...paths) ->
   upaths = underscore(...paths)
   ['.', base, upaths].flatten!.join '/'
+
+
+# TODO: Clean Up!!!
 
 test-path = (...paths) ->
   full-path 'test', ...paths
