@@ -2,16 +2,11 @@ Class       = require('jsclass/src/core').Class
 
 lo = require 'lodash'
 _  = require 'prelude-ls'
+require 'sugar'
 
-require = require '../../../requires'
+requires = require '../../../requires'
 
-# concatenates all of the arg hashes into one store
-ArgsStore = new Class(
-  initialize: ->
-    @all = {}
-    ['array', 'basic', 'query', 'reference', 'scoped', 'string'].each (command) ->
-      lo.extend @all, requires.resource-arg command
-)
+ArgStore = requires.resource 'arg_store'
 
 ArgValidator = new Class(
   initialize: (@resource, @command-name, @args) ->
@@ -25,9 +20,6 @@ ArgValidator = new Class(
     ErrorHandler = requires.resource 'arg/error_handler'
     new ErrorHandler @command-name, @command, @args
 
-  types-map: ->
-    @types ||= requires.resource 'type_map'
-
   arg-store: ->
     @store ||= new ArgStore.all
 
@@ -37,19 +29,10 @@ ArgValidator = new Class(
     validate-types!
 
   validate-types: ->
-    lo.for-own @args, (key, value) ->
-      validate-type key, value
+    get-type-validator!.validate!
 
-  validate-type: (key, value) ->
-    unless is-valid key, value
-      @error.invalid-type key, value, valid-types
-
-  is-valid: (key, value) ->
-    valid-types-for(key).any (valid-type) ->
-      typeof value is valid-type
-
-  valid-types-for: (key) ->
-    [types-map![key]].flatten
+  get-type-validator: ->
+    new TypeValidator @args
 
   validate-required: ->
     @command.required.each (name) ->
@@ -64,7 +47,7 @@ ArgValidator = new Class(
   matches: (list, name) ->
     lo.contains @command[list], name
 
-  has-no-invalid-args: ->
-    lo.intersection(@arg-keys, @command.optional).length > 0 or lo.intersection(@arg-keys, @command.required).length > 0
+  has-all-required-args: ->
+    lo.intersection(@arg-keys, @command.required).length = @command.required
 )
 
