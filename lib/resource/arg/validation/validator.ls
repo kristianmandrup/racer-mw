@@ -31,7 +31,7 @@ Validator = new Class(
     get-type-validator!.validate!
 
   get-type-validator: ->
-    new TypeValidator @args
+    new TypeValidator @error, @args
 
   validate-required: ->
     @command.required.each (name) ->
