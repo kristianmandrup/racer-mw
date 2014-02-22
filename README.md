@@ -91,6 +91,8 @@ function promisify(nodeAsyncFn, context) {
 
 Promises, the way to go!
 
+PS: Perhaps the best (most featurecomplete) Promise library at this time is [bluebird](https://github.com/petkaantonov/bluebird)?
+
 
 ## Contributing
 
