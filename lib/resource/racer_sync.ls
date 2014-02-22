@@ -29,6 +29,22 @@ middlewares =
   decorate: decorator-mw
   marshaller: marshaller-mw
 
+urls =
+  mongo: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/test?auto_reconnect', { safe: true }
+  redis: process.env.REDISCLOUD_URL
+
+racer = require 'racer'
+http  = require 'http'
+server = http.createServer app
+
+store = racer.createStore(
+  server  : server
+  db      : require('livedb-mongo')(urls.mongo)
+  redis   : require('redis-url').connect(urls.redis)
+)
+
+server.listen process.env.PORT || 8081
+
 # TODO: Split into modules/classes and use include ??
 # Not all Crud classes need all this. Must be possible to select pieces to assemble for each!
 module.exports = new Class(
