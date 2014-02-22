@@ -27,7 +27,11 @@ The main idea is that Pipes and Resources encapsulates the following key points:
   - Delete (auth)
   - on Get (auth, decorate)
 
-See [Crud design](https://github.com/kristianmandrup/racer-mw/lib/Design.md) for some more thoughts...
+For some more thoughts...
+
+- [Mw design](https://github.com/kristianmandrup/racer-mw/lib/mw/Mw-Design.md)
+- [Resource design](https://github.com/kristianmandrup/racer-mw/lib/resource/Resource-Design.md) (needs update)
+- [Architecture overview](https://github.com/kristianmandrup/racer-mw//Architecture-Overview.md)
 
 ## TODO
 
