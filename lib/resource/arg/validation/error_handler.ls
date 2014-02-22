@@ -1,8 +1,15 @@
-Class       = require('jsclass/src/core').Class
-requires    = require '../../../../requires'
+Class         = require('jsclass/src/core').Class
+requires      = require '../../../../requires'
+
+ValidateArgs  = requires.lib 'validate_args'
 
 ErrorHandler = new Class(
+  include: ValidateArgs
+
   initialize: (@command-name, @command, @args) ->
+    @validate-required command-name:  'string', @command, arguments
+    @validate-required command:       'object', @command, arguments
+    @validate-required args:          'object', @args, arguments
 
   invalid-name: (name) ->
     console.log "Warning: Invalid argument #{name} for #{@command-name}, must be: #{@signature @command}"
