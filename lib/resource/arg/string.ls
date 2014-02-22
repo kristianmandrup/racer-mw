@@ -1,11 +1,11 @@
 module.exports =
-  'stringInsert'
+  stringInsert:
     optional:
       * 'cb'
     required:
       * 'index'
       * 'text'
-  'stringRemove'
+  stringRemove:
     optional:
       * 'cb'
     required:

@@ -2,7 +2,7 @@ module.exports =
   ref:
     optional:
       * 'options'
-    required
+    required:
       * 'to'
     result: 'scoped'
   ref-list:

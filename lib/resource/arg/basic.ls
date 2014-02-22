@@ -1,7 +1,7 @@
 module.exports =
   id:
     result: 'guid'
-  get
+  get:
     result: 'value'
   del:
     result: 'deleted'
