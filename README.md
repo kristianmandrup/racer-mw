@@ -10,94 +10,22 @@ Please see [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/Th
 
 Also see the [middleware](https://github.com/kristianmandrup/middleware) project for a better understanding of the underlying "mechanics" of the pipeline.
 
-## Crud
-
-The Crud should enable something like this:
-
-```LiveScript
-Crud = require 'crud'
-
-crud = (collection) ->
-  new Crud collection
-
-crud('users').get(id).one
-crud('users').get!.one id
-
-users = crud 'users'
-
-users.get!.by(name: name).first
-# optimize DSL
-users.get-by(name: name).first
-# will first do authorization
-# => decorate model.query('_page.users.admin', {name: name, $limit: 1}).get!
-
-user.set name: 'another name', age: 42
-
-admin-users = users.query!.find admin: true
-# optimize DSL
-admin-users = users.find(admin: true).all
-# will first do authorization!
-# => decorate model.query('_page.users.admin', {name: name, $limit: 1}).get!
-
-users.set!.path('admin').add admin-user, (res) ->
-# optimize DSL
-users.at('admin').add admin-user, (res) ->
-# will first do authorization, validation and marshalling!!
-# => model.add '_page.users.admin' admin-user, (res) ->
-
-guest-users-ref = users.query.get-live-update role: 'guest'
-# optimize DSL
-guest-users-ref = users.live-for role: 'guest'
-
-# decorated and made into a "Resource" upon retrieval
-user-resource = users.get!.one(id)
-
-# Now operate directly on Resource (decorated data object with Resource API methods)
-user-resource.delete
-```
-
-The above APIs are partly implemented but also contains some thoughts and ideas yet to be finalized...
+The current APIs are slowly getting more stable...
 Ideas/suggestions for improvement are more than welcome!
 
-The main idea is that a Crud instance encapsulate the following conceptual entities:
+The main idea is that Pipes and Resources encapsulates the following key points:
 
- - collection, such as `users`
- - transparent access to the store model to execute operation on
- - the path to that collection
-   - avoid repetition of path on every operation on same path/collection
-   - avoid hard coded strings all over
+- Create Pipes that encapsulate the underlying path in the store (model)
+- Create Resources that wrap the Racer model API more elegantly ;)
 
- - middleware stack to be applied on all operations
+ - CollectionResource, such as `users`, that can expect its instances to be of a certain "Class"
+ - ModelResource, such as 'user', that is an instance of a "Class" and is contained by a CollectionResource
+ - AttributeResource that can access the attribute of a ModelResource
 
- - authorize access appropriately depending on operation (container or Document itself)
- - validate any Document inserted into that location (location can be part of context for validator)
- - marshalling of any values stored in the model (so as to filter sensitive data, encrypt, remove temporal states etc)
- - decorate any Document on retrieval (and turn into Resource)
-
-For this to work effectively, we have to group each model operation into place-holders.
-Work has been started on this, but it needs more thought... see comments in code etc. Please help out!
-
-This *Crud API* should further be wrapped in a `Resource` API for real data-aware models,
-similar to Angular [$resource](http://docs.angularjs.org/api/ngResource/service/$resource) perhaps:
-
-
-```javascript
-var Todo = $resource('/api/1/todo/:id');
-
-//create a todo
-var todo1 = new Todo();
-todo1.foo = 'bar';
-todo1.something = 123;
-todo1.$save();
-
-//get and update a todo
-var todo2 = Todo.get({id: 123});
-todo2.foo += '!';
-todo2.$save();
-
-//delete a todo
-Todo.$delete({id: 123});
-```
+ - middleware stack to be applied on Store (model) operations
+  - on Create, Update (auth, validate, marshal)
+  - Delete (auth)
+  - on Get (auth, decorate)
 
 See [Crud design](https://github.com/kristianmandrup/racer-mw/lib/Design.md) for some more thoughts...
 
