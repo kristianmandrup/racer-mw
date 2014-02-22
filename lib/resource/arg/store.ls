@@ -1,3 +1,6 @@
+Class       = require('jsclass/src/core').Class
+requires    = require '../../../requires'
+
 # concatenates all of the arg hashes into one store
 ArgStore = new Class(
   initialize: ->

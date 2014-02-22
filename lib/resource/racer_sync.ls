@@ -2,12 +2,11 @@ Class   = require('jsclass/src/core').Class
 Module  = require('jsclass/src/core').Module
 Hash    = require('jsclass/src/core').Hash
 
-rek           = require 'rekuire'
-requires      = rek 'requires'
+requires      = require '../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 
-racer = require 'racer'
+racer         = require 'racer'
 
 middleware = require 'middleware'
 Middleware = middleware.Middleware
@@ -29,9 +28,6 @@ middlewares =
   validate: authorize-mw
   decorate: decorator-mw
   marshaller: marshaller-mw
-
-# TODO: fix this!
-store = racer.store
 
 # TODO: Split into modules/classes and use include ??
 # Not all Crud classes need all this. Must be possible to select pieces to assemble for each!

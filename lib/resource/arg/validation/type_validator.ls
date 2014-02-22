@@ -1,10 +1,9 @@
 Class       = require('jsclass/src/core').Class
+requires    = require '../../../../requires'
 
 lo = require 'lodash'
 _  = require 'prelude-ls'
 require 'sugar'
-
-require = require '../../../requires'
 
 TypeValidator = new Class(
   initialize: (@args)

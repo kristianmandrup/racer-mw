@@ -1,4 +1,7 @@
-ArgErrorHandler = new Class(
+Class       = require('jsclass/src/core').Class
+requires    = require '../../../../requires'
+
+ErrorHandler = new Class(
   initialize: (@command-name, @command, @args) ->
 
   invalid-name: (name) ->
@@ -14,3 +17,5 @@ ArgErrorHandler = new Class(
     "Required: #{command.required}, Optional: #{command.optional}"
 
 )
+
+module.exports = ErrorHandler

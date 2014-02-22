@@ -1,14 +1,14 @@
 Class       = require('jsclass/src/core').Class
+requires    = require '../../../../requires'
 
 lo = require 'lodash'
 _  = require 'prelude-ls'
 require 'sugar'
 
-requires = require '../../../requires'
+ArgStore      = requires.resource 'arg/store'
+ErrorHandler  = requires.resource 'arg/error_handler'
 
-ArgStore = requires.resource 'arg_store'
-
-ArgValidator = new Class(
+Validator = new Class(
   initialize: (@resource, @command-name, @args) ->
     @command = @arg-store![@command]
     @arg-keys = _.keys @args
@@ -17,7 +17,6 @@ ArgValidator = new Class(
     @err-handler ||= @create-error-handler
 
   create-error-handler: ->
-    ErrorHandler = requires.resource 'arg/error_handler'
     new ErrorHandler @command-name, @command, @args
 
   arg-store: ->
@@ -50,4 +49,6 @@ ArgValidator = new Class(
   has-all-required-args: ->
     lo.intersection(@arg-keys, @command.required).length = @command.required
 )
+
+module.exports = Validator
 
