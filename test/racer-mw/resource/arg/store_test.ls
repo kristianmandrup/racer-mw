@@ -19,9 +19,10 @@ describe 'ArgStore' ->
 
   describe 'repo' ->
     before ->
-      store := new ArgStore 'hello'
-      console.log 'store', store
-      console.log 'repo', store.repo
+      store := new ArgStore
 
     specify 'returns full store' ->
       expect(store.repo).to.not.be.empty
+
+    specify 'store push command is not empty' ->
+      expect(store.repo['push']).to.not.be.empty

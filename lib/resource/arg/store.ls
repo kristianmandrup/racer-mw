@@ -11,12 +11,12 @@ ArgStore = new Class(
     @populate!
 
   populate: ->
-    # self = @
+    self = @
     ['array', 'basic', 'query', 'reference', 'scoped', 'string'].each (command) ->
-      console.log requires.resource "arg/#{command}"
-      # lo.extend self.repo, requires.resource "arg/#{command}"
+      lo.extend self.repo, requires.resource "arg/#{command}"
+    true
 
-  repo: {x: 2}
+  repo: {}
 )
 
 module.exports = ArgStore
