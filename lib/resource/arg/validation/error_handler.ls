@@ -7,6 +7,8 @@ errors        = requires.lib 'errors'
 RequiredArgumentError = errors.RequiredArgumentError
 InvalidTypeError      = errors.InvalidTypeError
 
+util = require 'util'
+
 ErrorHandler = new Class(
   include: ValidateArgs
 
@@ -22,7 +24,7 @@ ErrorHandler = new Class(
     throw new InvalidTypeError "Invalid argument value #{value} for argument #{name}, calling #{@command-name}. Must be one of #{valid-types}"
 
   required: (name) ->
-    throw new RequiredArgumentError "Missing required argument: #{name} from #{@args} calling #{@command-name}. Expected signature: #{@signature @command}"
+    throw new RequiredArgumentError "Missing required argument: #{name} from #{util.inspect @args, depth: 2} calling #{@command-name}. Expected signature: #{@signature @command}"
 
   signature: (command) ->
     "Required: #{command.required}, Optional: #{command.optional}"

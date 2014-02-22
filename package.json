@@ -10,6 +10,7 @@
         "jsclass":          "~4.0.0",
         "rekuire":          "*",
         "inflection":       "*",
+        "pretty-print":     "*",
         "prelude-ls":       "*",
         "middleware":       "git://github.com/kristianmandrup/middleware.git",
         "authorize-mw":     "git://github.com/kristianmandrup/authorize-mw.git",

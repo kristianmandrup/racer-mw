@@ -1,4 +1,4 @@
-Module        = require('jsclass/src/core').Module
+Class         = require('jsclass/src/core').Class
 requires      = require '../requires'
 
 lo            = require 'lodash'
@@ -9,7 +9,7 @@ errors            = requires.lib 'errors'
 ArgumentError     = errors.ArgumentError
 InvalidTypeError  = errors.InvalidTypeError
 
-ValidateArgs = new Module(
+ValidateArgs = new Class(
   validate-required: (hash, arg-value, args) ->
     [name, type] = @unpack hash
     @validate-missing "#{name}": arg-value, args
@@ -22,14 +22,14 @@ ValidateArgs = new Module(
   validate-type: (hash, arg-value) ->
     [name, types] = @unpack hash
     types = [types].flatten!
-    @type-error(name, types) unless types.any( (type) -> typeof arg-value is type )
+    @type-error(name, types) unless types.any (type) -> typeof arg-value is type
 
   missing: (name, args) ->
     throw new ArgumentError "Missing #{name} argument in: #{args}"
 
   type-error: (hash, arg-value) ->
     [name, types] = @unpack hash
-    value = @[name] || arg-value
+    value = arg-value
     type = String(typeof(value)).capitalize!
     throw new InvalidTypeError "#{name} argument must be #{@type-msg types}, was: #{value} [#{type}]"
 
