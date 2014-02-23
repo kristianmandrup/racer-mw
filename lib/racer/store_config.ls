@@ -7,22 +7,25 @@ module.exports =
   default-store: ->
     # see: https://github.com/share/livedb-mongo
     racer       = require 'racer'
-    mongoskin   = require 'mongoskin'
-    # see https://gist.github.com/fengmk2/1194742
-    # see https://github.com/kissjs/node-mongoskin
-    # console.log 'mongoskin', mongoskin
-    # TypeError: object is not a function ???
-    skin        = mongoskin 'localhost:27017/test?auto_reconnect', safe:true
-    livedbmongo = require 'livedb-mongo'
-    mongo       = livedbmongo skin
 
     # @live-db @db-urls.mongo
 
+    /*
     racer.createStore(
       server  : @server
       db      : mongo
       redis   : @redis!.connect(@db-urls.redis)
     )
+    */
+
+    racer.createStore(
+      server:  @server!
+      db:      @databases!
+    )
+
+  databases: ->
+    db:    @mongo!
+    redis: @redis!
 
   app: ->
     require('express')!
@@ -33,11 +36,23 @@ module.exports =
   server: ->
     @http.createServer(@app).listen @port
 
+  # see https://gist.github.com/fengmk2/1194742
+  # see https://github.com/kissjs/node-mongoskin
+
   port: ->
     process.env.PORT || 8081
 
-  redis: ->
+  redis-url: ->
     require('redis-url')
+
+  redis: ->
+    @redis-url!.connect @db-urls.redis
+
+  skin: ->
+    require('mongoskin') 'localhost:27017/test?auto_reconnect', safe:true
+
+  mongo: ->
+    live-db! skin
 
   live-db: ->
     require('livedb-mongo')
