@@ -1,31 +1,14 @@
 Class   = require('jsclass/src/core').Class
-Module  = require('jsclass/src/core').Module
-Hash    = require('jsclass/src/core').Hash
 
 requires      = require '../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 
-racer         = require 'racer'
+RacerSync = new Class(
+  initialize: (@racer-command) ->
+    @racer-store ||= RacerSync.racer-store!
 
-urls =
-  mongo: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/test?auto_reconnect', { safe: true }
-  redis: process.env.REDISCLOUD_URL
-
-racer = require 'racer'
-http  = require 'http'
-server = http.createServer app
-
-store = racer.createStore(
-  server  : server
-  db      : require('livedb-mongo')(urls.mongo)
-  redis   : require('redis-url').connect(urls.redis)
-)
-
-server.listen process.env.PORT || 8081
-
-module.exports = new Class(
-  initialize: (@racer-store, @options) ->
+  extend: requires.racer('store_config')
 
   current-user: ->
     # the model of the session user
@@ -38,6 +21,14 @@ module.exports = new Class(
   # - a hash with everything needed to run the middleware
   # - possibly enrich with current-user if not set (if authorization) ??
 
-  execute: (racer-command) ->
-    racer-command.middleware.run racer-command.mw-context
+  middleware: ->
+    @racer-command.middleware
+
+  run-args: ->
+    @racer-command.mw-context
+
+  execute: ->
+    @middleware.run @run-args
 )
+
+module.exports = RacerSync

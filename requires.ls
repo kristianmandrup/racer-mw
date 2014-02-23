@@ -30,6 +30,9 @@ module.exports =
   mw: (...paths) ->
     @lib('mw', ...paths)
 
+  racer: (...paths) ->
+    @lib('racer', ...paths)
+
   error: (...paths) ->
     @lib('errors', ...paths)
 
