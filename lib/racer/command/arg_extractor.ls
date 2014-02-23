@@ -38,6 +38,7 @@ ArgumentsExtractor = new Class(
     # first extract required...
     @extract-required!
     @extract-optional!
+    @result-args
 
   extract-required: ->
     return if lo.is-empty @required-args!

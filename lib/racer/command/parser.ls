@@ -4,6 +4,7 @@ requires      = require '../../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 require 'sugar'
+util = require 'util'
 
 ArgStore            = requires.resource 'arg/store'
 ArgumentsExtractor  = requires.racer    'command/arg_extractor'
@@ -11,7 +12,11 @@ ArgumentsExtractor  = requires.racer    'command/arg_extractor'
 CommandParser = new Class(
   initialize: (@command-name, @arg-hash) ->
     @validate-args!
+    @command-map = @arg-store!.repo
     @
+
+  arg-store: ->
+    new ArgStore
 
   validate-args: ->
     unless @command-name
@@ -24,17 +29,19 @@ CommandParser = new Class(
       throw new Error "Argument hash must be an Object, was: #{@arg-hash}"
 
   extract: ->
-    @extractor(@command-rule @command-name).extract!
+    @extractor!.extract!
 
-  extractor: (rule) ->
-    new ArgumentsExtractor rule, @arg-hash
+  rule: ->
+    @command-rule @command-name
+
+  extractor: ->
+    new ArgumentsExtractor @rule!, @arg-hash
 
   # name is command-name
-  command-rule: (name)->
+  command-rule: (name) ->
+    unless @command-map[name]
+      throw new Error "No rule for #{name} in command map: #{util.inspect @command-map, depth: 2}"
     @command-map[name]
-
-  command-map: ->
-    new ArgStore.repo
 )
 
 module.exports = CommandParser
