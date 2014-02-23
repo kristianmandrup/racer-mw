@@ -2,6 +2,7 @@ Class     = require('jsclass/src/core').Class
 requires  = require '../../../requires'
 
 _  = require 'prelude-ls'
+require 'sugar'
 
 CommandBuilder = new Class(
   initialize: (@commander) ->
@@ -43,8 +44,14 @@ CommandBuilder = new Class(
     self = @
     functions.each (fun) ->
       fun-name = fun.camelize false
+      clazz = fun-name
+      if fun-name.match /:/
+        parts     = fun-name.split(':')
+        fun-name  = parts.first!
+        clazz     = parts.last!
+
       self.commander[fun-name] = (args) ->
-        @[fun] = new requires.resource(fun-name)(self.commander, args)
+        @[fun-name] = new requires.resource(clazz)(self.commander, args)
         @
 
   set-command: (name, functions) ->

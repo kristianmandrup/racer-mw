@@ -9,7 +9,7 @@ ResourceCommand   = requires.resource 'command'
 
 expect        = require('chai').expect
 
-describe 'Command' ->
+describe 'ResourceCommand' ->
   var command, resource
 
   before ->

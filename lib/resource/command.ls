@@ -8,14 +8,14 @@ Query   = requires.resource 'query'
 CommandBuilder = requires.resource 'command/builder'
 
 ResourceCommand = new Class(
-  initialize: (@resource) ->
+  initialize: ->
     new CommandBuilder(@).build!
 
   sync: ->
     @my-sync ||= new RacerSync @
 
   get-path: ->
-    @resource.get-path! # calculate or get cached ;)
+    @resource.pipe.get-path! # calculate or get cached ;)
 
   perform: (action, hash) ->
     @sync.perform action, @get-path!, hash
@@ -23,11 +23,6 @@ ResourceCommand = new Class(
 
   scoped: (command, hash) ->
     @scope = @perform command, hash
-
-  commands:
-    create:
-      * 'query'   # new Query   @resource, @query
-      * 'filter'  # new Filter  @resource, @filter
 )
 
 module.exports = ResourceCommand

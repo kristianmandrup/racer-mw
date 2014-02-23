@@ -1,18 +1,22 @@
 Class       = require('jsclass/src/core').Class
 
-require = require '../../requires'
+requires    = require '../../requires'
 
-requires.resource 'base'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
+require 'sugar'
 
-# $model(user).$att('age').inc 4
-# $model(user).$att('age').set 4
-# $model(user).set other-user
+BaseResource   = requires.resource 'base'
+Filtering      = requires.resource 'filtering'
 
 ModelResource = new Class(BaseResource,
   # value-object
-  initialize: (args)
+  initialize: (args) ->
+    lo.extend @commands, @model-commands, Filtering.commands
+    @call-super @
+    @
 
-  commands:
+  model-commands:
     on-scope:
       * 'get'
     set-scope:

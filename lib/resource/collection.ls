@@ -1,15 +1,21 @@
 Class       = require('jsclass/src/core').Class
+requires    = require '../../requires'
 
-requires = require '../../requires'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
+require 'sugar'
 
-requires.resource 'base'
+BaseResource   = requires.resource 'base'
+Filtering      = requires.resource 'filtering'
 
-# @perform should always Validate incoming Hash arguments according to context
 CollectionResource = new Class(BaseResource,
   # value-object
-  initialize: (args)
+  initialize: (args) ->
+    lo.extend @commands, @col-commands, Filtering.commands
+    @call-super @
+    @
 
-  commands:
+  col-commands:
     on-scope: # always on scope
       * 'get'
     set-scope:
@@ -27,11 +33,6 @@ CollectionResource = new Class(BaseResource,
       * 'move'
       * 'ref-list'
       * 'remove-ref-list'
-    query:
-      * 'query'
-    filter:
-      * 'filter'
-      * 'sort'
 )
 
 module.exports = CollectionResource
