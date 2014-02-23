@@ -1,4 +1,3 @@
-Class    = require('jsclass/src/core').Class
 requires = require '../../../requires'
 
 requires.test 'test_setup'
