@@ -1,7 +1,7 @@
 module.exports =
   # override to set your own!
   racer-store: ->
-    @store ||= default-store!
+    @store ||= @default-store!
 
   # taken from racer-example by @Sebmaster
   default-store: ->

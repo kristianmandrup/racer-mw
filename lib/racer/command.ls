@@ -28,6 +28,11 @@ RacerCommand = new Class(
     @action = action
     @
 
+  middleware: ->
+
+  mw-context: ->
+
+
   pass: (hash) ->
     @command-args = @command-parser(hash).extract!
 
