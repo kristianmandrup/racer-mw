@@ -1,6 +1,4 @@
-rek         = require 'rekuire'
-requires    = rek 'requires'
+requires    = require 'requires'
 
 module.exports =
-  RacerMw : requires.mw   'racer-mw'
-  Crud    : requires.file 'crud'
+  dsl : requires.lib 'dsl'
