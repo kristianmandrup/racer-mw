@@ -2,8 +2,6 @@ requires = require '../../../requires'
 
 requires.test 'test_setup'
 
-requires = require '../../../requires'
-
 AttributeResource   = requires.resource 'attribute'
 
 expect        = require('chai').expect

@@ -1,11 +1,12 @@
 Class   = require('jsclass/src/core').Class
 
-requires      = require '../../requires'
+requires      = require '../../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
+require 'sugar'
 
 ArgStore            = requires.resource 'arg/store'
-ArgumentsExtractor  = requires.racer    'parser/arguments_extractor'
+ArgumentsExtractor  = requires.racer    'command/arguments_extractor'
 
 CommandParser = new Class(
   initialize: (@command-name, @arg-hash) ->

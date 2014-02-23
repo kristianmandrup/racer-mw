@@ -4,7 +4,7 @@ requires      = require '../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 
-CommandParser  = requires.racer 'parser/command_parser'
+CommandParser  = requires.racer 'command/parser'
 
 # new RacerCommand(@resource).run(action).with hash
 RacerCommand = new Class(
