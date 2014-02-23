@@ -22,19 +22,24 @@ ArgumentsExtractor = new Class(
   extract: ->
     # first extract required...
     @extract-required if @rule.required
+    @extract-optional if @rule.optional
 
   extract-required: ->
+    return unless typeof @rule.required is 'array'
     self = @
     @rule.required.each (req) ->
       unless @arg-hash[req]
         throw new Error "Missing required argument #{req} in: #{@arg-hash}"
       self.result-args.push @arg-hash[req]
+    @
 
   extract-optional: ->
+    return unless typeof @rule.optional is 'array'
     self = @
     @rule.optional.each (opt) ->
       if @arg-hash[opt]
         self.result-args.push @arg-hash[opt]
+    @
 )
 
 module.exports = ArgumentsExtractor

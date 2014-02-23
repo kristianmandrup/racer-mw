@@ -21,3 +21,32 @@ describe 'ArgExtractor' ->
     context '2 obj args' ->
       specify 'creates it' ->
         expect(-> new ArgExtractor {}, {}).to.not.throw Error
+
+  context 'empty instance' ->
+    before ->
+      extractor := new ArgExtractor {}, {}
+
+    describe 'result-args' ->
+      specify 'should initially be empty' ->
+        expect(extractor.result-args).to.be.empty
+
+    describe 'extract-optional' ->
+      before ->
+        extractor.extract-optional!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.be.empty
+
+    describe 'extract-required' ->
+      before ->
+        extractor.extract-required!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.be.empty
+
+    describe 'extract' ->
+      before ->
+        extractor.extract!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.be.empty
