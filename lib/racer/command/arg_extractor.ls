@@ -19,26 +19,35 @@ ArgumentsExtractor = new Class(
 
   result-args: []
 
+  required-args: ->
+    return [] unless @rule.required
+    @req ||= [@rule.required].flatten!
+
+  optional-args: ->
+    return [] unless @rule.optional
+    @opt ||= [@rule.optional].flatten!
+
+
   extract: ->
     # first extract required...
-    @extract-required if @rule.required
-    @extract-optional if @rule.optional
+    @extract-required
+    @extract-optional
 
   extract-required: ->
-    return unless typeof @rule.required is 'array'
+    return if lo.is-empty @required-args!
     self = @
-    @rule.required.each (req) ->
-      unless @arg-hash[req]
-        throw new Error "Missing required argument #{req} in: #{@arg-hash}"
-      self.result-args.push @arg-hash[req]
+    @required-args!.each (req) ->
+      unless self.arg-hash[req]
+        throw new Error "Missing required argument #{req} in: #{self.arg-hash}"
+      self.result-args.push self.arg-hash[req]
     @
 
   extract-optional: ->
-    return unless typeof @rule.optional is 'array'
+    return if lo.is-empty @optional-args!
     self = @
-    @rule.optional.each (opt) ->
-      if @arg-hash[opt]
-        self.result-args.push @arg-hash[opt]
+    @optional-args!.each (opt) ->
+      if self.arg-hash[opt]
+        self.result-args.push self.arg-hash[opt]
     @
 )
 

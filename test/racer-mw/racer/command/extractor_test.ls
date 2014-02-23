@@ -8,6 +8,7 @@ expect        = require('chai').expect
 
 describe 'ArgExtractor' ->
   var extractor
+  rules = {}
 
   describe 'init' ->
     context 'no args' ->
@@ -50,3 +51,39 @@ describe 'ArgExtractor' ->
 
       specify 'should not add to result-args' ->
         expect(extractor.result-args).to.be.empty
+
+  context 'rule: push' ->
+    before ->
+      rules.push =
+        required:
+          * 'value'
+        optional:
+          * 'cb'
+        result: 'length'
+
+      extractor := new ArgExtractor rules.push, value: 7
+
+    describe 'result-args' ->
+      specify 'should initially be empty' ->
+        expect(extractor.result-args).to.be.empty
+
+    describe 'extract-optional' ->
+      before ->
+        extractor.extract-optional!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.be.empty
+
+    describe 'extract-required' ->
+      before ->
+        extractor.extract-required!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.not.be.empty
+
+    describe 'extract' ->
+      before ->
+        extractor.extract!
+
+      specify 'should not add to result-args' ->
+        expect(extractor.result-args).to.not.be.empty
