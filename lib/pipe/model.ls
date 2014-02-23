@@ -14,10 +14,16 @@ ModelParentValidator = new Class(ParentValidator,
   valid-parent-types: ['collection', 'attribute']
 )
 
+ModelChildValidator = new Class(ChildValidator,
+  valid-child-types: ['attribute', 'path']
+)
+
+
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
-  initialize: (@parent, @name) ->
+  initialize: (@parent, @obj) ->
     @validate!
+    @call-super @obj
 
   validate: ->
     @parent-validator.validate!
@@ -26,3 +32,5 @@ ModelPipe = new Class(BasePipe,
     @_parent-validator ||= new ModelParentValidator @parent, @name
 
 )
+
+module.exports = ModelPipe

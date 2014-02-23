@@ -14,10 +14,15 @@ AttributeParentValidator = new Class(ParentValidator,
   valid-parent-types: ['model', 'attribute']
 )
 
+AttributeChildValidator = new Class(ChildValidator,
+  valid-child-types: []
+)
+
 # Must be on a model
 AttributePipe = new Class(BasePipe,
   initialize: (@parent, @name) ->
     @validate!
+    @call-super @name
 
   validate: ->
     @parent-validator.validate!
@@ -25,3 +30,5 @@ AttributePipe = new Class(BasePipe,
   parent-validator: ->
     @_parent-validator ||= new AttributeParentValidator @parent, @name
 )
+
+module.exports = AttributePipe
