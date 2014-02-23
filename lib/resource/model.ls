@@ -15,6 +15,7 @@ ModelResource = new Class(BaseResource,
   commands:
     on-scope:
       * 'get'
+    set-scope:
       * 'set'
       * 'set-null'
       * 'set-diff'

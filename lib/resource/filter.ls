@@ -1,6 +1,14 @@
+Class       = require('jsclass/src/core').Class
+
+requires = require '../../requires'
+
+ResourceCommand = requires.resource 'command'
+
 Filter = new Class(ResourceCommand,
 
-  initialize: (@resource, @filter) ->
+  initialize: (@resource, @args) ->
+    call-super!
+    @filter = @args.filter
 
   commands:
     on-filter:

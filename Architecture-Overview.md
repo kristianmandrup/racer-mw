@@ -67,7 +67,7 @@ The Racer scope commands are those commands that return a scope. Each scope comm
 `$scope` variable on the resource, but should return the resource itself for further chaining.
 Any command that expects to be applied on a scope should simply apply on the current `$scope` value.
 
-For commands such as `ìnsert` which returns the length of the collection after insert, will operate in a similar fashion.
+For commands such as `insert` which returns the length of the collection after insert, will operate in a similar fashion.
 An internal `length` attribute will be set and the Resource returned. At any time the last length can thus be accessed.
 
 If a reference is set up on the collection however, it should invalidate or reset the length whenever

@@ -8,13 +8,13 @@ BaseResource = new Class(
     @scoped 'path'
 
   commands:
-    * 'at'
-    * 'scope'
-    * 'parent'
-    * 'path'
-    * 'leaf'
+    basic:
+      * 'at'
+      * 'scope'
+      * 'parent'
+      * 'path'
+      * 'leaf'
 
   save: ->
     @set @value-object
-
 )

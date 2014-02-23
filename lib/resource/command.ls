@@ -1,9 +1,15 @@
+Class       = require('jsclass/src/core').Class
+
+requires = require '../../requires'
 
 Filter  = requires.resource 'filter'
 Query   = requires.resource 'query'
 
+CommandBuilder = requires.resource 'command/builder'
+
 ResourceCommand = new Class(
-  initialize: (@resource)
+  initialize: (@resource) ->
+    new CommandBuilder(@).build!
 
   sync: ->
     @my-sync ||= new RacerSync @
@@ -18,12 +24,10 @@ ResourceCommand = new Class(
   scoped: (command, hash) ->
     @scope = @perform command, hash
 
-  on-values:
-    * 'scope' # looks for on-scope
-    * 'query'
-    * 'filter'
-
-  create:
-    query:  Query   # new Query   @resource, @query
-    filter: Filter  # new Filter  @resource, @filter
+  commands:
+    create:
+      * 'query'   # new Query   @resource, @query
+      * 'filter'  # new Filter  @resource, @filter
 )
+
+module.exports = ResourceCommand

@@ -1,6 +1,6 @@
 Class       = require('jsclass/src/core').Class
 
-require = require '../../requires'
+requires = require '../../requires'
 
 requires.resource 'base'
 
@@ -12,6 +12,7 @@ CollectionResource = new Class(BaseResource,
   commands:
     on-scope: # always on scope
       * 'get'
+    set-scope:
       * 'set'
       * 'set-null'
       * 'set-diff'
