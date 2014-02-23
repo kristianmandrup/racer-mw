@@ -1,8 +1,10 @@
 Class       = require('jsclass/src/core').Class
 
-require = require '../../requires'
+requires = require '../../requires'
 
 requires.resource 'base'
+
+BaseResource   = requires.resource 'base'
 
 AttributeResource = new Class(BaseResource,
   # value-object

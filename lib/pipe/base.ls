@@ -1,3 +1,8 @@
+Class       = require('jsclass/src/core').Class
+
+# requires = require '../../requires'
+
+
 walk = (meth, steps) ->
         if steps > 10
           throw Error "You should NEVER have more than 10 pipes in a model pipeline!!!"
@@ -46,3 +51,5 @@ Pipe = new Class(
       $calc-path: ->
         new PathResolver(@value-object).full-path!
 )
+
+module.exports = Pipe
