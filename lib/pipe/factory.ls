@@ -1,9 +1,22 @@
+Class       = require('jsclass/src/core').Class
 
+requires = require '../../../requires'
+
+_   = require 'prelude-ls'
+lo  = require 'lodash'
+require 'sugar'
 
 PipeFactory = new Class(
   initialize: (@value-object, @options = {}) ->
-  @type     = @options.type
-  @parent   = @options.parent
+    unless typeof @value-object is 'object'
+      throw new Error "Missing value-object argument, was: #{arguments}"
+
+    unless typeof @options is 'object'
+      throw new Error "Options argument must be an Object (has), was: #{@options}"
+
+    # TODO: more options validation?
+    @type     = @options.type
+    @parent   = @options.parent
 
   create-pipe: ->
     @value-object.$pipe = new Pipe(@value-object)

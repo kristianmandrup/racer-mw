@@ -10,10 +10,12 @@ PathResolver      = requires.pipe 'path_resolver'
 BasePipe          = requires.pipe 'base'
 ParentValidator   = requires.pipe 'validator/parent'
 
+# TODO: refactor!?
 AttributeParentValidator = new Class(ParentValidator,
   valid-parent-types: ['model', 'attribute']
 )
 
+# TODO: refactor!?
 AttributeChildValidator = new Class(ChildValidator,
   valid-child-types: []
 )
@@ -29,6 +31,10 @@ AttributePipe = new Class(BasePipe,
 
   parent-validator: ->
     @_parent-validator ||= new AttributeParentValidator @parent, @name
+
+  child-validator: ->
+    @_child-validator ||= new AttributeChildValidator @child, @name
+
 )
 
 module.exports = AttributePipe

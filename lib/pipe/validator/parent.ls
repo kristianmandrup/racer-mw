@@ -1,13 +1,14 @@
 Class       = require('jsclass/src/core').Class
 
 require 'sugar'
+util = require 'util'
 
 ParentValidator = new Class(
-  initialize: (@parent, @name) ->
+  initialize: (@parent, @pipe) ->
 
   validate: ->
     unless @valid-type!
-      throw new Error "Invalid parent pipe for attribute #{name}, must be a ModelPipe"
+      throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@pipe.type}], must be one of: #{@valid-parent-types}"
 
   valid-type: ->
     @valid-parent-types.include @parent.type

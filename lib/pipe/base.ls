@@ -58,6 +58,7 @@ Pipe = new Class(
 
       attach: (pipe) ->
         # TODO: must call parent validator!
+        @parent-validator(@parent, ).validate
         @parent = pipe
 
       calc-path: ->

@@ -10,10 +10,12 @@ PathResolver      = requires.pipe 'path_resolver'
 BasePipe          = requires.pipe 'base'
 ParentValidator   = requires.pipe 'validator/parent'
 
+# TODO: refactor!?
 CollectionParentValidator = new Class(ParentValidator,
   valid-parent-types: ['path']
 )
 
+# TODO: refactor!?
 CollectionChildValidator = new Class(ChildValidator,
   valid-child-types: ['model']
 )
@@ -33,7 +35,10 @@ CollectionPipe = new Class(BasePipe,
     @parent-validator.validate!
 
   parent-validator: ->
-    @_parent-validator ||= new ModelParentValidator @parent, @name
+    @_parent-validator ||= new CollectionParentValidator @parent, @name
+
+  child-validator: ->
+    @_child-validator ||= new CollectionChildValidator @child, @name
 )
 
 module.exports = CollectionPipe
