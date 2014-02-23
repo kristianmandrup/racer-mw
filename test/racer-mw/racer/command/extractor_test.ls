@@ -1,6 +1,7 @@
 requires = require '../../../../requires'
 
 requires.test 'test_setup'
+require 'sugar'
 
 ArgExtractor  = requires.racer 'command/arg_extractor'
 
@@ -87,3 +88,14 @@ describe 'ArgExtractor' ->
 
       specify 'should not add to result-args' ->
         expect(extractor.result-args).to.not.be.empty
+
+      specify 'should add args correctly to result-args' ->
+        expect(extractor.result-args.first!).to.equal 7
+
+  context 'rule: push 7, cb' ->
+    before ->
+      extractor := new ArgExtractor(rules.push, cb: 'x', value: 7)
+      extractor.extract!
+    specify 'with optional cb, should add and order args correctly' ->
+      expect(extractor.result-args.first!).to.equal 7
+      expect(extractor.result-args.last!).to.equal 'x'

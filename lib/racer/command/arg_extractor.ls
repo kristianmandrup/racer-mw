@@ -7,8 +7,12 @@ require 'sugar'
 
 ArgumentsExtractor = new Class(
   initialize: (@rule, @arg-hash) ->
+    @clear!
     @validate-args!
     @
+
+  clear: ->
+    @result-args = []
 
   validate-args: ->
     unless typeof @rule is 'object'
@@ -16,8 +20,6 @@ ArgumentsExtractor = new Class(
 
     unless typeof @arg-hash is 'object'
       throw new Error "Missing argument hash as 2nd argument, was: #{arguments}"
-
-  result-args: []
 
   required-args: ->
     return [] unless @rule.required
@@ -29,9 +31,10 @@ ArgumentsExtractor = new Class(
 
 
   extract: ->
+    @clear!
     # first extract required...
-    @extract-required
-    @extract-optional
+    @extract-required!
+    @extract-optional!
 
   extract-required: ->
     return if lo.is-empty @required-args!
