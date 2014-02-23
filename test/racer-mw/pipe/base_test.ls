@@ -55,4 +55,3 @@ describe 'Pipe' ->
 
     describe 'parent is void' ->
       expect(pipe.parent).to.be.undefined
-  
