@@ -26,5 +26,5 @@ describe 'RacerSync' ->
         command := new RacerCommand {}
 
       specify 'fails' ->
-        expect(-> new RacerSync command).to.not.throw Error
+        expect(new RacerSync command).to.be.undefined
 

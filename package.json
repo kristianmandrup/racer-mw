@@ -14,6 +14,7 @@
         "express":          "3.x",
         "racer":            "0.5.x",
         "livedb-mongo":     "x",
+        "mongoskin":        "x",
         "racer-browserchannel": "x",
         "redis-url":            "x",
         "middleware":       "git://github.com/kristianmandrup/middleware.git",

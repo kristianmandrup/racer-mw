@@ -5,10 +5,22 @@ module.exports =
 
   # taken from racer-example by @Sebmaster
   default-store: ->
-    racer = require 'racer'
+    # see: https://github.com/share/livedb-mongo
+    racer       = require 'racer'
+    mongoskin   = require 'mongoskin'
+    # see https://gist.github.com/fengmk2/1194742
+    # see https://github.com/kissjs/node-mongoskin
+    # console.log 'mongoskin', mongoskin
+    # TypeError: object is not a function ???
+    skin        = mongoskin 'localhost:27017/test?auto_reconnect', safe:true
+    livedbmongo = require 'livedb-mongo'
+    mongo       = livedbmongo skin
+
+    # @live-db @db-urls.mongo
+
     racer.createStore(
       server  : @server
-      db      : @live-db @db-urls.mongo
+      db      : mongo
       redis   : @redis!.connect(@db-urls.redis)
     )
 
@@ -32,4 +44,4 @@ module.exports =
 
   db-urls:
     mongo: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/test?auto_reconnect', { safe: true }
-    redis: process.env.REDISCLOUD_URL
+    redis: process.env.REDISCLOUD_URL || '127.0.0.1:6379'
