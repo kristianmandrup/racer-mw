@@ -58,8 +58,9 @@ Pipe = new Class(
           type = keys.first
           new PipeFactory(hash[type], type: type).create-pipe
 
-      $type   : @type
-      $parent : @parent
+      # $type   : @type
+      # $parent : @parent
+
       $children  : {}
       $prev   : (steps) ->
         walk '$parent', steps
