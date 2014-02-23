@@ -6,10 +6,22 @@ _             = require 'prelude-ls'
 require 'sugar'
 
 ArgStore            = requires.resource 'arg/store'
-ArgumentsExtractor  = requires.racer    'command/arguments_extractor'
+ArgumentsExtractor  = requires.racer    'command/arg_extractor'
 
 CommandParser = new Class(
   initialize: (@command-name, @arg-hash) ->
+    @validate-args!
+    @
+
+  validate-args: ->
+    unless @command-name
+      throw new Error "Missing arguments, must take a command name and an argument hash"
+
+    unless typeof @command-name is 'string'
+      throw new Error "Command name argument must be a String, was: #{@command-name}"
+
+    unless typeof @arg-hash is 'object'
+      throw new Error "Argument hash must be an Object, was: #{@arg-hash}"
 
   extract: ->
     @extractor(@command-rule @command-name).extract!

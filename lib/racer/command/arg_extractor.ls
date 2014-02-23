@@ -15,11 +15,14 @@ ArgumentsExtractor = new Class(
     @result-args = []
 
   validate-args: ->
+    unless @rule
+      throw new Error "Missing arguments, must take a rule Object and an argument Object (hash)"
+
     unless typeof @rule is 'object'
-      throw new Error "Missing rule as 1st argument, was: #{arguments}"
+      throw new Error "rule argument must be an Object, was: #{@rule}"
 
     unless typeof @arg-hash is 'object'
-      throw new Error "Missing argument hash as 2nd argument, was: #{arguments}"
+      throw new Error "Argument hash must be an Object, was: #{@arg-hash}"
 
   required-args: ->
     return [] unless @rule.required
