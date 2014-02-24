@@ -5,11 +5,19 @@ module.exports =
 
   default-store: ->
     # see: https://github.com/share/livedb-mongo
-    racer       = require 'racer'
+    @racer = require 'racer'
+    @local-store!
 
-    racer.createStore(
-      server:  @server!
-      db:      @databases!
+  local-store: ->
+    @racer.createStore(
+      redis:   @local-redis!
+      db:      @live-db('localhost:27017/test?auto_reconnect', {safe: true})
+    )
+
+  remote-store: ->
+    @racer.createStore(
+      redis:   @redis!
+      db:      @mongo!
     )
 
   databases: ->
@@ -17,7 +25,7 @@ module.exports =
     redis: @redis!
 
   app: ->
-    require('express')!
+    require('express')
 
   http: ->
     require 'http'
@@ -32,19 +40,23 @@ module.exports =
     require('redis-url')
 
   redis: ->
-    @redis-url!.connect @db-urls.redis
+    @redis-url!.connect(@db-urls.redis)
 
   # see https://gist.github.com/fengmk2/1194742
   # see https://github.com/kissjs/node-mongoskin
-  skin: ->
-    require('mongoskin') @db-urls.mongo
+  skin: require('mongoskin')
 
   mongo: ->
-    @live-db! @skin!
+     skinned-mongo! (@db-urls.mongo)
 
-  live-db: ->
-    require('livedb-mongo')
+  skinned-mongo: ->
+    @live-db(@skin)
+
+  live-db: require('livedb-mongo')
+
+  local-redis: ->
+    '127.0.0.1:6379'
 
   db-urls:
-    mongo: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/test?auto_reconnect', { safe: true }
-    redis: process.env.REDISCLOUD_URL || '127.0.0.1:6379'
+    mongo: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL
+    redis: process.env.REDISCLOUD_URL
