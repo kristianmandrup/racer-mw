@@ -3,20 +3,9 @@ module.exports =
   racer-store: ->
     @store ||= @default-store!
 
-  # taken from racer-example by @Sebmaster
   default-store: ->
     # see: https://github.com/share/livedb-mongo
     racer       = require 'racer'
-
-    # @live-db @db-urls.mongo
-
-    /*
-    racer.createStore(
-      server  : @server
-      db      : mongo
-      redis   : @redis!.connect(@db-urls.redis)
-    )
-    */
 
     racer.createStore(
       server:  @server!
@@ -36,9 +25,6 @@ module.exports =
   server: ->
     @http!.createServer(@app!).listen @port!
 
-  # see https://gist.github.com/fengmk2/1194742
-  # see https://github.com/kissjs/node-mongoskin
-
   port: ->
     process.env.PORT || 8081
 
@@ -48,6 +34,8 @@ module.exports =
   redis: ->
     @redis-url!.connect @db-urls.redis
 
+  # see https://gist.github.com/fengmk2/1194742
+  # see https://github.com/kissjs/node-mongoskin
   skin: ->
     require('mongoskin') @db-urls.mongo
 
