@@ -85,6 +85,27 @@ container('_path').attribute(current-user: user).$save!
 
 So what are the parent/child relationship rules we can gather from this?
 
+Notice the following dangerous path...
+
+```
+# what should really happen here?
+user-model.attribute(projects: projects)
+# should be same as
+user-model.collection(projects: projects)
+```
+
+This is too lax! We need some tighter rules and regulation!
+A model should only allow attributes. So a collection is a kind of attribute when used on a model, otherwise
+it is "standalone", or... simply an attribute on the global collection :)
+
+```
+# local user-model attribute, type collection of project
+user-model.collection(projects: projects)
+
+# global attribute, type collection ...
+store.collection(projects: projects).allows.any('project')
+```
+
 ### Validation
 
 We could also build in some validation beyond the building rules sketched out above...
@@ -98,6 +119,57 @@ collection(clazz: 'project')
 
 # what about subclasses?
 collection('projects').allows.models('project', 'subproject')
+
+# and how about?
+.allows.any('project')
+```
+
+Can we somehow define all the types of a class in a smart way?
+
+```
+* animal:
+  * 'mammal':
+    * 'dog'
+    * 'cat'
+    * 'human'
+  * 'fish'
+  * 'bird'
+
+It would have then have to turn it into...
+
+* animal:
+  * 'mammal':
+    * 'dog'
+    * 'cat'
+    * 'human'
+  * 'fish'
+  * 'bird'
+* 'mammal':
+  * 'dog'
+  * 'cat'
+  * 'human'
+* 'dog'
+* 'cat'
+* 'human'
+
+# Then we can check!
+
+.allows.any('animal')
+.allows.any('mammal')
+.allows.any('dog', 'cat')
+```
+
+What about simple types on attributes?
+
+```
+attribute('name').allows('string')
+
+# or simply?
+attribute('name', clazz:'string')
+
+attribute(name: 'mike')
+
+attribute('name', clazz:'string', value: 'anna')
 ```
 
 Just some ideas... what do you think? suggestions are most welcome!
