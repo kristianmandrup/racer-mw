@@ -34,7 +34,7 @@ module.exports =
     require 'http'
 
   server: ->
-    @http.createServer(@app).listen @port
+    @http!.createServer(@app!).listen @port!
 
   # see https://gist.github.com/fengmk2/1194742
   # see https://github.com/kissjs/node-mongoskin
@@ -49,10 +49,10 @@ module.exports =
     @redis-url!.connect @db-urls.redis
 
   skin: ->
-    require('mongoskin') 'localhost:27017/test?auto_reconnect', safe:true
+    require('mongoskin') @db-urls.mongo
 
   mongo: ->
-    live-db! skin
+    @live-db! @skin!
 
   live-db: ->
     require('livedb-mongo')
