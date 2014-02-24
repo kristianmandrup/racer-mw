@@ -73,7 +73,6 @@ model(user, in: 'users').attribute(projects: projects).model(project).attribute(
 .collection(projects: projects)
 
 
-
 # or allow collection (as attribute) on model
 model(user, in: 'users').collection('projects').model(project).attribute('name').$set 'my proj'
 
@@ -86,8 +85,26 @@ container('_path').attribute(current-user: user).$save!
 
 So what are the parent/child relationship rules we can gather from this?
 
+### Validation
+
+We could also build in some validation beyond the building rules sketched out above...
+
+```
+container('_page').allows.attributes(current-user: 'model', connected: 'boolean')
+collection('projects').allows.model('project')
+
+# implies that this collection is only for models with _clazz: 'project'
+collection(clazz: 'project')
+
+# what about subclasses?
+collection('projects').allows.models('project', 'subproject')
+```
+
+Just some ideas... what do you think? suggestions are most welcome!
+
 The above DSL might look rather "cumbersome", but the trade-off is a model that is much richer in functionality
-and expressiveness. Simply more raw power!
+and expressiveness. It describes the data model at a much deeper level... and is a building black for
+powerful functionality!
 
 ```livescript
 collection('users').models(users).$save!
