@@ -10,7 +10,7 @@ module.exports =
 
   local-store: ->
     @racer.createStore(
-      redis:   @local-redis!
+      redis:   @local-redis! # or use @redis-client!
       db:      @live-db('localhost:27017/test?auto_reconnect', {safe: true})
     )
 
@@ -38,6 +38,9 @@ module.exports =
 
   redis-url: ->
     require('redis-url')
+
+  redis-client: ->
+    require('redis').createClient!
 
   redis: ->
     @redis-url!.connect(@db-urls.redis)
