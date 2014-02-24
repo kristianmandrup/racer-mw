@@ -8,17 +8,6 @@ require 'sugar'
 
 PathResolver      = requires.pipe 'path_resolver'
 BasePipe          = requires.pipe 'base'
-ParentValidator   = requires.pipe 'validator/parent'
-
-# TODO: refactor!?
-CollectionParentValidator = new Class(ParentValidator,
-  valid-parent-types: ['path']
-)
-
-# TODO: refactor!?
-CollectionChildValidator = new Class(ChildValidator,
-  valid-child-types: ['model']
-)
 
 
 # Must be on a model or attribute
@@ -31,14 +20,16 @@ CollectionPipe = new Class(BasePipe,
       throw new Error "CollectionPipe must have a String name argument, was: #{@name} [#{typeof @name}]"
     @call-super @name.pluralize!
 
-  validate: ->
-    @parent-validator.validate!
+  # attach a model pipe as a child
+  model: (obj) ->
+    unless typeof obj is 'object'
+      throw new Error "Invalid Model pipe argument. Must be an object, was: #{obj}"
 
-  parent-validator: ->
-    @_parent-validator ||= new CollectionParentValidator @parent, @name
+    model-pipe = new ModelPipe obj
+    @.attach model-pipe
 
-  child-validator: ->
-    @_child-validator ||= new CollectionChildValidator @child, @name
+  valid-parents:
+    * 'path'
 )
 
 module.exports = CollectionPipe

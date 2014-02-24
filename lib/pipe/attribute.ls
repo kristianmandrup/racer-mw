@@ -6,19 +6,7 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-PathResolver      = requires.pipe 'path_resolver'
 BasePipe          = requires.pipe 'base'
-ParentValidator   = requires.pipe 'validator/parent'
-
-# TODO: refactor!?
-AttributeParentValidator = new Class(ParentValidator,
-  valid-parent-types: ['model', 'attribute']
-)
-
-# TODO: refactor!?
-AttributeChildValidator = new Class(ChildValidator,
-  valid-child-types: []
-)
 
 # Must be on a model
 AttributePipe = new Class(BasePipe,
@@ -26,15 +14,25 @@ AttributePipe = new Class(BasePipe,
     @validate!
     @call-super @name
 
-  validate: ->
-    @parent-validator.validate!
+  # does this make sense?
+  model: ->
+    switch arguments.length
+    case 0
+      throw new Error "Must take a name, a value (object) or a {name: value} as an argument"
+    case 1
+     @_add-model arguments[0]
+    default
+      throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
 
-  parent-validator: ->
-    @_parent-validator ||= new AttributeParentValidator @parent, @name
-
-  child-validator: ->
-    @_child-validator ||= new AttributeChildValidator @child, @name
-
+  # does this make sense?
+  collection: ->
+    switch arguments.length
+    case 0
+      throw new Error "Must take a name, a value (object) or a {name: value} as an argument"
+    case 1
+     @_add-model arguments[0]
+    default
+      throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
 )
 
 module.exports = AttributePipe

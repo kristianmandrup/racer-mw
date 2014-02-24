@@ -34,8 +34,17 @@ model(user, 'users').attribute('age').$set 7
 # users.1.project.name = 'my proj'
 model(user, in: 'users').attribute(model: 'project').attribute('name').$set 'my proj'
 
+# or allow model attribute
+model(user, in: 'users').model(project).attribute('name').$set 'my proj'
+
+# or allow model attribute
+model(user, in: 'users').model(administers: project).attribute('name').$set 'my proj'
+
 # users.1.projects.1.name = 'my proj'
 model(user, in: 'users').attribute(collection: 'projects').model(project).attribute('name').$set 'my proj'
+
+# or allow collection (as attribute) on model
+model(user, in: 'users').collection('projects').model(project).attribute('name').$set 'my proj'
 
 # '_path.currentUser = user'
 container('_path').model(current-user: user).$save!
@@ -44,7 +53,9 @@ container('_path').model(current-user: user).$save!
 container('_path').attribute(current-user: user).$save!
 ```
 
-The above DSL might look rather cumbersome, but the trade-off is a model that is much richer in functionality
+So what are the parent/child relationship rules we can gather from this?
+
+The above DSL might look rather "cumbersome", but the trade-off is a model that is much richer in functionality
 and expressiveness. Simply more raw power!
 
 ```livescript

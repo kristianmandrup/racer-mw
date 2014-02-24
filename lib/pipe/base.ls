@@ -27,6 +27,8 @@ validate-arg-types =
   * 'function'
   * 'array'
 
+ParentValidator   = requires.pipe 'validator/parent'
+
 # A Pipe can have one parent but many children. Pipes can thus be made into a tree.
 # Each pipe reflect the type of object at that particular position in the model, thus
 # it can act as a complete abstraction layer over the model.
@@ -44,10 +46,19 @@ Pipe = new Class(
         unless args
           throw new Error "Pipe must take a value to help it determine a path in the model"
         unless validate-args args
-          # TODO: if number, check if parent is collection
+          # TODO: if number, check if parent is collection?
           throw new Error "Pipe init argument #{args} [#{typeof args}] is not valid, must be one of: #{validate-arg-types}"
 
+      id: ->
+        throw new Error "Any subclass of Pipe must implement id function"
+
+      parent-validator: new ParentValidator(@valid-parents)
+
+      # subclass should override!
+      valid-parents: []
+
       children  : {}
+
       prev   : (steps) ->
         walk 'parent', steps
       root: ->
@@ -57,12 +68,22 @@ Pipe = new Class(
         @parent = void
 
       attach: (pipe) ->
-        # TODO: must call parent validator!
-        @parent-validator(@parent, ).validate
-        @parent = pipe
+        @parent-validator.validate @, pipe
+
+        @children[pipe.id!] = pipe
+        pipe.parent = @
+        pipe.id = parent.children.length
+
+      attached-to: (parent) ->
+        @parent-validator.validate parent, @
+
+        @id = parent.children.length
+
+        parent.children[@id!] = @
+        @parent = parent
 
       calc-path: ->
-        new PathResolver(@value-object).full-path!
+        new PathResolver(@).full-path!
 )
 
 module.exports = Pipe

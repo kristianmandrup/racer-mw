@@ -16,4 +16,5 @@ ParentValidator = new Class(
   valid-parent-types: []
 )
 
+
 module.exports = ParentValidator
