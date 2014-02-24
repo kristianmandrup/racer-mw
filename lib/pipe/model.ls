@@ -22,6 +22,8 @@ ModelPipe = new Class(BasePipe,
   id: ->
     @id
 
+  # TODO: Major refactoring needed. Split out in seperate modules or classes ^^
+
   model: ->
     switch arguments.length
     case 0
@@ -50,7 +52,12 @@ ModelPipe = new Class(BasePipe,
       # just ignore the model key and go with the value ;)
       @model value
     default
-      @attach new AttributePipe model: value
+      #.model(administers: project)
+      # should turn into:
+      #.attribute('administers').model(project)
+
+      # reuse existing attribute functionaility :)
+      @attribute hash
 
   # attach an attribute pipe as a child
   attribute: ->
@@ -80,15 +87,26 @@ ModelPipe = new Class(BasePipe,
     value = _.values(hash).first
     switch key
     case 'collection'
-      # or perhaps Attribute pipe with Collection pipe?
-      @attach new CollectionPipe "#{key}": value
+      # since attribute should only be for simple types, String, Int etc.
+      @attach new CollectionPipe(value)
+
     case 'model'
-      # or perhaps Attribute pipe with Model pipe?
-      @attach new ModelPipe "#{key}": value
+      # since attribute should only be for simple types, String, Int etc.
+      @attach new ModelPipe _clazz: value
+
     default
-      throw new Error "Invalid key #{key} for new AttributePipe, must be one of: collection or model"
+      # what should really happen here?
+      # .model(administers: project)
+      # should turn into:
+      # .attribute('administers').model(project)
+      @attach new AttributePipe(key).attach @_pipe-from(value)
 
-
+    _pipe-from: (value) ->
+      switch typeof value
+      case 'object'
+        new ModelPipe value
+      case 'array'
+        new CollectionPipe value
 
   valid-parents:
     * 'container'

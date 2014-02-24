@@ -34,14 +34,45 @@ model(user, 'users').attribute('age').$set 7
 # users.1.project.name = 'my proj'
 model(user, in: 'users').attribute(model: 'project').attribute('name').$set 'my proj'
 
+# what should really happen here?
+.attribute(model: 'project')
+# should turn into:
+.attribute('project').model(_clazz: 'project')
+
 # or allow model attribute
 model(user, in: 'users').model(project).attribute('name').$set 'my proj'
 
 # or allow model attribute
 model(user, in: 'users').model(administers: project).attribute('name').$set 'my proj'
 
+# what should really happen here?
+.model(administers: project)
+# should turn into:
+.attribute('administers').model(project)
+
 # users.1.projects.1.name = 'my proj'
-model(user, in: 'users').attribute(collection: 'projects').model(project).attribute('name').$set 'my proj'
+model(user, in: 'users').attribute(projects: projects).model(project).attribute('name').$set 'my proj'
+
+# what should really happen here?
+.attribute(projects: projects)
+# should be same as
+.collection(projects: projects)
+
+# the following is a bit problematic
+.attribute(collection: projects)
+
+# can only mean
+.collection('projects')
+
+# should be same as, however how can we determine the name 'projects' from the list?
+.collection(projects: projects)
+# only by assuming they all have the same _clazz and just use the first one.
+# a fallback way, but not elegant or safe
+
+# this is a much better way!
+.collection(projects: projects)
+
+
 
 # or allow collection (as attribute) on model
 model(user, in: 'users').collection('projects').model(project).attribute('name').$set 'my proj'
