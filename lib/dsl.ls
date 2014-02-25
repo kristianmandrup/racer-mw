@@ -30,6 +30,8 @@ module.exports =
       throw new Error "Name of collection pipe must be a String, was: #{name}"
     new CollectionPipe name
 
+  # model should never be a "root node"
+  # just a shorthand for the common task of creating a collection with a model
   model: (obj, collection = void) ->
     unless typeof obj is 'object'
       throw new Error "Invalid Model pipe argument. Must be an object, was: #{obj}"
