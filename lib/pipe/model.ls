@@ -111,7 +111,6 @@ ModelPipe = new Class(BasePipe,
   valid-parents:
     * 'container'
     * 'collection'
-    * 'attribute'
 )
 
 module.exports = ModelPipe

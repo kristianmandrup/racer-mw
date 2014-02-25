@@ -14,4 +14,8 @@ BasePipe          = requires.pipe 'base'
 PathPipe = new Class(BasePipe,
   initialize: (@path) ->
     @call-super @path
+
+  valid-parents:
+    * 'container'
+    # * 'model' # makes sense here?
 )

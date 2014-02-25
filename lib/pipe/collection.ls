@@ -30,6 +30,7 @@ CollectionPipe = new Class(BasePipe,
 
   valid-parents:
     * 'path'
+    * 'model' # as attribute
 )
 
 module.exports = CollectionPipe
