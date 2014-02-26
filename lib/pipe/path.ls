@@ -6,7 +6,6 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-PathResolver      = requires.pipe 'path_resolver'
 BasePipe          = requires.pipe 'base'
 
 # Must be on a model or attribute

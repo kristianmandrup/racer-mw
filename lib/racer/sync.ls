@@ -46,7 +46,7 @@ RacerSync = new Class(
     @racer-command.mw-context!
 
   execute: ->
-    @middleware.run @run-args
+    @middleware!.run @run-args
 )
 
 module.exports = RacerSync
