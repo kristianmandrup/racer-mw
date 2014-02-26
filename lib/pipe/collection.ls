@@ -1,35 +1,63 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+requires  = require '../../requires'
 
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
+util      = require 'util'
 require 'sugar'
 
 BasePipe          = requires.pipe 'base'
+PathPipe          = requires.pipe 'path'
 
+col-name = (arg) ->
+  switch typeof arg
+  case 'string'
+    arg
+  case 'object'
+    unless arg._clazz
+      throw new Error "Object passed must have a _clazz attribute, was: #{util.inspect arg} [#{typeof arg}]"
+    arg._clazz
+  default
+    throw new Error "CollectionPipe constructor must take a String or Object as argument, was: #{arg} [#{typeof arg}]"
+
+attach-to-path-pipe = (names, col-pipe) ->
+  path-pipe = new PathPipe(names)
+  path-pipe.attach col-pipe
 
 # Must be on a model or attribute
 CollectionPipe = new Class(BasePipe,
-  initialize: (@parent, @name) ->
-    @validate!
+  initialize: ->
+    @call-super!
 
-    # TODO: allow for an object with _clazz, then simply use _clazz.pluralize and discard the object?
-    unless typeof @name is 'string'
-      throw new Error "CollectionPipe must have a String name argument, was: #{@name} [#{typeof @name}]"
-    @call-super @name.pluralize!
+    if _.is-type('Array', @args) and @args.length > 1
+      name = @args.last!
+    else
+      name = @args
 
+    # set name of collection :)
+    @name = col-name(name).pluralize!
+
+    if _.is-type('Array', @args) and @args.length > 1
+      path-names = @args[0 to -2]
+      attach-to-path-pipe path-names, @
+    delete @args
+    @
+
+  pipe-type: 'Collection'
+
+  id: ->
+    @name
+
+  # pipe builder
   # attach a model pipe as a child
   model: (obj) ->
-    unless typeof obj is 'object'
-      throw new Error "Invalid Model pipe argument. Must be an object, was: #{obj}"
-
-    model-pipe = new ModelPipe obj
-    @.attach model-pipe
+    @attach new ModelPipe(obj)
+    @
 
   valid-parents:
     * 'path'
-    * 'model' # as attribute
+    * 'model' # collection then becomes as an attribute on the model
 )
 
 module.exports = CollectionPipe

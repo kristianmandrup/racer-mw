@@ -1,9 +1,10 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+requires  = require '../../requires'
 
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
+util      = require 'util'
 require 'sugar'
 
 PathResolver = requires.pipe 'path_resolver'
@@ -17,16 +18,6 @@ walk = (meth, steps) ->
     location = location[meth]!
   location
 
-validate-args = (args) ->
-  valid-arg-types.any (valid-type) ->
-    typeof args is valid-type
-
-valid-arg-types =
-  * 'string'
-  * 'object'
-  * 'function'
-  * 'array'
-
 ParentValidator   = requires.pipe 'validator/parent'
 
 # A Pipe can have one parent but many children. Pipes can thus be made into a tree.
@@ -39,52 +30,74 @@ ParentValidator   = requires.pipe 'validator/parent'
 # same goes for parent (in case we detach and attach to a new parent!)
 
 BasePipe = new Class(
-      # if not initialized with a value it has nothing to calculate path from
-      initialize: (...args) ->
-        @type = 'Pipe'
-        args = [args].flatten!
-        args = args.first! if args.length is 1
-        unless args
-          throw new Error "Pipe must take a value to help it determine a path in the model"
-        unless validate-args args
-          # TODO: if number, check if parent is collection?
-          throw new Error "Pipe init argument #{args} [#{typeof args}] is not valid, must be one of: #{valid-arg-types}"
+  # if not initialized with a value it has nothing to calculate path from
+  initialize: ->
+    @type = 'Pipe'
+    @args = _.values arguments
+    @args = [@args].flatten!
+    @args = @args.first! if @args.length is 1
+    @children = {}
+    unless @args
+      throw new Error "Pipe must take a value to help it determine a path in the model"
 
-      id: ->
-        throw new Error "Any subclass of Pipe must implement id function"
+    unless @validate-args
+      throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
 
-      parent-validator: new ParentValidator(@valid-parents)
+  validate-args: ->
+    return true if @valid-args.length = 0
+    valid-args = @args.select (arg) ->
+      typeof(arg) in @valid-args
+    valid-args.length is args.length
 
-      # subclass should override!
-      valid-parents: []
+  valid-args: []
 
-      children  : {}
+  id: ->
+    throw new Error "Any subclass of Pipe must implement id function"
 
-      prev   : (steps) ->
-        walk 'parent', steps
-      root: ->
-        walk 'parent', 9
+  parent-validator: new ParentValidator(@valid-parents)
 
-      detach: ->
-        @parent = void
+  # subclass should override!
+  valid-parents: []
 
-      attach: (pipe) ->
-        @parent-validator.validate @, pipe
+  children  : {}
 
-        @children[pipe.id!] = pipe
-        pipe.parent = @
-        pipe.id = parent.children.length
+  prev   : (steps) ->
+    walk 'parent', steps
+  root: ->
+    walk 'parent', 9
 
-      attached-to: (parent) ->
-        @parent-validator.validate parent, @
+  parent: void
 
-        @id = parent.children.length
+  detach: ->
+    @parent = void
 
-        parent.children[@id!] = @
-        @parent = parent
+  attach: (pipe) ->
+    unless typeof(pipe) is 'object' and pipe.type is 'Pipe'
+      throw new Error "Only other pipes can be attached to a pipe, was: #{util.inspect pipe} [#{typeof pipe}]"
 
-      calc-path: ->
-        new PathResolver(@).full-path!
+    @parent-validator.validate @, pipe
+
+    unless pipe.id!
+      throw new Error "id function of #{pipe.name} #{pipe.pipe-type} Pipe returns invalid id: #{pipe.id!} #{util.inspect pipe}"
+
+    @children[pipe.id!] = pipe
+    pipe.parent = @
+
+    if @pipe-type is 'Collection'
+      pipe.id = @children.length
+
+  attach-to: (parent) ->
+    @parent-validator.validate parent, @
+
+    # @id = parent.children.length
+    unless @id!
+      throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
+
+    parent.children[@id!] = @
+    @parent = parent
+
+  calc-path: ->
+    new PathResolver(@).full-path!
 )
 
 module.exports = BasePipe

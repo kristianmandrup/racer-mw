@@ -18,6 +18,8 @@ ModelPipe = new Class(BasePipe,
   initialize: (@obj) ->
     @call-super @obj
 
+  pipe-type: 'Model'
+
   id: ->
     @id
 

@@ -5,26 +5,53 @@ requires.test 'test_setup'
 expect          = require('chai').expect
 
 CollectionPipe  = requires.pipe 'collection'
+PathPipe        = requires.pipe 'path'
 
 describe 'CollectionPipe' ->
-  var pipe
+  var pipe, obj
+
+  pipes = {}
+
+  context 'Pipe: parentless users' ->
+    before ->
+      pipes.users := new CollectionPipe 'users'
+
+    describe 'children' ->
+      specify 'none' ->
+        expect(pipes.users.children).to.be.empty
+
+    describe 'parent' ->
+      specify 'is void' ->
+        expect(pipes.users.parent).to.be.undefined
 
   describe 'init' ->
     context 'no args' ->
       specify 'fails - must take value for path' ->
         expect(-> new CollectionPipe).to.throw
 
-    context 'arg: object' ->
-      specify 'creates it' ->
-        expect(-> new CollectionPipe {}).to.not.throw
+    context 'arg: empty object' ->
+      before ->
+        obj := {}
+
+      specify 'fails' ->
+        expect(-> new CollectionPipe obj).to.throw
+
+    context 'arg: object with _clazz' ->
+      before ->
+        obj := {_clazz: 'user'}
 
       specify 'creates it' ->
-        expect(new CollectionPipe {}).to.be.an.instance-of CollectionPipe
+        expect(new CollectionPipe obj).to.be.an.instance-of CollectionPipe
 
+      specify 'sets name to users' ->
+        expect(new CollectionPipe(obj).name).to.eq 'users'
 
     context 'arg: string' ->
       specify 'creates it' ->
-        expect(-> new CollectionPipe 'users').to.not.throw
+        expect(new CollectionPipe 'users').to.be.an.instance-of CollectionPipe
+
+      specify 'sets name to users' ->
+        expect(new CollectionPipe('users').name).to.eq 'users'
 
     context 'arg: function' ->
       specify 'creates it' ->
@@ -33,25 +60,26 @@ describe 'CollectionPipe' ->
       specify 'creates it' ->
         expect(new CollectionPipe 'users').to.be.an.instance-of CollectionPipe
 
-    context 'arg: array' ->
-      specify 'creates it' ->
+    context 'list of strings' ->
+      specify 'does not fail' ->
         expect(-> new CollectionPipe '_page', 'admins').to.not.throw
 
-      specify 'creates it' ->
-        expect(new CollectionPipe '_page', 'admins').to.be.an.instance-of CollectionPipe
+      describe '_page admins' ->
+        before ->
+          pipes.page-admins := new CollectionPipe '_page', 'admins'
+
+        specify 'creates it (with a Path parent)' ->
+          expect(pipes.page-admins).to.be.an.instance-of CollectionPipe
+
+        specify 'name is admins' ->
+          expect(pipes.page-admins.name).to.be.eq 'admins'
+
+        specify 'parent is Path pipe' ->
+          expect(pipes.page-admins.parent).to.be.an.instance-of PathPipe
+
+        specify 'parent Path pipe has name _page' ->
+          expect(pipes.page-admins.parent.name).to.eq '_page'
 
     context 'arg: number' ->
-      specify 'creates it only if child of collection - fails here' ->
+      specify 'fails' ->
         expect(-> new CollectionPipe 1).to.throw Error
-
-  context 'Pipe: parentless users' ->
-    before ->
-      pipe := new CollectionPipe 'users'
-
-    describe 'children' ->
-      specify 'none' ->
-        expect(pipe.children).to.be.empty
-
-    describe 'parent' ->
-      specify 'is void' ->
-        expect(pipe.parent).to.be.undefined

@@ -19,7 +19,9 @@ is-pipe = (obj) ->
     obj.type is 'Pipe'
 
 ParentValidator = new Class(
-  initialize: (@valid-parent-types) ->
+  initialize: (valid-parent-types) ->
+    @valid-parent-types = [valid-parent-types].flatten!.compact!
+    @
 
   validate-args: ->
     unless @parent
@@ -44,9 +46,9 @@ ParentValidator = new Class(
       throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@pipe.type}], must be one of: #{@valid-parent-types}"
 
   valid-type: ->
-    @valid-parent-types.include @parent.type
-
-  valid-parent-types: []
+    return true if @valid-parent-types.length is 0
+    return false unless @parent.type
+    @parent.type in @valid-parent-types
 )
 
 
