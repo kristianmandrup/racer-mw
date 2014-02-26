@@ -1,0 +1,11 @@
+{
+  "name": "racer-mw-example",
+  "version": "0.0.1",
+  "description": "example using the racer-mw",
+  "scripts": {
+    "start": "./node_modules/LiveScript/bin/livescript index.ls"
+  },
+  "dependencies": {
+    "LiveScript": "~1.2.0"
+  }
+}
