@@ -1,4 +1,6 @@
+requires = require '../requires'
 require 'sugar'
+Class       = require('jsclass/src/core').Class
 
 # should contain the main GLOBAL DSL methods that are exported
 
