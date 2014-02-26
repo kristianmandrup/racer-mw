@@ -25,11 +25,14 @@ describe 'AttributePipe' ->
       before ->
         obj := {_clazz: 'user'}
 
-      specify 'creates it' ->
-        expect(new AttributePipe obj).to.be.an.instance-of AttributePipe
+      specify 'fails' ->
+        expect(-> new AttributePipe obj).to.not.throw
 
-      specify 'sets name to users' ->
-        expect(new AttributePipe(obj).name).to.eq 'users'
+      specify 'sets name to user' ->
+        expect(new AttributePipe(obj).name).to.eq 'user'
+
+      specify 'id is user' ->
+        expect(new AttributePipe(obj).id!).to.eq 'user'
 
     context 'arg: string' ->
       specify 'creates it' ->
@@ -45,7 +48,8 @@ describe 'AttributePipe' ->
       specify 'creates it' ->
         expect(new AttributePipe 'users').to.be.an.instance-of AttributePipe
 
-    context 'arg: array' ->
+    # Does this make sense ???
+    xcontext 'arg: array' ->
       specify 'creates it' ->
         expect(-> new AttributePipe '_page', 'admins').to.not.throw
 
