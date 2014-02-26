@@ -18,10 +18,10 @@ walk = (meth, steps) ->
   location
 
 validate-args = (args) ->
-  validate-arg-types.any (valid-type) ->
+  valid-arg-types.any (valid-type) ->
     typeof args is valid-type
 
-validate-arg-types =
+valid-arg-types =
   * 'string'
   * 'object'
   * 'function'
@@ -38,16 +38,17 @@ ParentValidator   = requires.pipe 'validator/parent'
 # we need some convenient container of this information
 # same goes for parent (in case we detach and attach to a new parent!)
 
-Pipe = new Class(
+BasePipe = new Class(
       # if not initialized with a value it has nothing to calculate path from
       initialize: (...args) ->
+        @type = 'Pipe'
         args = [args].flatten!
         args = args.first! if args.length is 1
         unless args
           throw new Error "Pipe must take a value to help it determine a path in the model"
         unless validate-args args
           # TODO: if number, check if parent is collection?
-          throw new Error "Pipe init argument #{args} [#{typeof args}] is not valid, must be one of: #{validate-arg-types}"
+          throw new Error "Pipe init argument #{args} [#{typeof args}] is not valid, must be one of: #{valid-arg-types}"
 
       id: ->
         throw new Error "Any subclass of Pipe must implement id function"
@@ -86,4 +87,4 @@ Pipe = new Class(
         new PathResolver(@).full-path!
 )
 
-module.exports = Pipe
+module.exports = BasePipe

@@ -2,9 +2,8 @@ requires = require '../../../requires'
 
 requires.test 'test_setup'
 
-requires = require '../../../requires'
-
-Pipe        = requires.pipe 'base'
+Pipe              = requires.pipe 'base'
+ParentValidator   = requires.pipe 'validator/parent'
 
 expect      = require('chai').expect
 
@@ -50,8 +49,14 @@ describe 'Pipe' ->
     before ->
       pipe := new Pipe 'users'
 
-    describe 'no children' ->
-      expect(pipe.children).to.be.empty
+    describe 'children' ->
+      specify 'none' ->
+        expect(pipe.children).to.be.empty
 
-    describe 'parent is void' ->
-      expect(pipe.parent).to.be.undefined
+    describe 'parent' ->
+      specify 'is void' ->
+        expect(pipe.parent).to.be.undefined
+
+    describe 'parent-validator' ->
+      specify 'is a ParentValidator' ->
+        expect(pipe.parent-validator).to.be.an.instance-of ParentValidator
