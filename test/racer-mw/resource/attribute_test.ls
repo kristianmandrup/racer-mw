@@ -7,14 +7,17 @@ AttributeResource   = requires.resource 'attribute'
 expect        = require('chai').expect
 
 describe 'AttributeResource' ->
-  var att-res
+  var att-res, pipe
+
+  pipes = {}
+  resources = {}
 
   describe 'init' ->
     context 'no args' ->
       specify 'creates it' ->
         expect(-> new AttributeResource).to.not.throw
 
-  context 'a base resource' ->
+  context 'a basic AttributeResource obj' ->
     before ->
       att-res := new AttributeResource
 
@@ -32,3 +35,14 @@ describe 'AttributeResource' ->
 
     specify 'does not have a function query' ->
       expect(att-res.query).to.be.undefined
+
+  context 'AttributeResource obj created from pipe' ->
+    before ->
+      pipes.att.admin := new AttributePipe admin: 7
+      resources.att := new AttributeResource pipe
+
+    specify 'resource set with pipe' ->
+      expect(resources.att.pipe).to.eq pipes.att.admin
+
+    specify 'pipe set with resource' ->
+      expect(pipes.att.admin.$res).to.eq resources.att

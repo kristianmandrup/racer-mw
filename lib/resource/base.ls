@@ -6,7 +6,7 @@ ResourceCommand   = requires.resource 'command'
 BaseResource = new Class(ResourceCommand,
   # created with a Pipe
   initialize: (@pipe) ->
-    @call-super @pipe
+    @call-super @
     # should use Pipe path to always pre-resolve scope
     # @scoped 'path'
 
