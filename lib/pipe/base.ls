@@ -84,6 +84,7 @@ BasePipe = new Class(
 
   detach: ->
     @parent = void
+    @_attached-to!
     @
 
   # when attached, a pipe should update its cached full-name
@@ -105,8 +106,14 @@ BasePipe = new Class(
     pipe._attached-to @
     @
 
+  parent-name: ->
+    if @parent then @parent.full-name else ''
+
   update-name: ->
-    @full-name = [@parent.full-name, @name].compact!.join '.'
+    names = [@parent-name!, @name].exclude (name) ->
+      name is void or _.empty(name)
+
+    @full-name = names.join '.'
 
   attach-to: (parent) ->
     @parent-validator.validate parent, @

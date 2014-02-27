@@ -9,6 +9,8 @@ ModelPipe  = requires.pipe 'model'
 describe 'ModelPipe' ->
   var pipe, obj
 
+  pipes = {}
+
   describe 'init' ->
     context 'no args' ->
       specify 'fails - must take value for path' ->
@@ -111,19 +113,31 @@ describe 'ModelPipe' ->
 
           context 'attached child pipe' ->
             before ->
-              # console.log pipe.child('users').full-name
+              pipes.users := pipe.child('users')
 
             specify 'child: name was pluralized, so no user pipe' ->
               expect(pipe.child('user').pipe-type).to.be.unknown
 
             specify 'child: users is an Attribute pipe' ->
-              expect(pipe.child('users').pipe-type).to.eq 'Collection'
+              expect(pipes.users.pipe-type).to.eq 'Collection'
 
             specify 'has name: users' ->
-              expect(pipe.child('users').name).to.eq 'users'
+              expect(pipes.users.name).to.eq 'users'
 
             specify 'has full-name to admin.users' ->
-              expect(pipe.child('users').full-name).to.eq 'admin.users'
+              expect(pipes.users.full-name).to.eq 'admin.users'
+
+            describe 'detach' ->
+              context 'child: collection users' ->
+                before ->
+                  pipes.users.detach!
+
+                specify 'parent is void' ->
+                  expect(pipes.users.full-name).to.eq 'users'
+
+                specify 'full-name reset to users' ->
+                  expect(pipes.users.parent).to.be.undefined
+
 
         specify 'number arg' ->
           expect(-> pipe.collection 3).to.throw
