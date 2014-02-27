@@ -49,7 +49,7 @@ describe 'AttributePipe' ->
         expect(new AttributePipe 'users').to.be.an.instance-of AttributePipe
 
     # Does this make sense ???
-    xcontext 'arg: array' ->
+    context 'arg: array' ->
       specify 'creates it' ->
         expect(-> new AttributePipe '_page', 'admins').to.not.throw
 

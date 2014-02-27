@@ -24,6 +24,9 @@ ModelPipe = new Class(BasePipe,
     @call-super!
     first-arg = [@args].flatten!.first!
     obj = first-arg if typeof! first-arg is 'Object'
+    unless obj
+      throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
+
     @name = if obj._clazz
       obj._clazz
     else
