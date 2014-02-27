@@ -9,14 +9,17 @@ require 'sugar'
 
 PathResolver = requires.pipe 'path_resolver'
 
+# calling 'meth' on 'obj' repeatedly for 'steps' steps or untill undefined is reached
 walk = (meth, steps) ->
+  inner-walk = (obj, steps) ->
+    return obj if steps is 0
+    return obj if obj is void
+    next = obj[meth]!
+    if next isnt void then inner-walk(next, --steps) else obj
   if steps > 10
     throw Error "You should NEVER have more than 10 pipes in a model pipeline!!!"
-  step = 0
-  location = @[meth]!
-  while step < steps and locations isnt void
-    location = location[meth]!
-  location
+  inner-walk @, steps
+
 
 ParentValidator   = requires.pipe 'validator/parent'
 
@@ -62,9 +65,9 @@ BasePipe = new Class(
   children  : {}
 
   prev   : (steps) ->
-    walk 'parent', steps
+    walk.call @, 'parent', steps
   root: ->
-    walk 'parent', 9
+    walk.call @, 'parent', 9
 
   parent: void
 
