@@ -7,7 +7,7 @@ ResourceCommand = requires.resource 'command'
 Filter = new Class(ResourceCommand,
 
   initialize: (@resource, @args) ->
-    call-super!
+    @call-super!
     @filter = @args.filter
 
   commands:

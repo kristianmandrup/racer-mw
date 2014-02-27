@@ -7,8 +7,8 @@ requires.resource 'base'
 BaseResource   = requires.resource 'base'
 
 AttributeResource = new Class(BaseResource,
-  # value-object
-  initialize: (@value-object)
+  initialize: (@pipe) ->
+    @call-super!
 
   commands:
     scope:

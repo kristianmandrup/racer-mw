@@ -21,7 +21,6 @@ obj-name = (obj) ->
   else
     _.keys(obj).first!
 
-
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
 
@@ -42,11 +41,17 @@ ModelPipe = new Class(BasePipe,
 
   pipe-type: 'Model'
 
+  # TODO: It should perhaps figure out the ID from the Resource!
   id: ->
-    @object-id
+    return @object-id if @object-id
+    if @parent
+      return @parent.next-child-id!
+    # if no parent, I must assume i am just a named attribute
+    @name
 
-  # TODO: Major refactoring needed. Split out in seperate modules or classes ^^
+    #throw new Error "ModelPipe #{@name} unable to figure out its current id"
 
+  # TODO: Major refactoring needed. Split out in separate modules or classes
   collection: ->
     switch arguments.length
     case 0
@@ -66,10 +71,10 @@ ModelPipe = new Class(BasePipe,
       throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
 
   _add-model: (arg) ->
-    switch typeof arg
-    case 'string'
+    switch typeof! arg
+    case 'String'
       @_name-model arg
-    case 'object'
+    case 'Object'
       @_hash-model arg
     default
       throw new Error "Invalid Attribute pipe argument. Must a name (string) or an object (hash), was: #{arg}"
@@ -105,10 +110,10 @@ ModelPipe = new Class(BasePipe,
       throw new Error "Too many arguments, takes only a name (string) or an object (hash)"
 
   _add-attribute: (arg) ->
-    switch typeof arg
-    case 'string'
+    switch typeof! arg
+    case 'String'
       @_name-attribute arg
-    case 'object'
+    case 'Object'
       @_hash-attribute arg
     default
       throw new Error "Invalid Attribute pipe argument. Must be a name (string) or an object (hash), was: #{arg}"

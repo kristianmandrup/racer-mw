@@ -10,10 +10,13 @@ Filtering      = requires.resource 'filtering'
 
 CollectionResource = new Class(BaseResource,
   # value-object
-  initialize: (args) ->
-    lo.extend @commands, @col-commands, Filtering.commands
-    @call-super @
+  initialize: (@pipe) ->
+    @extend-commands!
+    @call-super!
     @
+
+  extend-commands: ->
+    lo.extend @commands, @col-commands, Filtering.commands
 
   col-commands:
     on-scope: # always on scope

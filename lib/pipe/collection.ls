@@ -47,13 +47,18 @@ CollectionPipe = new Class(BasePipe,
 
   pipe-type: 'Collection'
 
+  next-child-id: ->
+    _.keys(@children).length + 1
+
   id: ->
     @name
 
   # pipe builder
   # attach a model pipe as a child
   model: (obj) ->
-    @attach new ModelPipe(obj)
+    ModelPipe         = requires.pipe 'model'
+    pipe = new ModelPipe(obj)
+    @attach pipe
     @
 
   valid-parents:

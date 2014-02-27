@@ -48,6 +48,13 @@ BasePipe = new Class(
 
   post-init: ->
     delete @args
+    @$res = @create-res!
+
+  pipe-type: 'Pipe'
+
+  create-res: ->
+    @resource-clazz = requires.resource(@pipe-type.to-lower-case!)
+    new @resource-clazz @
 
   set-name: (name) ->
     @name = name

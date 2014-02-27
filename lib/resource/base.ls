@@ -4,9 +4,10 @@ requires    = require '../../requires'
 ResourceCommand   = requires.resource 'command'
 
 BaseResource = new Class(ResourceCommand,
-  initialize: ->
-    @call-super @
-    # should use path to always pre-resolve scope
+  # created with a Pipe
+  initialize: (@pipe) ->
+    @call-super @pipe
+    # should use Pipe path to always pre-resolve scope
     # @scoped 'path'
 
   pipe: void

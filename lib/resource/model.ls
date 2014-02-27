@@ -10,11 +10,14 @@ BaseResource   = requires.resource 'base'
 Filtering      = requires.resource 'filtering'
 
 ModelResource = new Class(BaseResource,
-  # value-object
-  initialize: (args) ->
-    lo.extend @commands, @model-commands, Filtering.commands
-    @call-super @
+  initialize: (@pipe) ->
+    @extend-commands!
+    @call-super!
     @
+
+  extend-commands: ->
+    lo.extend @commands, @model-commands, Filtering.commands
+
 
   model-commands:
     on-scope:

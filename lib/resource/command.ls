@@ -8,7 +8,7 @@ Query   = requires.resource 'query'
 CommandBuilder = requires.resource 'command/builder'
 
 ResourceCommand = new Class(
-  initialize: ->
+  initialize: (@pipe) ->
     new CommandBuilder(@).build!
 
   # we need to somehow inject the RacerStore

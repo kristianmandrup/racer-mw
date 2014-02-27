@@ -138,6 +138,13 @@ describe 'ModelPipe' ->
                 specify 'full-name reset to users' ->
                   expect(pipes.users.parent).to.be.undefined
 
+            describe 'attach an current: user model' ->
+              before ->
+                pipes.admin-user = pipes.users.model current: {_clazz:'user', id: 2}
+
+              context 'current user pipe' ->
+                specify 'full-name is admin.users.current' ->
+                  expect(pipes.admin-user.full-name).to.eq 'admin.users.current'
 
         specify 'number arg' ->
           expect(-> pipe.collection 3).to.throw
