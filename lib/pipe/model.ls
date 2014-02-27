@@ -60,6 +60,7 @@ ModelPipe = new Class(BasePipe,
      @attach new CollectionPipe arguments[0]
     default
       throw new Error "Too many arguments, takes only a name (String), or an Object"
+    @
 
   model: ->
     switch arguments.length
@@ -69,6 +70,7 @@ ModelPipe = new Class(BasePipe,
      @_add-model arguments[0]
     default
       throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
+    @
 
   _add-model: (arg) ->
     switch typeof! arg
@@ -108,6 +110,7 @@ ModelPipe = new Class(BasePipe,
       @_add-attribute arguments[0]
     default
       throw new Error "Too many arguments, takes only a name (string) or an object (hash)"
+    @
 
   _add-attribute: (arg) ->
     switch typeof! arg
@@ -123,8 +126,8 @@ ModelPipe = new Class(BasePipe,
     @attach attr-pipe
 
   _hash-attribute: (hash) ->
-    key = _.keys(hash).first
-    value = _.values(hash).first
+    key = _.keys(hash).first!
+    value = _.values(hash).first!
     switch key
     case 'collection'
       # since attribute should only be for simple types, String, Int etc.
@@ -132,23 +135,23 @@ ModelPipe = new Class(BasePipe,
 
     case 'model'
       # since attribute should only be for simple types, String, Int etc.
-      @attach new ModelPipe _clazz: value
+      @attach new ModelPipe(_clazz: value)
 
     default
       # what should really happen here?
       # .model(administers: project)
       # should turn into:
       # .attribute('administers').model(project)
-      @attach new AttributePipe(key).attach @_pipe-from(value)
+      @attach(new AttributePipe key).attach @_pipe-from(value)
 
-    _pipe-from: (value) ->
-      # http://livescript.net/#operators
-      switch typeof! value
-      # strangely, an array is also a typeof object in javascript :O
-      case 'Object'
-        new ModelPipe value
-      case 'Array'
-        new CollectionPipe value
+  _pipe-from: (value) ->
+    # http://livescript.net/#operators
+    switch typeof! value
+    # strangely, an array is also a typeof object in javascript :O
+    case 'Object'
+      new ModelPipe value
+    case 'Array'
+      new CollectionPipe value
 
   valid-parents:
     * 'container'

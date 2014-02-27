@@ -134,12 +134,14 @@ BasePipe = new Class(
     @_attached-to parent
     @
 
-  _attached-to: (pipe) ->
+  _attached-to: (parent) ->
     # update full-name
     @update-name!
     # and each of its children also need to be updated!
     for k, v of @children
       @children[k].update-name!
+    if parent
+      parent.added = @
     @
 )
 

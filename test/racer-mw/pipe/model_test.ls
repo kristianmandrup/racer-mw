@@ -33,8 +33,8 @@ describe 'ModelPipe' ->
       specify 'sets name to user' ->
         expect(new ModelPipe(obj).name).to.eq 'user'
 
-      specify 'id undefined until part of collection' ->
-        expect(new ModelPipe(obj).id!).to.be.undefined
+      specify 'id is name (like attribute) until part of a collection' ->
+        expect(new ModelPipe(obj).id!).to.eq 'user'
 
     context 'arg: attribute: {_clazz: name }' ->
       before ->
@@ -127,27 +127,44 @@ describe 'ModelPipe' ->
             specify 'has full-name to admin.users' ->
               expect(pipes.users.full-name).to.eq 'admin.users'
 
-            describe 'detach' ->
-              context 'child: collection users' ->
-                before ->
-                  pipes.users.detach!
+    describe 'detach' ->
+      context 'child: collection users' ->
+        before ->
+          pipes.users = pipe.collection('user').added
+          pipes.users.detach!
 
-                specify 'parent is void' ->
-                  expect(pipes.users.full-name).to.eq 'users'
+        specify 'collection returns the parent Model pipe' ->
+          expect(pipes.users.pipe-type).to.eq 'Collection'
 
-                specify 'full-name reset to users' ->
-                  expect(pipes.users.parent).to.be.undefined
+        specify 'parent is void' ->
+          expect(pipes.users.full-name).to.eq 'users'
 
-            describe 'attach an current: user model' ->
-              before ->
-                pipes.admin-user = pipes.users.model current: {_clazz:'user', id: 2}
+        specify 'full-name reset to users' ->
+          expect(pipes.users.parent).to.be.undefined
 
-              context 'current user pipe' ->
-                specify 'full-name is admin.users.current' ->
-                  expect(pipes.admin-user.full-name).to.eq 'admin.users.current'
+    describe 'attach an current: user model' ->
+      before ->
+        pipes.users = pipe.collection('user').added
 
-        specify 'number arg' ->
-          expect(-> pipe.collection 3).to.throw
+        specify 'pipe-type is Model' ->
+          expect(pipes.users.pipe-type).to.eq 'Model'
 
-        specify 'obj with _clazz arg' ->
-          expect(-> pipe.collection {_clazz: 'user'}).to.throw
+        specify 'full-name is admin' ->
+          expect(pipes.users.full-name).to.eq 'admin'
+
+      context 'add model current: user to users collection' ->
+        before ->
+          pipes.admin-user = pipes.users.model(current: {_clazz:'user', id: 2}).added
+
+        context 'current user pipe' ->
+          specify 'pipe-type is Model' ->
+            expect(pipes.admin-user.pipe-type).to.eq 'Model'
+
+          specify 'full-name is admin.users.current' ->
+            expect(pipes.admin-user.full-name).to.eq 'admin.users.current'
+
+          specify 'number arg' ->
+            expect(-> pipe.collection 3).to.throw
+
+          specify 'obj with _clazz arg' ->
+            expect(-> pipe.collection {_clazz: 'user'}).to.throw
