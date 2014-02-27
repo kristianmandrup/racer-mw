@@ -9,6 +9,7 @@ BaseResource   = requires.resource 'base'
 AttributeResource = new Class(BaseResource,
   initialize: (@pipe) ->
     @call-super!
+    @
 
   resource-type: 'Attribute'
 
