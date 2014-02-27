@@ -7,6 +7,8 @@ lo  = require 'lodash'
 require 'sugar'
 
 BasePipe          = requires.pipe 'base'
+AttributePipe     = requires.pipe 'attribute'
+CollectionPipe    = requires.pipe 'collection'
 
 # no need for a child validator :)
 # any attachment is always to a parent - simply validate parent is valid for child
@@ -40,6 +42,15 @@ ModelPipe = new Class(BasePipe,
 
   # TODO: Major refactoring needed. Split out in seperate modules or classes ^^
 
+  collection: ->
+    switch arguments.length
+    case 0
+      throw new Error "Must take at least one argument to indicate the collection to add"
+    case 1
+     @attach new CollectionPipe arguments[0]
+    default
+      throw new Error "Too many arguments, takes only a name (String), or an Object"
+
   model: ->
     switch arguments.length
     case 0
@@ -57,6 +68,9 @@ ModelPipe = new Class(BasePipe,
       @_hash-model arg
     default
       throw new Error "Invalid Attribute pipe argument. Must a name (string) or an object (hash), was: #{arg}"
+
+  _name-model: (name) ->
+    @attribute name
 
   _hash-model: (hash) ->
     key = _.keys(hash).first

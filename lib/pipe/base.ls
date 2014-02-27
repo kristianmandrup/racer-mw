@@ -47,7 +47,7 @@ BasePipe = new Class(
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
 
   validate-args: ->
-    return true if @valid-args.length = 0
+    return true if @valid-args.length is 0
     valid-args = @args.select (arg) ->
       typeof(arg) in @valid-args
     valid-args.length is args.length
@@ -63,6 +63,9 @@ BasePipe = new Class(
   valid-parents: []
 
   children  : {}
+
+  child: (name) ->
+    @children[name]
 
   prev   : (steps) ->
     walk.call @, 'parent', steps

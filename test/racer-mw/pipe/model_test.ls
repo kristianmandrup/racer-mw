@@ -60,3 +60,63 @@ describe 'ModelPipe' ->
       specify 'fails' ->
         expect(-> new AttributePipe 1).to.throw Error
 
+    context 'admin ModelPipe' ->
+      before ->
+        pipe := new ModelPipe(admin: {})
+
+      specify 'pipe-type' ->
+        expect(pipe.pipe-type).to.eq 'Model'
+
+      describe 'model - attach model pipe' ->
+        specify 'no args' ->
+          expect(-> pipe.model!).to.throw
+
+        context 'string arg' ->
+          before ->
+            pipe.model 'user'
+
+          specify 'attached pipe is an Attribute pipe' ->
+            expect(pipe.child('user').pipe-type).to.eq 'Attribute'
+
+        specify 'number arg' ->
+          expect(-> pipe.model 3).to.throw
+
+        specify 'obj with _clazz arg' ->
+          expect(-> pipe.model {_clazz: 'user'}).to.throw
+
+      describe 'model - attach model pipe' ->
+        specify 'no args' ->
+          expect(-> pipe.attribute!).to.throw
+
+        context 'string arg' ->
+          before ->
+            pipe.attribute 'user'
+
+          specify 'attached pipe is an Attribute pipe' ->
+            expect(pipe.child('user').pipe-type).to.eq 'Attribute'
+
+        specify 'number arg' ->
+          expect(-> pipe.attribute 3).to.throw
+
+        specify 'obj with _clazz arg' ->
+          expect(-> pipe.attribute {_clazz: 'user'}).to.throw
+
+      describe 'collection - attach collection pipe' ->
+        specify 'no args' ->
+          expect(-> pipe.collection!).to.throw
+
+        context 'string arg' ->
+          before ->
+            pipe.collection 'user'
+
+          specify 'attached pipe name was pluralized, so no user pipe' ->
+            expect(pipe.child('user').pipe-type).to.be.unknown
+
+          specify 'attached pipe users is an Attribute pipe' ->
+            expect(pipe.child('users').pipe-type).to.eq 'Collection'
+
+        specify 'number arg' ->
+          expect(-> pipe.collection 3).to.throw
+
+        specify 'obj with _clazz arg' ->
+          expect(-> pipe.collection {_clazz: 'user'}).to.throw
