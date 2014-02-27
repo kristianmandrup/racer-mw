@@ -14,12 +14,16 @@ PathPipe = new Class(BasePipe,
   initialize: ->
     @call-super!
 
-    if _.is-type 'Array', @args
+    switch typeof! @args
+    case 'Array'
       @name = @args.join '.'
-    else if _.is-type 'String', @args
+    case 'String'
       @name = @args
-    else
+    case 'Function'
+      @name = @args!
+    default
       throw new Error "Invalid name argument(s) for PathPipe: #{@args}"
+
     delete @args
     @
 
