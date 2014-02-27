@@ -18,7 +18,7 @@ describe 'AttributePipe' ->
       before ->
         obj := {}
 
-      specify 'creates it' ->
+      specify 'fails - obj must have a _clazz' ->
         expect(-> new AttributePipe obj).to.throw
 
     context 'arg: object with _clazz' ->

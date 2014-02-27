@@ -15,13 +15,25 @@ ParentValidator   = requires.pipe 'validator/parent'
 
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
-  initialize: (@obj) ->
-    @call-super @obj
+
+  # admin: {_clazz: 'user'}
+  #   => name = 'admin', value-object = {_clazz: 'user'}
+  # {_clazz: 'user'}
+  #   => name = 'user', value-object = {_clazz: 'user'}
+  initialize: ->
+    @call-super!
+    first-arg = [@args].flatten!.first!
+    obj = first-arg if typeof! first-arg is 'Object'
+    @name = if obj._clazz
+      obj._clazz
+    else
+      _.keys(obj).first!
+    @
 
   pipe-type: 'Model'
 
   id: ->
-    @id
+    @object-id
 
   # TODO: Major refactoring needed. Split out in seperate modules or classes ^^
 
@@ -103,10 +115,12 @@ ModelPipe = new Class(BasePipe,
       @attach new AttributePipe(key).attach @_pipe-from(value)
 
     _pipe-from: (value) ->
-      switch typeof value
-      case 'object'
+      # http://livescript.net/#operators
+      switch typeof! value
+      # strangely, an array is also a typeof object in javascript :O
+      case 'Object'
         new ModelPipe value
-      case 'array'
+      case 'Array'
         new CollectionPipe value
 
   valid-parents:
