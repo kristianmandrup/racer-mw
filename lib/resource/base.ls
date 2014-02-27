@@ -10,6 +10,8 @@ BaseResource = new Class(ResourceCommand,
     # should use Pipe path to always pre-resolve scope
     # @scoped 'path'
 
+  resource-type: 'Base'
+
   pipe: void
 
   commands:

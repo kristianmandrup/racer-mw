@@ -4,7 +4,8 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-ModelPipe  = requires.pipe 'model'
+ModelPipe       = requires.pipe     'model'
+ResourceModel   = requires.resource 'model'
 
 describe 'ModelPipe' ->
   var pipe, obj
@@ -107,6 +108,12 @@ describe 'ModelPipe' ->
         specify 'no args' ->
           expect(-> pipe.collection!).to.throw
 
+        specify 'number arg' ->
+          expect(-> pipe.collection 3).to.throw
+
+        specify 'obj with _clazz arg' ->
+          expect(-> pipe.collection {_clazz: 'user'}).to.throw
+
         context 'string arg' ->
           before ->
             pipe.collection 'user'
@@ -126,6 +133,9 @@ describe 'ModelPipe' ->
 
             specify 'has full-name to admin.users' ->
               expect(pipes.users.full-name).to.eq 'admin.users'
+
+            specify '$res is a ResourceCollection' ->
+              expect(pipes.users.$res.resource-type).to.eq 'Collection'
 
     describe 'detach' ->
       context 'child: collection users' ->
@@ -147,10 +157,13 @@ describe 'ModelPipe' ->
         pipes.users = pipe.collection('user').added
 
         specify 'pipe-type is Model' ->
-          expect(pipes.users.pipe-type).to.eq 'Model'
+          expect(pipes.users.pipe-type).to.eq 'Collection'
 
         specify 'full-name is admin' ->
-          expect(pipes.users.full-name).to.eq 'admin'
+          expect(pipes.users.full-name).to.eq 'users'
+
+        specify '$res is a ResourceModel' ->
+          expect(pipes.users.$res.resource-type).to.eq 'Collection'
 
       context 'add model current: user to users collection' ->
         before ->
@@ -163,8 +176,5 @@ describe 'ModelPipe' ->
           specify 'full-name is admin.users.current' ->
             expect(pipes.admin-user.full-name).to.eq 'admin.users.current'
 
-          specify 'number arg' ->
-            expect(-> pipe.collection 3).to.throw
-
-          specify 'obj with _clazz arg' ->
-            expect(-> pipe.collection {_clazz: 'user'}).to.throw
+          specify '$res is a ResourceModel' ->
+            expect(pipes.users.$res.resource-type).to.eq 'Collection'

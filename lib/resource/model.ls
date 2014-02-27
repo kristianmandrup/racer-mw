@@ -18,6 +18,7 @@ ModelResource = new Class(BaseResource,
   extend-commands: ->
     lo.extend @commands, @model-commands, Filtering.commands
 
+  resource-type: 'Model'
 
   model-commands:
     on-scope:

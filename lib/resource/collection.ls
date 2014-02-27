@@ -15,6 +15,8 @@ CollectionResource = new Class(BaseResource,
     @call-super!
     @
 
+  resource-type: 'Collection'
+
   extend-commands: ->
     lo.extend @commands, @col-commands, Filtering.commands
 

@@ -10,6 +10,8 @@ AttributeResource = new Class(BaseResource,
   initialize: (@pipe) ->
     @call-super!
 
+  resource-type: 'Attribute'
+
   commands:
     scope:
       * 'get'
