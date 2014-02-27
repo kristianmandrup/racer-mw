@@ -13,13 +13,11 @@ AttributePipe = new Class(BasePipe,
   initialize: (arg) ->
     if _.is-type 'Array', arg
       throw new Error "AttributePipe cannot be constructed from an Array, was: #{arg}"
-
     @call-super!
 
     switch typeof arg
     case 'string'
       @name = arg
-
     # allow object, setting name by _clazz and then value
     case 'object'
       obj = arg
@@ -32,9 +30,9 @@ AttributePipe = new Class(BasePipe,
         # admin: user-obj
         @name = _.keys(obj).first!
         @value-object = _.values(obj).first!
-
     default
       throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"
+    @post-init!
     @
 
 

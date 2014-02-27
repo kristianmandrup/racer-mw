@@ -109,11 +109,21 @@ describe 'ModelPipe' ->
           before ->
             pipe.collection 'user'
 
-          specify 'attached pipe name was pluralized, so no user pipe' ->
-            expect(pipe.child('user').pipe-type).to.be.unknown
+          context 'attached child pipe' ->
+            before ->
+              # console.log pipe.child('users').full-name
 
-          specify 'attached pipe users is an Attribute pipe' ->
-            expect(pipe.child('users').pipe-type).to.eq 'Collection'
+            specify 'child: name was pluralized, so no user pipe' ->
+              expect(pipe.child('user').pipe-type).to.be.unknown
+
+            specify 'child: users is an Attribute pipe' ->
+              expect(pipe.child('users').pipe-type).to.eq 'Collection'
+
+            specify 'has name: users' ->
+              expect(pipe.child('users').name).to.eq 'users'
+
+            specify 'has full-name to admin.users' ->
+              expect(pipe.child('users').full-name).to.eq 'admin.users'
 
         specify 'number arg' ->
           expect(-> pipe.collection 3).to.throw

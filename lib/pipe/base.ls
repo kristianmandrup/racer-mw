@@ -7,8 +7,6 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-PathResolver = requires.pipe 'path_resolver'
-
 # calling 'meth' on 'obj' repeatedly for 'steps' steps or untill undefined is reached
 walk = (meth, steps) ->
   inner-walk = (obj, steps) ->
@@ -40,11 +38,20 @@ BasePipe = new Class(
     @args = [@args].flatten!
     @args = @args.first! if @args.length is 1
     @children = {}
+
     unless @args
       throw new Error "Pipe must take a value to help it determine a path in the model"
 
     unless @validate-args
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
+    @
+
+  post-init: ->
+    delete @args
+
+  set-name: (name) ->
+    @name = name
+    @full-name = @name
 
   validate-args: ->
     return true if @valid-args.length is 0
@@ -55,7 +62,7 @@ BasePipe = new Class(
   valid-args: []
 
   id: ->
-    throw new Error "Any subclass of Pipe must implement id function"
+    throw new Error "A subclass of Pipe must implement id function"
 
   parent-validator: new ParentValidator(@valid-parents)
 
@@ -69,6 +76,7 @@ BasePipe = new Class(
 
   prev   : (steps) ->
     walk.call @, 'parent', steps
+
   root: ->
     walk.call @, 'parent', 9
 
@@ -76,7 +84,9 @@ BasePipe = new Class(
 
   detach: ->
     @parent = void
+    @
 
+  # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
     unless typeof(pipe) is 'object' and pipe.type is 'Pipe'
       throw new Error "Only other pipes can be attached to a pipe, was: #{util.inspect pipe} [#{typeof pipe}]"
@@ -92,6 +102,12 @@ BasePipe = new Class(
     if @pipe-type is 'Collection'
       pipe.id = @children.length
 
+    pipe._attached-to @
+    @
+
+  update-name: ->
+    @full-name = [@parent.full-name, @name].compact!.join '.'
+
   attach-to: (parent) ->
     @parent-validator.validate parent, @
 
@@ -101,9 +117,16 @@ BasePipe = new Class(
 
     parent.children[@id!] = @
     @parent = parent
+    @_attached-to parent
+    @
 
-  calc-path: ->
-    new PathResolver(@).full-path!
+  _attached-to: (pipe) ->
+    # update full-name
+    @update-name!
+    # and each of its children also need to be updated!
+    for k, v of @children
+      @children[k].update-name!
+    @
 )
 
 module.exports = BasePipe

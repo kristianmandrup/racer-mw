@@ -15,6 +15,13 @@ CollectionPipe    = requires.pipe 'collection'
 # no need to validate reverse relationship - is implicit :)
 ParentValidator   = requires.pipe 'validator/parent'
 
+obj-name = (obj) ->
+  if obj._clazz
+    obj._clazz
+  else
+    _.keys(obj).first!
+
+
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
 
@@ -29,10 +36,8 @@ ModelPipe = new Class(BasePipe,
     unless obj
       throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
 
-    @name = if obj._clazz
-      obj._clazz
-    else
-      _.keys(obj).first!
+    @set-name obj-name(obj)
+    @post-init!
     @
 
   pipe-type: 'Model'

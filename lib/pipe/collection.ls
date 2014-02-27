@@ -36,12 +36,13 @@ CollectionPipe = new Class(BasePipe,
       name = @args
 
     # set name of collection :)
-    @name = col-name(name).pluralize!
+    @set-name col-name(name).pluralize!
 
     if _.is-type('Array', @args) and @args.length > 1
       path-names = @args[0 to -2]
       attach-to-path-pipe path-names, @
-    delete @args
+
+    @post-init!
     @
 
   pipe-type: 'Collection'

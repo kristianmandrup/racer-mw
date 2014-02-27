@@ -24,7 +24,7 @@ PathPipe = new Class(BasePipe,
     default
       throw new Error "Invalid name argument(s) for PathPipe: #{@args}"
 
-    delete @args
+    @_last-config!
     @
 
   pipe-type: 'Path'
