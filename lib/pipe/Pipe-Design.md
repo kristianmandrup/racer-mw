@@ -83,27 +83,36 @@ container('_path').model(current-user: user).$save!
 container('_path').attribute(current-user: user).$save!
 ```
 
-So what are the parent/child relationship rules we can gather from this?
 
-Notice the following dangerous path...
+## Pipes
 
-```
-# what should really happen here?
-user-model.attribute(projects: projects)
-# should be same as
-user-model.collection(projects: projects)
-```
+```livescript
+users-pipe = collection('users')
 
-This is too lax! We need some tighter rules and regulation!
-A model should only allow attributes. So a collection is a kind of attribute when used on a model, otherwise
-it is "standalone", or... simply an attribute on the global collection :)
+user-pipe = container('_page').model('user')
 
-```
-# local user-model attribute, type collection of project
-user-model.collection(projects: projects)
+# each pipe build method returns the child pipe just added
+# so we can continue building down the pipe naturally
+# in order to return the root (starting pipe) we can end by executing the root! function
+# which naturally returns the root of this pipe
 
-# global attribute, type collection ...
-store.collection(projects: projects).allows.any('project')
+page-pipe = container('_page').model('user').attribute(name: 'Kristian).root
+
+
+# If we want to add several children to a pipe, we can use the plural form, such as attributes, and then open a scope
+# where we can add each
+page = container('_page').attributes ->
+    @add('current').model 'user'
+    @add('admin').model 'user'
+
+# If we want to add a child of one type to a pipe, then another type, use the children
+
+page = container('_page').children ->
+         @attributes('name', 'age')
+
+page = container('_page').children ->
+         @attribute('name')
+         @model('user')
 ```
 
 ### Validation

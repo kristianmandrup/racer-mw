@@ -6,14 +6,14 @@ The following some design ideas/thoughts and conclusions as we go deeper down th
 
 Operations fall into the following categories
 
-**Operates on a Document within a collection**
+**on a Document within a collection**
 
 ```
 users.1.user
 users.2.user
 ```
 
-**Operates on a Document within a collection of another document**
+**on a Document within a collection of another document**
 
 ```
 users.1.user.admins.1.admin-user
@@ -72,16 +72,7 @@ The key is to allow the developer to configure this as required while facilitati
 We should not apply too strict conventions, at least until we have uncovered typical repetitive usage patterns
 that can be encapsulated.
 
-## Resources
-
-As we can now start to see...
-
-```livescript
-users-col = collection('users')
-user  = users.get-by name: name
-
-page = $pipe(container: '_page')
-current-user = page.$p(attribute: 'current').$p(model: 'user').get-by email: user.email
+```
 current-user.$save!
 current-user.$set name: 'unknown'
 
@@ -101,35 +92,58 @@ admin-user = {
 }
 ```
 
-To chain, simply use `$p` stands for pipe ;)
-This should build you the whole path model with all the cool logic buried inside...
+To chain simply use the following DSL
 
 ```livescript
-$pipes = {}
+users-pipes = collection('users')
+    .model(admin-user)
+    .model(guest-user)
+```
 
-$pipes.admin-user = $pipe('_page').$p(attribute: 'current').$p(model: admin-user)
 
-$pipes.admin-user.$set role: 'guest'
+```livescript
+pipes.admin-user = container('_page')
+  .attribute('current')
+    .model(admin-user)
 
+# using add
+pipes.admin-user = container('_page')
+  .attribute('current').add
+    .model(admin-user).add
+```
+
+To execute resource functions use `$res` to get the connected resource or use a `$` function directly on the pipe.
+
+`pipes.admin-user.$res.set role: 'guest'`
+
+Using shortcut `$set` directly on pipe:
+
+`pipes.admin-user.$set role: 'guest'`
+
+Lets make a query...
+
+```livescript
 # get all admin users since past 3 days
-$pipes.admin-user.$query date: {$gte: days(3).before(new Date) }}
+pipes.admin-user.$query date: {$gte: days(3).before(new Date) }}
 ```
 
 The Resource should contain the following
 
 ```livescript
-admin-user = {
-  name: 'Kris'
-  role: 'admin'
+resources.admin-user = {
+  value-object: {
+    name:   'Kris'
+    role:   'admin'
+    _clazz: 'user'
+  }
 
-  $clazz: 'user'
-
-  $pipe
-    $parent: parent
-
+  $pipe: pipe
   $resource:
     $save: ->
+      @$set @value-object
+
     $set: (value-hash) ->
+      # ...
     $get: (model, query) ->
       # ...
     $delete: ->
@@ -137,49 +151,9 @@ admin-user = {
 }
 ```
 
-More...
+A resource should normally be created from a Pipe.
 
-```livescript
-users-col.$a(path: 'current.admin').$a(model: admin-user)
-
-# collection (same as path)
-users-col = {
-  $pipe:
-    $type: 'collection'
-    $path: 'users'
-}
-
-# path
-
-current-admin-path = {
-  $pipe:
-    $type: 'path'
-    $path: 'current.admin'
-    $parent: users-col
-    $calc-path: ->
-      # ...
-
-  # for chaining - should be included/inherited
-  $p: (hash) ->
-    # ...
-  $resource:
-    # ...
-}
-
-
-# model-obj (Resource)
-# we should encourage setting class on the $resource instead and use the $class
-admin-user = {
-  $pipe:
-    $type:  'resource'
-    $parent: current-admin-path
-
-  $resource:
-    $class: 'user'
-}
-```
-
-Note that a model-obj (Resource) can also act as a "collection" or "user"
+collection('users').
 
 In the following we use `admin-user` both as an "end" pipe and a container "pipe" (better term than pipe?).
 We should not share the reference, so the call to `$p` must be a constructor, and `admin-user` must be cloned by value
