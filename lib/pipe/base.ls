@@ -105,7 +105,6 @@ BasePipe = new Class(
       throw new Error "id function of #{pipe.name} #{pipe.pipe-type} Pipe returns invalid id: #{pipe.id!} #{util.inspect pipe}"
 
     @children[pipe.id!] = pipe
-    pipe.parent = @
 
     if @pipe-type is 'Collection'
       pipe.id = @children.length
@@ -135,6 +134,7 @@ BasePipe = new Class(
     @
 
   _attached-to: (parent) ->
+    @parent = parent
     # update full-name
     @update-name!
     # and each of its children also need to be updated!
