@@ -4,138 +4,411 @@ Introduction and overview of Pipes.
 
 ## What are pipes?
 
-Pipes are the main building blocks in this whole infrastructure. It is simply a more intelligent, more functional,
-more data carrying information layer that abstracts your data layer into more logical OOP entities such as:
+Pipes are the main building blocks. It is simply a more intelligent, more functional,
+more data carrying information layer that abstracts your hierarchical JSON data model into logical OOP entities such as:
 
-- Container (path)
-- Collection
+- Path
 - Model
 - Attribute
+- Collection
 
-A Container is a top level entity such as `_session` or `_path`. It is simply an abstract placeholder to hold
- any sort of data (or pipe) underneath.
+### Path
 
-A Collection is a specific kind of Container which can hold one or more Documents, usually of the same kind.
-In OOP speak, a Users collection would contain User objects, or subclasses of User, such as:
-`GuestUser < User` and `AdminUser < User` (ruby class inheritance syntax).
+A `Path` is a simple wrapper for a path in underlying data model. A Path pipe should only be
+used when you want to avoid/disregard part of the data model for abstraction.
+This would typically be when you are introducing this abstraction framework on an existing data model
+ and want to introduce the abstraction layer step-by-step. Another reason could be that part of the data model
+ is already abstracted (or taken care of) by some other logic or abstraction layer.
 
-A Model holds a `Document`, such as `User`. A `Model` can have one or more `Attributes`.
-An `Attribute` is a simple value such as a `String` or `Integer` or can be a `Collection` or `Model`
+In any case, a Path pipe is just a thin wrapper over a path which allows you to pipe from that path and on.
+A Path pipe can be "any data type" and can therefore have any of:
 
-Let's explore some different combinations from the above...
+* `Attribute` (simple values)
+* `Collection` (of models)
+* `Model`
 
-```livescript
-# users.1.age = 7
-collection('users').model(user).attribute('age').$set 7
+A Path pipe can be assigned a value, but since it is not a "real" data abstraction this is generally discouraged.
 
-# shorthand for above
-model(user, 'users').attribute('age').$set 7
+### Model
 
-# users.1.project.name = 'my proj'
-model(user, in: 'users').attribute(model: 'project').attribute('name').$set 'my proj'
+A Model is a wrapper for a `Document`. A model should have a class such as `User`.
+A `Model` can have one or more attributes, which can be any of:
 
-# what should really happen here?
-.attribute(model: 'project')
-# should turn into:
-.attribute('project').model(_clazz: 'project')
+* `Attribute` (simple values)
+* `Collection` (of models)
+* `Model`
 
-# or allow model attribute
-model(user, in: 'users').model(project).attribute('name').$set 'my proj'
+### Attribute
 
-# or allow model attribute
-model(user, in: 'users').model(administers: project).attribute('name').$set 'my proj'
+An `Attribute` is a wrapper for a simple value (or values), such as:
 
-# what should really happen here?
-.model(administers: project)
-# should turn into:
-.attribute('administers').model(project)
+* `String` (text)
+* `Number`
+* `Date`
 
-# users.1.projects.1.name = 'my proj'
-model(user, in: 'users').attribute(projects: projects).model(project).attribute('name').$set 'my proj'
+It can also contain a list of simple values using: `Array`
 
-# what should really happen here?
-.attribute(projects: projects)
-# should be same as
-.collection(projects: projects)
+### Collection
 
-# the following is a bit problematic
-.attribute(collection: projects)
+A `Collection` contains of Models (Documents), usually of the same kind).
+Typically, a `Users` collection would contain `User` objects.
 
-# can only mean
-.collection('projects')
+## Piping
 
-# should be same as, however how can we determine the name 'projects' from the list?
-.collection(projects: projects)
-# only by assuming they all have the same _clazz and just use the first one.
-# a fallback way, but not elegant or safe
+Piping is meant to be achieved efficiently via a method chaining API that this library provides.
+Example:
 
-# this is a much better way!
-.collection(projects: projects)
+`collection('users').model(user).attribute('age')`
 
+Each pipe builder returns the pipe that was built in order that you can build on it.
+This way it is efficient to build the whole pipe path to reflect the underlying data model.
 
-# or allow collection (as attribute) on model
-model(user, in: 'users').collection('projects').model(project).attribute('name').$set 'my proj'
+### Path
 
-# '_path.currentUser = user'
-container('_path').model(current-user: user).$save!
-
-# '_path.currentUser = user'
-container('_path').attribute(current-user: user).$save!
-```
-
-
-## Pipes
+The following is a typical example for when to use the `Path` pipe.
+Piping the collection on to a specific point in the existing data model.
+*Derby* already maintains the `_page` by its own, so we don't need to abstract it with a model.
 
 ```livescript
-users-pipe = collection('users')
-
-user-pipe = container('_page').model('user')
-
-# each pipe build method returns the child pipe just added
-# so we can continue building down the pipe naturally
-# in order to return the root (starting pipe) we can end by executing the root! function
-# which naturally returns the root of this pipe
-
-page-pipe = container('_page').model('user').attribute(name: 'Kristian).root
-
-
-# If we want to add several children to a pipe, we can use the plural form, such as attributes, and then open a scope
-# where we can add each
-page = container('_page').attributes ->
-    @add('current').model 'user'
-    @add('admin').model 'user'
-
-# If we want to add a child of one type to a pipe, then another type, use the children
-
-page = container('_page').children ->
-         @attributes('name', 'age')
-
-page = container('_page').children ->
-         @attribute('name')
-         @model('user')
+path('_page.current').collection('visitors').model(user)
 ```
+
+### Model
+
+```livescript
+model('user')
+```
+
+The simplest way to build a Model pipe with data is to call the model constructor with an object
+which contains a `_clazz` key with the name of the model (class) to be built to hold that data.
+
+```livescript
+user = {
+  _clazz: 'user'
+}
+
+```livescript
+model(user)
+```
+
+Builds:
+
+```
+ + user: {
+     _clazz: 'user'
+   }
+```
+
+We can however also override this default naming strategy and call the model node
+
+```livescript
+model(admin: user)
+```
+
+Builds:
+
+```
+ + admin: {
+     _clazz: 'user'
+   }
+```
+
+This strategy can also be used for the container object such as `_page` and `_session` if used in **Derby** or
+some other Racer compatible framework with similar concepts.
+
+```livescript
+page = model(_page: page)
+```
+
+Builds:
+
+```
+ + _page: {
+     _clazz: 'page'
+   }
+```
+
+**Auto-wrapped models**
+
+We can also make the model wrap itself inside a collection.
+
+When model pipe is created, it will try to determine if it is meant to be created as a
+ model at that level or to wrap itself as a member of a collection.
+
+It will base this decision on the name it is given. If it is being named a singular, such as `user`,
+it will jut create a normal model of that name. If it is named with a plural, such as `users`,
+it will wrap itself in a collection of that name.
+
+```livescript
+model(users: user)
+```
+
+Builds:
+
+```
+ + users:
+   [
+     {
+       _clazz: 'user'
+     }
+   ]
+```
+
+Note: This is a more efficient way to build a more complex pipe (no DSL chaining).
+
+A model can contain named properties, where each property is one of:
+
+* Attribute
+* Model
+* Collection
+
+Adding a `hits` property that is an `Attribute`:
+
+```livescript
+page = model('_page')
+page.attribute(hits: 'number')
+```
+
+Adding a `current-user` property which is a `Model`
+
+```livescript
+page.model(current-user: user)
+```
+
+Adding a `visitors` property which is a `Collection`
+
+```livescript
+page.collection('visitors')
+```
+
+Or using auto-wrap (via "plural form" detection)
+
+```livescript
+page.model(visitors: user)
+```
+
+### Attribute
+
+An attribute is a named container for a simple value such as a `String` or `Number`
+It must always be build on a `Model` pipe.
+
+```livescript
+page = model('_page')
+page.attribute('hits')
+```
+
+Builds:
+
+```
+ + page:
+     hits: undefined
+```
+
+The above example doesn't give us much benefit however.
+Let's also provide a value. This is done by using key/value.
+
+```livescript
+model(user).attribute(<name>: <value>)
+```
+
+To extend our previous example:
+
+```livescript
+model(user).attribute(hits: 3)
+```
+
+Builds:
+
+```
+ + page:
+     hits: 3
+```
+
+We can also provide *type* information by extending our constructor has with a `value` property:
+
+```livescript
+model(user).attribute(<name>: <type>, value: <value>)
+```
+
+For our example:
+
+```livescript
+page-hits = 1
+page.attribute(hits: 'number', value: page-hits)
+```
+
+When we have assigned a type to the attribute, it will validate that only a value of that type can be set
+for the attribute (and be *synced* with the data store - see *Resources*).
+
+If we want to add multiple attributes to a model, it quickly seems a bit tedious this way:
+
+```livescript
+page.attribute(hits: 'number', value: 3)
+page.attribute(status: 'string', value: 'ok')
+```
+
+A more efficient build API for adding multiple attributes is provided:
+
+```livescript
+page.attributes
+  .add(hits: 'number', value: 3)
+  .add(status: 'string', value: 'ok')
+```
+
+### Collection
+
+To build a `Users` collection with one `User`:
+
+```livescript
+collection('users').model(user)
+```
+
+Builds:
+
+```
+ + users: [
+    {}
+   ]
+```
+
+As described under **Model** we can also have a model auto-wrap itself with a collection, achieving the same:
+
+```livescript
+model(users: user)
+```
+
+To efficiently add multiple users, we can employ the `models` builder, which provides the API as used for Attribute,
+except here for adding multiple `Model` pipes:
+
+```livescript
+collection('users').models
+  .add(kris)
+  .add(emily)
+```
+
+We can even pass multiple users to add
+
+```livescript
+collection('users').models
+  .add(kris, emily, adam, ...)
+```
+
+or pass the users as an Array:
+
+```livescript
+user-list = [kris, ...]
+collection('users').models
+  .add(user-list)
+```
+
+## Pipe navigation
+
+Each pipe builder returns the pipe just built so that we can easily build the full pipe path via chaining.
+A pipe can be "attached" to one parent. A pipe can have one or more children (unless it's an attribute pipe).
+
+You can get the *parent* pipe of a pipe using the `parent` property. Naturally `children` contains all the children
+ of the pipe:
+
+```livescript
+kris = collection('users').model(kris)
+users = kris.parent
+kris = users.children[0]
+```
+
+A `get` method is provided for a smoother API:
+
+`kris = users.get 0` or `kris = users.first()` and `kris = users.last()`
+
+To get a child attribute from a model:
+
+```livescript
+user = model(user)
+name = user.child 'name'
+```
+
+A `get` method is provided for a smoother API in this case:
+
+`name = user.get 'name'`
+
+You can nvaigate multiple levels up a pipe using prev(levels):
+
+```livescript
+user = model('_page').model(users: user)
+name = user.get 'name'
+users = name.prev 2
+```
+
+If you are further down a long pipe, you can use `root` to get the root pipe.
+
+```livescript
+user = model('_page').model(users: user)
+name = user.get 'name'
+page = name.root()
+```
+
+## Advanced piping
+
+Pipes become even moe powerful when they are reused across a more complex data model.
+You can detach, clone and attach the same pipe in multiple places. This way, if you have multiple
+parts of the data model that share similar properties, it is easy to leverage this fact.
+
+```livescript
+user = model('_page').model(users: user)
+name = user.get 'name'
+user = name.prev()
+
+current-user = model('_session').model(current-user: user)
+```
+
+We can also leverage the efficient "multi-builder" API.
+Each `add` returns the collection of attributes that have so far been added.
+
+```livescript
+page-attributes = page.attributes
+  .add(hits: 'number', value: 3)
+  .add(status: 'string', value: 'ok')
+
+session.attributes
+  .add(page-attributes)
+  .add(current-user: user)
+```
+
+Here we introduce another powerful shortcut, adding a model property current user via an attribute.
+The attribute builder method will here detect that the value being set is an object, and try to build a model
+ from this instead. The same can be done for a collection.
+
+`.add(users: [kris, emily])`
+
+This will build and attach (add) a collection property `users` with those models wrapped inside.
 
 ### Validation
 
-We could also build in some validation beyond the building rules sketched out above...
+Further down the line, as this framework develops, it might be nice to extend the data validation
+from attribute types to also include Model class validation.
+Something like the following?
 
-```
-container('_page').allows.attributes(current-user: 'model', connected: 'boolean')
-collection('projects').allows.model('project')
-
-# implies that this collection is only for models with _clazz: 'project'
-collection(clazz: 'project')
-
-# what about subclasses?
-collection('projects').allows.models('project', 'subproject')
-
-# and how about?
-.allows.any('project')
+```livescript
+collection('projects').allows 'project'
 ```
 
-Can we somehow define all the types of a class in a smart way?
+Implies that the collection projects only allows models project models,
+i.e. model objects with: `_clazz: 'project'`
 
+A collection might allow several similar classes (f.ex sub classes):
+
+```livescript
+collection('projects').allows 'project', 'sub-project'
 ```
+
+Would be more powerful if we could just specify:
+
+```livescript
+collection('projects').allows any: 'project'
+```
+
+And through previous declarations, the framwork would know which classes are of the kind "project"
+
+```livescript
 * animal:
   * 'mammal':
     * 'dog'
@@ -143,82 +416,96 @@ Can we somehow define all the types of a class in a smart way?
     * 'human'
   * 'fish'
   * 'bird'
+```
 
 It would have then have to turn it into...
 
+```livescript
 * animal:
-  * 'mammal':
-    * 'dog'
-    * 'cat'
-    * 'human'
+  * 'mammal'
+  * 'dog'
+  * 'cat'
   * 'fish'
   * 'bird'
-* 'mammal':
+* mammal:
   * 'dog'
   * 'cat'
   * 'human'
 * 'dog'
 * 'cat'
 * 'human'
+* 'fish'
+* 'bird'
+```
 
-# Then we can check!
+Then we can check!
 
+```livescript
 .allows.any('animal')
 .allows.any('mammal')
-.allows.any('dog', 'cat')
+.allows.any('mammal', 'fish')
 ```
 
-What about simple types on attributes?
+## Pipes and Resources
 
-```
-attribute('name').allows('string')
-
-# or simply?
-attribute('name', clazz:'string')
-
-attribute(name: 'mike')
-
-attribute('name', clazz:'string', value: 'anna')
-```
-
-Just some ideas... what do you think? suggestions are most welcome!
-
-The above DSL might look rather "cumbersome", but the trade-off is a model that is much richer in functionality
-and expressiveness. It describes the data model at a much deeper level... and is a building black for
-powerful functionality!
+This section contains a brief overview on how Pipes relate to Resources.
+Pipes are mostly "intelligent" wrappers for the Path part of the Racer model API.
+A pipe has access to its resource through the special `$resource` property
 
 ```livescript
-collection('users').models(users).$save!
-models(users, in: 'users').$save!
+user-resource = user-pipe.$resource
+
+# apply some commands on the resource
 ```
 
-Build pipe graphs
+The pipes pass any value assigned to its resource. The Resource is responsible for syncing the value
+ with the Racer data layer (and underlying data store).
+
+The Resource has access to its Pipe container via the `$pipe` property.
 
 ```livescript
-container('_page').model(current-user: user).parent!.model(admin-user: user)
-
-# or more elegantly
-container('_page').attach (page) ->
-  page.model(current-user: user)
-  page.model(admin-user: user)
-
-users = collection('users').attach (col) ->
-  col.model(current-user)
-  col.model(admin-user)
-
-users.child('current-user').$get
+user-pipe = user-resource.$pipe
 ```
 
-A pipe has access to a Resource which is an abstraction on top of the Racer commands
-such `model.get`, `model.set` and `model.push` etc.
+The Resource uses its pipe internally in order to know where in the Racer model to sync the data.
+The pipe is the "path part" of the resource.
 
-In the above DSL examples, notice that when a $ is used on a pipe, it signifies a resource command.
-Another way is as follows:
+The Resource can execute all of the Racer commands that apply for the kind of value it holds (collection, model or attribute).
+A Resource can be any of:
+
+- Collection
+- Model
+- Attribute
+
+Each Resource inherits from `BaseResource` which contains common functionality shared by any resource.
+
+Each type of Resource can only execute a subset of commands, those commands that are valid for the kind
+ of value that it is responsible for syncing with *Racer*.
+
+An `Attribute` resource can't execute a collection specific command on its attribute and vice versa.
+From this it follows that a pipe can only execute the commands exposed by its resource.
+
+All resources have a `$save` command which simply saves (sets) the current value of the resource to
+ the path location defined by the pipe.
+
+`user-pipe.$resource.$save()`
+
+A shorthand `$res` is also available: `user-pipe.$res.$save()`
+
+A shorthand of the `$resource` API is provided as a convenience. You can simply use `$<command>` directly on a pipe.
+
+`user-pipe.$save()`
+
+Setting the user model value to another user is a valid model command.
 
 ```livescript
-users.child('current-user').$resource.get
+user-pipe.$set emily
 ```
 
-The directs `$get` is simply a shorthand (forwards to `$resource.get`).
+Inserting a string on a collection is invalid however (and made impossible).
 
-Let your imagination flow free.... Power of the mind :)
+```livescript
+users-pipe.$resource.string-insert ...
+```
+
+For more details on how to use Resources and some of the internal Resource machinery, see the Resource doc.

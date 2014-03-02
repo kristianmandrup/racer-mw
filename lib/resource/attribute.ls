@@ -14,14 +14,15 @@ AttributeResource = new Class(BaseResource,
   resource-type: 'Attribute'
 
   commands:
-    scope:
+    on-scope:
       * 'get'
-      * 'set'
       * 'ref'
       * 'remove-ref'
-    number:
+    set-scope:
+      * 'set'
+    set-number:
       * 'inc'
-    string:
+    set-string:
       * 'string-insert'
       * 'string-remove'
 )

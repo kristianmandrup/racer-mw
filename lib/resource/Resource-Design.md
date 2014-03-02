@@ -1,358 +1,165 @@
-# Design
+# Resource Design
 
-The following some design ideas/thoughts and conclusions as we go deeper down the "rabbit hole" :)
+An overview of the Resource design
 
-## Lessons learned
+## Resources
 
-Operations fall into the following categories
+Resources can either be used standalone or contained within pipes.
 
-**on a Document within a collection**
+A *pipe* is an abstraction of the "path" to a data node in the underlying (JSON) data model synchronized by the *Racer*
+Real-Time sync engine.
 
-```
-users.1.user
-users.2.user
-```
+## Types of Resources
 
-**on a Document within a collection of another document**
+A Resource can be any of:
 
-```
-users.1.user.admins.1.admin-user
-```
+- Collection
+- Model
+- Attribute
 
-Should we validate as to whether this admin-user is valid for the user who owns the collection?
+Each Resource inherits from `BaseResource` which contains common functionality shared by any resource.
 
-```
-users.1.user.admins.1.admin-user.tags = ['abra', 'ca', 'dabra']
-```
+## Stand-alone resource
 
-What if we move or pop an element from the tags collection (simple String values).
-Should we validate with respect to the `admin-user` container? Yeah...
+If you use a resource "stand alone" you need to specify the path where resource belongs manually:
 
-## More advanced pipelining
+`resource.path = 'users.1'`
 
-From the above analysis we can see the following conclusions taking shape...
-
-We might need two middleware pipelines.
-
-- container-stack
-- item-stack
-
-For some operations, it is the container model object that determines whether the operation is allowed
-For others it is the item itself, being inserted into some named collection (not a model object).
-
-The container-stack will always be simple, since it will never have to bother about marshalling or decoration.
-It will thus only concern authorization and validation of the operation.
-Most often it will likely be a "by-pass" operation... ;)
-
-*Example*
-
-Add new Document (model obj) to an attribute (List) of container Document (model obj).
-
-### Adv. Validation
-
-The validation could take the container object, the attribute and the item obj and validate whether
-the container obj allows this item obj to be inserted into the list.
-This could be based either on the type of container and item object or even on the state of the container object (which
-could be set up to live-update subscribe to changes in the model).
-
-`mw-stack('container').validate container: container, attribute: attribute, item: item`
-
-Of course this could later be optimized to a nicer DSL if need be
-
-`mw-stack('container').validate-on(container).add-to(attribute, item)`
-
-This can be vastly simplified by employing a hierachical model to reflect this
-and then have each level "do its thing". Then each layer will have at most one mw-stack!
-
-### Adv. Authorization
-
-`mw-stack('container').authorize.can 'add', data: item, ctx: {container: container, attribute: attribute}`
-
-The key is to allow the developer to configure this as required while facilitating certain common patterns.
-We should not apply too strict conventions, at least until we have uncovered typical repetitive usage patterns
-that can be encapsulated.
-
-```
-current-user.$save!
-current-user.$set name: 'unknown'
-
-# should try to add to 'projects'
-current-user.$add(project)
-
-current-user.$set current-project: project
-current-user.$get 'project', {status: 'done'}
-
-current-user.$add('my-projects', project)
-current-user.$delete!
-
-admin-user = {
-  name: 'Kris'
-  role: 'admin'
-  clazz: 'user'
-}
-```
-
-To chain simply use the following DSL
+When path is set, the Resource `full-path()` function will use the resource `path` otherwise it will look for the
+path on the pipe (see below). When a resource path is set explicitly you can use a stand-alone resource
+just the same as if it was associated with a pipe:
 
 ```livescript
-users-pipes = collection('users')
-    .model(admin-user)
-    .model(guest-user)
+resource.$set emily
 ```
 
+## Pipe resource
+
+A pipes passes any value it is assigned to its resource. The Resource is responsible for syncing the value
+ with the Racer data layer (and underlying data store).
+
+The Resource has access to its Pipe container via the `$pipe` property.
 
 ```livescript
-pipes.admin-user = container('_page')
-  .attribute('current')
-    .model(admin-user)
-
-# using add
-pipes.admin-user = container('_page')
-  .attribute('current').add
-    .model(admin-user).add
+user-pipe = user-resource.$pipe
 ```
 
-To execute resource functions use `$res` to get the connected resource or use a `$` function directly on the pipe.
-
-`pipes.admin-user.$res.set role: 'guest'`
-
-Using shortcut `$set` directly on pipe:
-
-`pipes.admin-user.$set role: 'guest'`
-
-Lets make a query...
+When a resource is linked to a pipe, the resource `full-path` will be calculated by retrieving `pipe.full-path`
 
 ```livescript
-# get all admin users since past 3 days
-pipes.admin-user.$query date: {$gte: days(3).before(new Date) }}
+resource.$set emily
 ```
 
-The Resource should contain the following
+When a pipe is assigned a value, it will be set on the resource of the pipe. This means, that if a resource is ever
+ detached from a pipe, it still contains its own value. On the other hand, if the pipe is reattached to a new resource
+ it has no memory of its old value but gets access to the new resource value.
+
+### Attach & Detach
+
+A resource can detach from its pipe by calling the `detach()` function.
 
 ```livescript
-resources.admin-user = {
-  value-object: {
-    name:   'Kris'
-    role:   'admin'
-    _clazz: 'user'
-  }
-
-  $pipe: pipe
-  $resource:
-    $save: ->
-      @$set @value-object
-
-    $set: (value-hash) ->
-      # ...
-    $get: (model, query) ->
-      # ...
-    $delete: ->
-      # ...
-}
+resource.detach()
+resource.$pipe # => undefined
 ```
 
-A resource should normally be created from a Pipe.
-
-collection('users').
-
-In the following we use `admin-user` both as an "end" pipe and a container "pipe" (better term than pipe?).
-We should not share the reference, so the call to `$p` must be a constructor, and `admin-user` must be cloned by value
- or just the relevant values extracted when used as a container.
-
-So the call to `.$p(model: project)` on the model obj for `admin-user` must turn it into a container, without affecting
-the `$pipes.admin.user`. In turn, as a container, the mw-stack should be changed, so as to not marshal or decorate.
-the Validator step should also be different, such that it sends something like: `container: @, data: @.$child`
-
+You can also attach a resource to a new pipe using `attach-to`:
 
 ```livescript
-$pipes.admin.user     = users-col.$a(model: admin-user)
-$pipes.admin.project  = users-col.$a(model: admin-user).$a(model: project)
+resource.attach-to(pipe)
 ```
 
-So we can see we need a `$child` for the `admin-user-container` that points to the next item in the pipe.
-To avoid too pipe-specific properties/methods in the core data/behavior namespace, we should create
- a namespace `$pipe` to contain them.
+## Resource commands
 
-```livescript
-admin-user-container = {
-  $pipe:
-    $type:  'container'
-    $parent: current-admin-path
-    $child: project
+Each type of Resource can only execute a subset of commands, those commands that are valid for the kind
+ of value that it is responsible for syncing with *Racer*.
 
-  $resource:
-    $class: 'user'
-}
+An `Attribute` resource can't execute a collection specific command on its attribute and vice versa.
+From this it follows that a pipe can only execute the commands exposed by its resource.
+
+All resources have a `$save` command which simply saves (sets) the current value of the resource to
+ the path location defined by the pipe.
+
+## Base resource
+
+Any resource has the following "base" functionality.
+
+**resource-type**
+
+`resource.resource-type` returns the type of resource, f.ex `'model'` for a `ModelResource`.
+
+**save**
+
+Any resource has a `save` method. Save can be used at any time save sync the current value to Racer.
+
+`resource.$save()` saves the current resource value using Racer `set(value)`.
+
+**commands**
+
+Any resource has a `commands` property which contains the commands that can be executed by that command,
+grouped by type of command:
+
+* basic
+* scope
+* number
+* string
+
+*Basic* commands are the most "basic" commands that are common to all types of resources, such as `at`, `path` and `scope`.
+
+*onScope* : commands that operate on a scope. A scope is used for chaining several commands.
+
+A resource will internally maintain and store a `scoped` variable after each scope command which is used to
+facilitate this scope chaining.
+
+*setNumber* : commands that set Numbers, such as `increment`.
+
+*setString* : commands that set Strings, such as `string-insert`.
+
+*setScope* commands that set the scope with the result of the command.
+
+The commands exposed by any resource are generated dynamically based on the `commands` property.
+The `CommandBuilder` is responsible for this job.
+
+The `Filtering` module contains specific commands for querying and filetering.
+Each of these commands are of the type `create`, which means that will create new Resource wrappers (such as a `Query` instance) for the
+filtering result they return.
 
 ```
-
-### $p and $pipeline constructors
-
-Here we design the $p and $pipeline for chaining
-
-```livescript
-# args: Hash - key = type, value = object
-# creates a new pipe of the given type from the value
-$p = (hash) ->
-  parent = @
-  keys = _.keys(hash)
-  throw Error "Must only have one key/value entry, was #{keys}"
-  type = keys.first
-  obj = hash[type]
-  @$pipe.child = new PipeFactory(obj, parent: parent, type: type).create-pipe
-
-$pipe = (hash) ->
-  keys = _.keys(hash)
-  throw Error "Must only have one key/value entry, was #{keys}"
-  type = keys.first
-  new PipeFactory(hash[type], type: type).create-pipe
+create:
+  * 'query'   # new Query   @resource, @query
+  * 'filter'  # new Filter  @resource, @filter
+  * 'sort:filter'
 ```
 
-And now the pipe factory :)
+### Command builder
 
-```livescript
-PipeFactory = new Class(
-  initialize: (@value-object, @options = {}) ->
-  @type     = @options.type
-  @parent   = @options.parent
+The `resource/arg` folder contains json files for that declare the rules for each type of command.
+Example `arg/basic`
 
-  create-pipe: ->
-    @value-object.$pipe = pipe!
-    @value-object.$p = $p # from local Node module scope
-    @value-object
-
-  set-mw: ->
-    switch @type
-    case 'model'
-    default
-      @value-object.$resource.mw-stack.remove types: ['validator', 'authorizer']
-
-  pipe: ->
-    walk = (meth, steps) ->
-        if steps > 10
-          throw Error "You should NEVER have more than 10 pipes in a model pipeline!!!"
-        step = 0
-        location = @[meth]!
-        while step < steps and locations isnt void
-          location = location.@[meth]!
-        location
-    {
-      $type   : @type
-      $parent : @parent
-      $child  : void
-      $prev   : (steps) ->
-        walk '$parent', steps
-      $next    : (steps) ->
-        walk '$child', steps
-      $root: ->
-        walk '$parent', 9
-      $end: ->
-        walk '$child', 9
-
-      $value-object: @value-object
-      $calc-path: ->
-        new PathResolver @§value-object
-    }
-)
-
-module.exports = PipeFactory
+```
+set:
+  required:
+    * 'value'
+  optional:
+    * 'cb'
+  result: 'previous' # previous value
 ```
 
-Sure looks pretty sweet and workable!
+This specifies that for the `set` command, `value` is a *required* argument and `cb` is optional.
+The result of the command should be stored in a `previous` variable on the resource.
 
-The `project` is an "end-pipe" with the parent resource-pipe (container) `admin-user`
+### Query
 
-```livescript
-project = {
-  $pipe
-    $type:  'resource'
-    $parent: admin-user
-    $child  : void
-  $resource:
-    $class: 'project'
-}
-```
+A query is a special Resource wrapped for the query command. Only specific query commands are made available on
+the result of the query:
 
-### DSL optimization
+*on-query* : commands that can be run on a query result (`ref` and `get`)
 
-`users-col.$p(model: admin-user).$p(model: project)`
+### Filter
 
-The top levels are always some sort of containers. They only have different behavior depending on whether
-they are a full resource-pipe or just a simple-pipe. Their position in the pipeline determines their relative behavior
-with respect to the pipeline. So really no need for the `type` part
-Can be simplified to:
+*on-filter* : commands that can be run on a filter result (`ref` and `get`)
 
-`$pipe('users').$p(admin-user).$p('deeper.path').$p(project)`
 
-We should still allow the type variant for decorative/debugging
-purposes (and better conceptual understanding of the code, i.e a clearer DSL).
-
-### Path resolution
-
-```livescript
-PathResolver = new Class(
-  initialize: (@model-obj) ->
-    @collection = @pluralize model-obj.$resource.$class
-    @parent = model-obj.$pipe.$parent
-
-  obj-path: ->
-    @collection
-
-  parent-path: ->
-    if @parent? then @parent.$pipe.$calc-path else void
-
-  full-path: ->
-    [@parent-path, @obj-path].compact!.join '.'
-)
-``
-
-Remember, a piped `project` looks like this...
-
-```livescript
-project = {
-  # ...
-  $pipe:
-    # ...
-    $value-object: project
-    $calc-path: ->
-      new PathResolver @$value-object
-```
-
-Now that we can calculate the paths at any step, we need to implement the main Resource methods.
-However first we will look at how Validation and Authorization fits in with Pipes and Resources...
-
-### Validation
-
-When we validate, we should validate the action with respect to all the parents of the end-pipe in question.
-They also are allowed have a say whether the data is valid in that given context.
-However mostly the parents don't care and leave the child to do its own thing as long as it
-stays within its own boundaries... mostly it is only the closest parent who gives a damn (in this context!)
-
-### Authorization
-
-For authorization we should also send in the list of parents as part of the context in which to authorize in.
-The permit (or other authorization) is then free to use this information to authorize.
-
-We need a PathResolver to resolve the full path at each step in the hierarchy.
-This way we extract this functionality (Single Responsibility) and avoid cluttering each Resource with source logic...
-
-Note that in both cases, if the parent is a model-object (or resource), it could be set to *live-update*.
-Then when doing validation/authorization we can be sure it is with respect to its latest state and not some old state
-no longer "in touch" with the server state. Perhaps we should enforce this somehow (or at least make it default)
-
-## Enable/Disable validation and authorization
-
-In some (most?) cases, there is no need to consult the parent(s) for Auth and/or Val.
-It should be easy to disable Auth and Val for any "piece in the puzzle".
-
-```livescript
-# turn off validation
-users-col.$mw.off 'v'
-users-col.$mw.off! # turn all mw off
-users-col.$mw.on! # turn all mw on
-
-users-col.$a(model: admin-user).$mw.off!.$a(...)
-```
 
 ## Marshalling
 
