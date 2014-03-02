@@ -58,7 +58,7 @@ BasePipe = new Class(
 
   set-name: (name) ->
     @name = name
-    @full-name = @name
+    @update-name!
 
   validate-args: ->
     return true if @valid-args.length is 0
