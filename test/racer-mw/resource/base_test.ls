@@ -29,3 +29,6 @@ describe 'BaseResource' ->
 
     specify 'has a function at' ->
       expect(base-res.at).to.be.an.instance-of Function
+
+    specify 'resource-type is Base' ->
+      expect(base-res.resource-type).to.eq 'Base'

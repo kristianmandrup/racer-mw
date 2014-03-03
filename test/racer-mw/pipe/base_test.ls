@@ -22,6 +22,13 @@ describe 'Pipe' ->
       specify 'creates it' ->
         expect(new Pipe {}).to.be.an.instance-of Pipe
 
+      describe 'pipe' ->
+        before ->
+          pipe := new Pipe {}
+
+        specify 'has-resource is true by default' ->
+          expect(pipe.has-resource).to.be.true
+
 
     context 'arg: string' ->
       specify 'creates it' ->

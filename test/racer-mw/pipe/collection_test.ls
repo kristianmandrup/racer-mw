@@ -8,7 +8,8 @@ CollectionPipe  = requires.pipe 'collection'
 PathPipe        = requires.pipe 'path'
 
 describe 'CollectionPipe' ->
-  var pipe, obj
+  var pipe, obj, collection
+  var models, user
 
   pipes = {}
 
@@ -83,3 +84,26 @@ describe 'CollectionPipe' ->
     context 'arg: number' ->
       specify 'fails' ->
         expect(-> new CollectionPipe 1).to.throw Error
+
+    describe 'models' ->
+      context 'a users collection' ->
+        before ->
+          collection := new CollectionPipe 'users'
+
+        specify 'models returns a PipeModels instance' ->
+          expect(collection.models).to.be.an.instance-of PipeModels
+
+        context 'PipeModels' ->
+          before ->
+            models := collections.models
+            user :=
+              name: 'Kris'
+              _clazz: 'user'
+
+          describe 'add' ->
+            specify 'returns a PipeModels instance' ->
+              expect(models.add user).to.be.an.instance-of PipeModels
+
+            specify 'adds user to collection' ->
+              models.add user
+              expect(collection.first).to.eq user
