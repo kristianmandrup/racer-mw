@@ -1,85 +1,85 @@
 # Architecture
 
-An overview of the architecture to be implemented.
+An overview of the architecture in place (and what remains to be implemented).
 
-## Racer
+## Racer Model API
 
-Racer already provides a very powerful model access API.
-It employs the concept of paths to point to data-points in the model graph to act upon.
-To allow reuse of these paths, it provides scopes which are entry points that can be reused for further action
+Racer provides a very powerful Model access API.
+
+The Model API employs the concept of *paths* that point to a specific data-points (nodes) in the model graph.
+An model command will use a path to determine where in the graph the operation takes place.
+
+The commands are usually in mostly some sort of *CRUD* commands: Create, Readin, Update or Delete data.
+However the API also supports moving/rearranging nodes in the graph. A move operation requires two paths, where to
+move from and where to move to.
+
+The model API allow reuse of paths by the way of scopes. A scopes is an "entry point" that can be reused for further action
 via method chaining.
+
+### Scope example
 
 Set the first user, then go to 'admin' of that user, and set his name to 'Hansel'. Then get the name of the parent (admin).
 
 `model.set('users.1', user).path('admin').set('name', 'Hansel).parent().get()`
 
-However this API does not encapsulate any concept of types, such as Object, Collection and
-simple Attributes (numbers, strings, dates, ...)
+## API limitations
 
-A richer API would provide such concepts and also encapsulate the paths.
+The model API doesn't encapsulate any higher abstractions or *Type* information, such as Model, Collection and
+simple Attributes (numbers, strings, dates, ...) that we normally work with in real ORMs or Data modelling in general.
 
-```
-user = $collection('users').$item('user', 1).set(user)
-console.log user.get
-user.$attribute(model: 'admin').$attribute(string: 'name).set('Hansel').parent().get()
-```
+It would be convenient to better encapsulate the paths so we don't have to memorize or pass around
+the path for each operation on the same data point. Scopes are not really sufficient.
 
-The concept of Racer `scopes` already provides path building, by storing the current full path and appending a sub-path
- for each method chained. However these scopes are static, they are likely not dynamically calculated?
-Would be nice if I could detach in the middle of a scope, apply another "scope" and have the full path still calculated
-correctly. This is where the concept of a `Pipe` takes shape.
-A `Pipe` is a class which provides dynamic path calculation and has the concepts of parent and children.
-Pipes can be linear or form tree structure, just like the underlying data model.
+A higher level model abstraction would encapsulate the path within and also provide the concepts of Collection, Model and
+Attributes to build real data models that are more strongly typed - i.e. so that we know that a certain node is expected to
+contain a certain kind of data and only allows certain kinds of operations acted upon it. Each node should act as a Resource
+and only allow a subset of operations according to the type of Resource. The Resource should know where to act by using
+its encapsulated path.
 
-A `Resource` is a data entity, either a `Collection`, `Model` or `Attribute`.
+## Pipes and Resources
 
-When a *query* is performed, a `Query` is returned. A query only allows the commands `get` to return the query result
-and `ref` and to return a reference to the result (updated dynamically - useful for live updates!).
+The Racer abstraction framework provided by this library provides two main entities that work together:
 
-When a *filter* is performed, a `Filter` is returned. A filter only allows the commands `get` to return the filter result
-and `ref` and to return a reference to the result.
+- Pipe
+- Resource
 
-```
-Filter = new Class(ResourceCommand,
-  initialize: (@resource, @filter) ->
-  commands:
-    filter:
-      * 'ref'
-      * 'get'
-)
-```
+A `Pipe` is an abstraction over a path with the concepts of parent and child pipes.
+A pipe can have a single parent but multiple children. Pipes can be used to build a single path or complete graphs.
+It is recommended to use pipes to reflect the entire underlying data model. Pipes are the main building blocks.
 
-`Filter` and `Query` are very similar, however the query performs a native DB query, whereas a filter runs
-a custom function on the result to `filter` or `sort` a collection.
+The underlying graph model is a JSON structure where each object is a *Document*. It is usually convenient that certain
+Documents follow specific conventions and have a certain kind of *Schema* so that there is some control of what kind of data
+can be expected at each data point.
 
-For both filter and query, `ref` allows for subscribing to live updates of the result set.
+This is where the concept of a Model gains importance. A Model acts as a kind of schema for a Document in the data model.
+It defines the rules for how to operate on said document.
 
-Applying the concept of a Resource, we can enforce that any resource encapsulates its own path.
-This means that any model command on a Resource will NOT take a `path`, as the path will instead be taken
-from the Resource (dynamically calculated via a PathResolver from its parent pipes, all the way to the root.)
-The path should only be calculated whenever the "pipeline" changes (a new pipe is added).
-Each time the path should be cached.
+It is often the case that some nodes contain a list of multiple Documents of the same type.
+These nodes are called collections. A Collection is an abstraction over such list nodes and ensures that there are certain
+rules for the operations on the collection of models (Documents).
 
-If a pipe is detached from a pipeline, all its child pipes should have their path invalidated.
-If the pipe is reattached to another pipeline, the pipe and all its children should recalculate their path and cache.
+A Model can have one or more properties. Each property can be either:
 
-The Racer scope commands are those commands that return a scope. Each scope command should set an internal
-`$scope` variable on the resource, but should return the resource itself for further chaining.
-Any command that expects to be applied on a scope should simply apply on the current `$scope` value.
+- a Collection of models
+- a Model
+- an Attribute (simple values)
 
-For commands such as `insert` which returns the length of the collection after insert, will operate in a similar fashion.
-An internal `length` attribute will be set and the Resource returned. At any time the last length can thus be accessed.
+Each Pipe is connected to a Resource of the same type and the Resource is also connected to the pipe.
+Any resource command always knows where in the graph it should apply the command.
+It can set its own path directly (if stand-alone), but moe commonly it gets the path information from its pipe.
 
-If a reference is set up on the collection however, it should invalidate or reset the length whenever
-it is notified that the collection size is changed. This is left as a future enhancement (to be a feature?).
+Depending on the type of Resource, only a subset of operations are available that makes sense for that kind of resource.
+Attribute operations don't apply for a Collection, and Collection operations don't make sense for an attribute.
 
-The Resource commands are all called using a hash syntax, like the following:
+**Note: Much of the following should go into the Resource-Design document!?**
 
-Racer command:
+## Issuing commands
+
+A Racer model API command is of the following form.
 
 `model.refList ( path, collection, ids, [options] )`
 
-Resource command:
+The Resource commands are instead all called using a hash syntax, like the following:
 
 ```
   resource.refList collection: col, ids: my-ids
@@ -88,7 +88,7 @@ Resource command:
 
 This call is a little longer, but much clearer.
 
-The benefits of the hash (Object) call approach are...
+The benefits of the hash (Object) call approach are:
 
 - easier to remember parameter names than calling order
 - clearer code
