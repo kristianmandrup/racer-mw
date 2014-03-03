@@ -178,3 +178,34 @@ describe 'ModelPipe' ->
 
           specify '$res is a ResourceModel' ->
             expect(pipes.users.$res.resource-type).to.eq 'Collection'
+
+    describe 'attributes' ->
+      var model, attributes, user
+
+      context 'a user model' ->
+        before ->
+          user :=
+            name: 'Kris'
+            _clazz: 'user'
+
+          model := new ModelPipe 'user'
+
+        specify 'models returns a PipeModels instance' ->
+          expect(model.attributes).to.be.an.instance-of PipeAttributes
+
+        context 'PipeAttributes' ->
+          before ->
+            attributes := model.attributes
+
+          describe 'add age' ->
+            var res
+            before ->
+              res := attributes.add 'age'
+
+            specify 'returns a PipeModels instance' ->
+              expect(res).to.be.an.instance-of PipeAttributes
+
+            specify 'adds age and status attributes to model' ->
+              res.add(status: 'single')
+              expect(model.attributes.first.name).to.eq 'age'
+              expect(model.attributes.last.name).to.eq 'status'
