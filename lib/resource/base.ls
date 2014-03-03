@@ -15,9 +15,12 @@ BaseResource = new Class(ResourceCommand,
     @pipe = pipe
 
     @call-super @pipe
+
     # set reference to pipe on $res and $resource
-    @pipe.$res = @
-    @pipe.$resource = @
+    # only for those pipes that allow a resource!
+    if @pipe.has-resource
+      @pipe.$res = @
+      @pipe.$resource = @
 
     # should use Pipe path to always pre-resolve scope
     # @scoped 'path'

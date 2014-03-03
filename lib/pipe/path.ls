@@ -29,6 +29,13 @@ PathPipe = new Class(BasePipe,
 
   pipe-type: 'Path'
 
+  # does not create $res
+  # no resource for a Path pipe
+  post-init: ->
+    delete @args
+
+  has-resource: false
+
   id: ->
     @name
 
@@ -36,8 +43,7 @@ PathPipe = new Class(BasePipe,
     * 'string'
 
   valid-parents:
-    * 'container'
-    # * 'model' # makes sense here?
+    * 'path'
 )
 
 module.exports = PathPipe

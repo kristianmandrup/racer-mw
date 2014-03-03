@@ -68,6 +68,9 @@ BasePipe = new Class(
 
   valid-args: []
 
+  # by default any pipe can have a resource
+  has-resource: true
+
   id: ->
     throw new Error "A subclass of Pipe must implement id function"
 
