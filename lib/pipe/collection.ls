@@ -55,11 +55,15 @@ CollectionPipe = new Class(BasePipe,
 
   # pipe builder
   # attach a model pipe as a child
+  # return model pipe for more chaining
   model: (obj) ->
     ModelPipe         = requires.pipe 'model'
     pipe = new ModelPipe(obj)
     @attach pipe
-    @
+    pipe
+
+  models: ->
+    new ModelsPipe @
 
   valid-parents:
     * 'path'
