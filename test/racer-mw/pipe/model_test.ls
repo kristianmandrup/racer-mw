@@ -57,11 +57,11 @@ describe 'ModelPipe' ->
 
     context 'arg: array' ->
       specify 'fails' ->
-        expect(-> new AttributePipe '_page', 'admins').to.throw
+        expect(-> new ModelPipe '_page', 'admins').to.throw
 
     context 'arg: number' ->
       specify 'fails' ->
-        expect(-> new AttributePipe 1).to.throw Error
+        expect(-> new ModelPipe 1).to.throw Error
 
     context 'admin ModelPipe' ->
       before ->

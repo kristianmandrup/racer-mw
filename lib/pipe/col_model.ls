@@ -6,6 +6,8 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
+util  = require 'util'
+
 ModelPipe          = requires.pipe 'model'
 
 
@@ -13,8 +15,12 @@ ModelPipe          = requires.pipe 'model'
 ColModelPipe = new Class(ModelPipe,
 
   initialize: ->
+    console.log 'init ColPipe', util.inspect(arguments)
     @call-super!
     @
+
+  type: 'Pipe'
+  pipe-type: 'Model'
 
   id: ->
     @_id || @id-parent!

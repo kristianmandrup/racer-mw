@@ -100,7 +100,7 @@ BasePipe = new Class(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
     unless typeof(pipe) is 'object' and pipe.type is 'Pipe'
-      throw new Error "Only other pipes can be attached to a pipe, was: #{util.inspect pipe} [#{typeof pipe}]"
+      throw new Error "Only other pipes can be attached to a pipe, was: type:#{pipe.type} > #{util.inspect pipe} [#{typeof pipe}]"
 
     @parent-validator.validate @, pipe
 

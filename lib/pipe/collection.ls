@@ -27,6 +27,8 @@ attach-to-path-pipe = (names, col-pipe) ->
   path-pipe = new PathPipe(names)
   path-pipe.attach col-pipe
 
+ColModelPipe    = requires.pipe 'col_model'
+
 # Must be on a model or attribute
 CollectionPipe = new Class(BasePipe,
   initialize: ->
@@ -59,8 +61,7 @@ CollectionPipe = new Class(BasePipe,
   # attach a model pipe as a child
   # return model pipe for more chaining
   model: (obj) ->
-    ColModelPipe  = requires.pipe 'col_model'
-    console.log 'ColModelPipe', ColModelPipe
+    console.log 'obj' obj
     pipe = new ColModelPipe(obj)
     console.log 'pipe', pipe
     @attach pipe

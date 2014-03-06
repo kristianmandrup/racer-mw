@@ -46,3 +46,26 @@ describe 'ColModelPipe' ->
 
       specify 'sets name to admin' ->
         expect(new ColModelPipe(admin: obj).name).to.eq 'admin'
+
+    context 'arg: string' ->
+      specify 'fails' ->
+        expect(-> new ModelPipe 'users').to.throw
+
+    context 'arg: function' ->
+      specify 'fails' ->
+        expect(-> new ModelPipe (-> 'users')).to.throw
+
+    context 'arg: array' ->
+      specify 'fails' ->
+        expect(-> new ColModelPipe '_page', 'admins').to.throw
+
+    context 'arg: number' ->
+      specify 'fails' ->
+        expect(-> new ColModelPipe 1).to.throw Error
+
+    context 'admin ColModelPipe' ->
+      before ->
+        pipe := new ColModelPipe(admin: {})
+
+      specify 'pipe-type' ->
+        expect(pipe.pipe-type).to.eq 'Model'
