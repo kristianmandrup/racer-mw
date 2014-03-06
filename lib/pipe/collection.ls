@@ -9,6 +9,8 @@ require 'sugar'
 
 BasePipe          = requires.pipe 'base'
 PathPipe          = requires.pipe 'path'
+ColModelPipe      = requires.pipe 'col_model'
+ModelsPipe        = requires.pipe 'models'
 
 col-name = (arg) ->
   switch typeof arg
@@ -58,7 +60,7 @@ CollectionPipe = new Class(BasePipe,
   # return model pipe for more chaining
   model: (obj) ->
     ModelPipe         = requires.pipe 'model'
-    pipe = new ModelPipe(obj)
+    pipe = new ColModelPipe(obj)
     @attach pipe
     pipe
 

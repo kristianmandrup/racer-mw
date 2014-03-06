@@ -9,6 +9,7 @@ require 'sugar'
 BasePipe          = requires.pipe 'base'
 AttributePipe     = requires.pipe 'attribute'
 CollectionPipe    = requires.pipe 'collection'
+AttributesPipe    = requires.pipe 'attributes'
 
 # no need for a child validator :)
 # any attachment is always to a parent - simply validate parent is valid for child
@@ -31,7 +32,8 @@ ModelPipe = new Class(BasePipe,
   initialize: ->
     @call-super!
     first-arg = [@args].flatten!.first!
-    obj = first-arg if typeof! first-arg is 'Object'
+    # TODO: array is also an object, we need a better way! lodash method?
+    obj = first-arg if typeof first-arg is 'object'
     unless obj
       throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
 

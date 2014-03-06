@@ -17,3 +17,4 @@ ColModelPipe = new Class(ModelPipe,
 
   id: ->
     @id
+)

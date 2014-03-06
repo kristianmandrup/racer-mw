@@ -6,11 +6,12 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
+ModelPipe         = requires.pipe 'model'
+
 # Must be on a model or attribute
 ModelsPipe = new Class(
   initialize: (@parent-pipe) ->
-    validate!
-    @call-super!
+    @validate!
 
   validate: ->
     unless typeof @parent-pipe is 'object'
@@ -23,7 +24,7 @@ ModelsPipe = new Class(
       throw new Error "Models can only be used on a Model or Collection, was: #{@parent-pipe.pipe-type}"
 
   add: ->
-    pipe = @create_pipe arguments
+    pipe = @create-pipe arguments
     @parent-pipe.attach pipe
     @
 
