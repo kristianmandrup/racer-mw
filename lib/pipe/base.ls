@@ -46,6 +46,24 @@ BasePipe = new Class(
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
     @
 
+  child-types: ->
+    return "no children" unless @child-names!.length > 0
+    self = @
+    @child-names!.map (name) ->
+      self.child(name).pipe-type
+
+  describe-children: ->
+    return "no children" unless @child-names!.length > 0
+    self = @
+    @child-names!.map (name) ->
+      self.child(name).describe-self!
+
+  describe-self: ->
+    type: @pipe-type
+    name: @name
+    id: @id!
+    value: @value
+
   post-init: ->
     delete @args
     @$res = @create-res!

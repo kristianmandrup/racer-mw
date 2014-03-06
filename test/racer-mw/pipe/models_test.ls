@@ -82,6 +82,14 @@ describe 'ModelsPipe' ->
         specify 'returns models' ->
           expect(models.add name: {}).to.eq models
 
+        specify 'describe-children' ->
+          # console.log col-pipe.describe-children!.first!
+          expect(col-pipe.describe-children!.first!.id).to.eq '0'
+
+        specify 'child-types' ->
+          # console.log col-pipe.child-types!
+          expect(col-pipe.child-types!.first!).to.eq 'Model'
+
         specify 'adds the ModelPipe to the CollectionPipe' ->
           model-pipe = models.add(name: {}).first!
           expect(col-pipe.child '0').to.eq model-pipe
