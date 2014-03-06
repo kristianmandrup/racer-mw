@@ -31,20 +31,35 @@ CollectionPipe = new Class(BasePipe,
   initialize: ->
     @call-super!
 
+    name = @args
     if _.is-type('Array', @args) and @args.length > 1
-      name = @args.last!
-    else
-      name = @args
+      name = @config-via-array!
+
+    if _.is-type('Object', @args)
+      name = _.keys(@args).first!
+      value = _.values(@args).first!
 
     # set name of collection :)
     @set-name col-name(name).pluralize!
-
-    if _.is-type('Array', @args) and @args.length > 1
-      path-names = @args[0 to -2]
-      attach-to-path-pipe path-names, @
-
     @post-init!
     @
+
+  # TODO: should create model(s) from value
+  set-value: (value) ->
+    if _.is-type 'Array', value
+      list = value
+      for item in list
+        @model item
+    else
+      @model value
+
+  get-value: ->
+    _.values(@children).map (child) ->
+      child.value
+
+  config-via-array: ->
+    attach-to-path-pipe @args[0 to -2], @
+    @args.last!
 
   pipe-type: 'Collection'
 
@@ -61,9 +76,7 @@ CollectionPipe = new Class(BasePipe,
   model: (obj) ->
     ModelPipe = requires.pipe 'model'
     pipe = new ModelPipe(obj)
-    console.log 'id', pipe.id!
     @attach pipe
-    console.log 'id', pipe.id!
     pipe
 
   models: ->

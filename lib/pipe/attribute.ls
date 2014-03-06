@@ -24,16 +24,16 @@ AttributePipe = new Class(BasePipe,
       obj = arg
 
       if obj._clazz
-        @name = obj._clazz
-        @value-object = obj
+        new ModelPipe obj
       else
         key = _.keys(obj).first!
+        # detect if constructed from arguments hash
         if key is '0'
-          throw new Error "Bad object, key 0: #{util.inspect obj}"
+          throw new Error "Bad arguments: #{util.inspect obj}"
         # allow customizing attribute name
         # admin: user-obj
         @name = key
-        @value-object = _.values(obj).first!
+        @value = _.values(obj).first!
     default
       throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"
     @post-init!

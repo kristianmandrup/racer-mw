@@ -38,10 +38,19 @@ ModelPipe = new Class(BasePipe,
       throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
 
     @set-name obj-name(obj)
+    @set-value obj
     @post-init!
     @
 
   pipe-type: 'Model'
+
+  set-value: (obj) ->
+    unless _.is-type 'Object', obj
+      throw new Error "Value of model must be an object"
+    key = _.keys(obj).first!
+    value = obj
+    value = obj[key] if key is @name
+    @value = value
 
   # TODO: It should perhaps figure out the ID from the Resource!
   id: ->

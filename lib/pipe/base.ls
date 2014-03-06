@@ -56,6 +56,9 @@ BasePipe = new Class(
     @resource-clazz = requires.resource(@pipe-type.to-lower-case!)
     new @resource-clazz pipe: @
 
+  get-value: ->
+    void
+
   set-name: (name) ->
     @name = name
     @update-name!
