@@ -50,7 +50,7 @@ BasePipe = new Class(
     delete @args
     @$res = @create-res!
 
-  pipe-type: 'Pipe'
+  pipe-type: 'Base'
 
   create-res: ->
     @resource-clazz = requires.resource(@pipe-type.to-lower-case!)
