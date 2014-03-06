@@ -66,7 +66,7 @@ describe 'ModelsPipe' ->
       var col-pipe
 
       before ->
-        col-pipe := new CollectionPipe 'name'
+        col-pipe := new CollectionPipe 'users'
         models   := new ModelsPipe col-pipe
 
       specify 'is a ModelsPipe' ->
@@ -82,7 +82,14 @@ describe 'ModelsPipe' ->
         specify 'returns models' ->
           expect(models.add name: {}).to.eq models
 
-        # TODO: Needs a fix!
         specify 'adds the ModelPipe to the CollectionPipe' ->
-          model-pipe = models.add(name: {}).added
+          model-pipe = models.add(name: {}).first!
           expect(col-pipe.child '0').to.eq model-pipe
+
+        specify 'child names 0, 1' ->
+          expect(col-pipe.child-names!).to.include('0', '1')
+
+      describe 'add models without clazz' ->
+        specify 'assume clazz is singular of collection: user' ->
+          models.add name: 'Kris'
+          expect(models.first!._clazz).to.eq 'user'

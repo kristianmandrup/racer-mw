@@ -175,6 +175,7 @@ ModelPipe = new Class(BasePipe,
   pre-attach-to: (parent) ->
     if parent.pipe-type is 'Collection'
       @object-id = parent.next-child-id!
+      @_clazz = parent.name.singularize! if @_clazz is void
 
   valid-parents:
     * 'container'

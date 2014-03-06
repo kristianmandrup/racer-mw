@@ -84,6 +84,9 @@ BasePipe = new Class(
 
   children  : {}
 
+  child-names: ->
+    _.keys @children
+
   child: (name) ->
     @children[name]
 
