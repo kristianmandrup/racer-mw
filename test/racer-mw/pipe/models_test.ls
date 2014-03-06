@@ -84,6 +84,5 @@ describe 'ModelsPipe' ->
 
         # TODO: Needs a fix!
         specify 'adds the ModelPipe to the CollectionPipe' ->
-          model-pipe = models.add name: {}
-          # console.log col-pipe.children
+          model-pipe = models.add(name: {}).added
           expect(col-pipe.child '0').to.eq model-pipe

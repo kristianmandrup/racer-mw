@@ -140,7 +140,7 @@ describe 'ModelPipe' ->
     describe 'detach' ->
       context 'child: collection users' ->
         before ->
-          pipes.users = pipe.collection('user').added
+          pipes.users = pipe.collection('user')
           pipes.users.detach!
 
         specify 'collection returns the parent Model pipe' ->
@@ -154,7 +154,7 @@ describe 'ModelPipe' ->
 
     describe 'attach an current: user model' ->
       before ->
-        pipes.users = pipe.collection('user').added
+        pipes.users = pipe.collection('user')
 
         specify 'pipe-type is Model' ->
           expect(pipes.users.pipe-type).to.eq 'Collection'

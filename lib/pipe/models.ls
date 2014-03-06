@@ -24,9 +24,11 @@ ModelsPipe = new Class(
       throw new Error "Models can only be used on a Model or Collection, was: #{@parent-pipe.pipe-type}"
 
   add: ->
-    pipe = @create-pipe arguments
-    @parent-pipe.attach pipe
+    @added =  @create-pipe arguments
+    @parent-pipe.attach @added
     @
+
+  pipe-type: 'Models'
 
   create-pipe: ->
     switch arguments.length

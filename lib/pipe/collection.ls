@@ -59,8 +59,10 @@ CollectionPipe = new Class(BasePipe,
   # attach a model pipe as a child
   # return model pipe for more chaining
   model: (obj) ->
-    ModelPipe         = requires.pipe 'model'
+    ColModelPipe  = requires.pipe 'col_model'
+    console.log 'ColModelPipe', ColModelPipe
     pipe = new ColModelPipe(obj)
+    console.log 'pipe', pipe
     @attach pipe
     pipe
 

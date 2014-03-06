@@ -23,9 +23,11 @@ AttributesPipe = new Class(
     unless @parent-pipe.pipe-type is 'Model'
       throw new Error "Attributes can only be used on a Model pipes, was: #{@parent-pipe.pipe-type}"
 
+  pipe-type: 'Attributes'
+
   add: ->
-    pipe = @create-pipe arguments
-    @parent-pipe.attach pipe
+    @added = @create-pipe arguments
+    @parent-pipe.attach @added
     @
 
   create-pipe: ->

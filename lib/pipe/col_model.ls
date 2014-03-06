@@ -14,7 +14,16 @@ ColModelPipe = new Class(ModelPipe,
 
   initialize: ->
     @call-super!
+    @
 
   id: ->
-    @id
+    @_id || @id-parent!
+
+  id-parent: ->
+    unless @parent
+      throw new Error "Can't return id since no parent collection and no internal ID set"
+
+    _.keys(@parent.children).length
 )
+
+module.exports = ColModelPipe
