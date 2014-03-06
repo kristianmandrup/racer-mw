@@ -9,7 +9,6 @@ require 'sugar'
 
 BasePipe          = requires.pipe 'base'
 PathPipe          = requires.pipe 'path'
-ModelPipe         = requires.pipe 'model'
 ModelsPipe        = requires.pipe 'models'
 
 col-name = (arg) ->
@@ -50,7 +49,8 @@ CollectionPipe = new Class(BasePipe,
   pipe-type: 'Collection'
 
   next-child-id: ->
-    _.keys(@children).length + 1
+    keys = _.keys(@children)
+    keys.length
 
   id: ->
     @name
@@ -59,8 +59,11 @@ CollectionPipe = new Class(BasePipe,
   # attach a model pipe as a child
   # return model pipe for more chaining
   model: (obj) ->
+    ModelPipe = requires.pipe 'model'
     pipe = new ModelPipe(obj)
+    console.log 'id', pipe.id!
     @attach pipe
+    console.log 'id', pipe.id!
     pipe
 
   models: ->

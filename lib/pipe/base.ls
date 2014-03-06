@@ -99,21 +99,7 @@ BasePipe = new Class(
 
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
-    unless typeof(pipe) is 'object' and pipe.type is 'Pipe'
-      throw new Error "Only other pipes can be attached to a pipe, was: type:#{pipe.type} > #{util.inspect pipe} [#{typeof pipe}]"
-
-    @parent-validator.validate @, pipe
-
-    unless pipe.id!
-      throw new Error "id function of #{pipe.name} #{pipe.pipe-type} Pipe returns invalid id: #{pipe.id!} #{util.inspect pipe}"
-
-    @children[pipe.id!] = pipe
-
-    if @pipe-type is 'Collection'
-      pipe.id = @children.length
-
-    pipe._attached-to @
-    @
+    pipe.attach-to @
 
   parent-name: ->
     if @parent then @parent.full-name else ''
@@ -131,10 +117,21 @@ BasePipe = new Class(
     unless @id!
       throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
 
+    @pre-attach-to parent
+
     parent.children[@id!] = @
     @parent = parent
     @_attached-to parent
+
+    @post-attach-to parent
     @
+
+  clear: ->
+    children = {}
+
+  post-attach-to: (parent) ->
+
+  pre-attach-to: (parent) ->
 
   _attached-to: (parent) ->
     @parent = parent

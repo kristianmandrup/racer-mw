@@ -33,7 +33,7 @@ ModelPipe = new Class(BasePipe,
     @call-super!
     first-arg = [@args].flatten!.first!
     # TODO: array is also an object, we need a better way! lodash method?
-    obj = first-arg if typeof first-arg is 'object'
+    obj = first-arg if _.is-type 'Object', first-arg
     unless obj
       throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
 
@@ -45,17 +45,9 @@ ModelPipe = new Class(BasePipe,
 
   # TODO: It should perhaps figure out the ID from the Resource!
   id: ->
-    return @object-id if @object-id
-    return @id-from-parent! if @use-parent-id!
+    return String(@object-id) unless @object-id is void
     # if no parent, I must assume i am just a named attribute model
     @name
-
-  use-parent-id: ->
-    @parent and @parent.pipe-type is 'Collection'
-
-  # if in collection
-  id-from-parent: ->
-    @parent.next-child-id!
 
   attributes: ->
     new AttributesPipe @
@@ -163,14 +155,17 @@ ModelPipe = new Class(BasePipe,
       @attach pipe
       pipe
 
-  _pipe-from: (value) ->
-    # http://livescript.net/#operators
-    switch typeof! value
-    # strangely, an array is also a typeof object in javascript :O
-    case 'Object'
-      new ModelPipe value
-    case 'Array'
-      new CollectionPipe value
+  _pipe-from: (key, value) ->
+    if _.is-type 'Object', value
+      return new ModelPipe "#{key}": value
+    if _.is-type 'Array', value
+      return new CollectionPipe "#{key}": value
+
+    return new AttributePipe "#{key}": value
+
+  pre-attach-to: (parent) ->
+    if parent.pipe-type is 'Collection'
+      @object-id = parent.next-child-id!
 
   valid-parents:
     * 'container'

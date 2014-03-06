@@ -91,11 +91,11 @@ describe 'AttributesPipe' ->
             added := pipe.added.first!
             parent-child := pipe.parent-pipe.child 'age'
 
-          specify 'adds AttributePipe age' ->
+          specify 'adds AttributePipe age to attributes' ->
             expect(added.name).to.eq 'age'
 
-          specify 'adds AttributePipe age' ->
+          specify 'adds AttributePipe age to parent (model pipe)' ->
             expect(parent-child.name).to.eq 'age'
 
-          specify 'adds the AttributePipe age' ->
+          specify 'adds the AttributePipe age to model pipe' ->
             expect(model-pipe.child('age').name).to.eq 'age'

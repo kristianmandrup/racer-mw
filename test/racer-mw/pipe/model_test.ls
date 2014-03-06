@@ -170,7 +170,6 @@ describe 'ModelPipe' ->
       context 'add model current: user to users collection' ->
         before ->
           pipes.admin-user = pipes.users.model(current: {_clazz: 'user', id: 2})
-          console.log pipes.admin-user
 
         context 'current user pipe' ->
           specify 'pipe-type is Model' ->
@@ -181,6 +180,43 @@ describe 'ModelPipe' ->
 
           specify '$res is a ResourceModel' ->
             expect(pipes.users.$res.resource-type).to.eq 'Collection'
+
+    describe 'model' ->
+      var model, attributes, user
+
+      context 'a user model' ->
+        var user-model, proj-model, project
+
+        before ->
+          user :=
+            name: 'Kris'
+            _clazz: 'user'
+
+          project :=
+            name: 'My project'
+            _clazz: 'project'
+
+          user-model := new ModelPipe user: user
+
+          proj-model := user-model.model project: project
+
+        describe 'model to add project model attribute' ->
+          specify 'is a project model' ->
+            expect(proj-model).to.be.an.instance-of ModelPipe
+
+          specify 'adds project model as project child of user model ' ->
+            expect(user-model.child 'project').to.eq proj-model
+
+    describe 'models' ->
+      var model, attributes, user
+
+      context 'a user model' ->
+        before ->
+          user :=
+            name: 'Kris'
+            _clazz: 'user'
+
+          model := new ModelPipe user: {}
 
     describe 'attributes' ->
       var model, attributes, user

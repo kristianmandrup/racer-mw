@@ -12,7 +12,6 @@ BasePipe          = requires.pipe 'base'
 # Must be on a model
 AttributePipe = new Class(BasePipe,
   initialize: (arg) ->
-    console.log 'new AttributePipe', arg
     if _.is-type 'Array', arg
       throw new Error "AttributePipe cannot be constructed from an Array, was: #{arg}"
     @call-super!
@@ -29,7 +28,6 @@ AttributePipe = new Class(BasePipe,
         @value-object = obj
       else
         key = _.keys(obj).first!
-        console.log 'key', key
         if key is '0'
           throw new Error "Bad object, key 0: #{util.inspect obj}"
         # allow customizing attribute name

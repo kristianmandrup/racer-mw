@@ -5,7 +5,10 @@ requires.test 'test_setup'
 expect          = require('chai').expect
 
 CollectionPipe  = requires.pipe 'collection'
+ModelPipe       = requires.pipe 'model'
 PathPipe        = requires.pipe 'path'
+
+PipeModels      = requires.pipe     'models'
 
 describe 'CollectionPipe' ->
   var pipe, obj, collection
@@ -85,25 +88,52 @@ describe 'CollectionPipe' ->
       specify 'fails' ->
         expect(-> new CollectionPipe 1).to.throw Error
 
+    describe 'model' ->
+      context 'a users collection' ->
+        var mdl
+
+        before ->
+          collection := new CollectionPipe 'users'
+          mdl := collection.model(_clazz: 'user', name: 'kris')
+
+        specify 'model adds ModelPipe as child' ->
+          expect(mdl).to.be.an.instance-of ModelPipe
+
     describe 'models' ->
       context 'a users collection' ->
         before ->
           collection := new CollectionPipe 'users'
 
         specify 'models returns a PipeModels instance' ->
-          expect(collection.models).to.be.an.instance-of PipeModels
+          expect(collection.models!).to.be.an.instance-of PipeModels
 
         context 'PipeModels' ->
           before ->
-            models := collections.models
+            models := collection.models!
             user :=
               name: 'Kris'
               _clazz: 'user'
 
-          describe 'add' ->
+          describe 'add a user' ->
+            var res, added
+            before ->
+              collection.clear!
+              models.clear!
+              res := models.add user
+              added := models.added.first!
+              # console.log added
+
             specify 'returns a PipeModels instance' ->
-              expect(models.add user).to.be.an.instance-of PipeModels
+              expect(res).to.be.an.instance-of PipeModels
 
             specify 'adds user to collection' ->
-              models.add user
-              expect(collection.first).to.eq user
+              expect(added.name).to.eq 'user'
+
+            specify 'user added is a ModelPipe' ->
+              expect(added).to.be.an.instance-of ModelPipe
+
+            specify 'user added has id function' ->
+              expect(added.id).to.not.be.undefined
+
+            specify 'adds user 0 to collection' ->
+              expect(added.id!).to.eq '0'
