@@ -12,6 +12,7 @@ AttributePipe         = requires.pipe 'attribute'
 AttributesPipe = new Class(
   initialize: (@parent-pipe) ->
     @validate!
+    @
 
   validate: ->
     unless typeof @parent-pipe is 'object'
@@ -25,21 +26,34 @@ AttributesPipe = new Class(
 
   pipe-type: 'Attributes'
 
-  add: ->
-    @added = @create-pipe arguments
-    @parent-pipe.attach @added
+  add: (...args)->
+    pipe = @create-pipe ...args
+    @_push pipe
+    @parent-pipe.attach pipe
     @
 
+  _push: (pipe) ->
+    @added ||= []
+    @added.push pipe
+
+  first: ->
+    @added.first!
+
+  last: ->
+    @added.last!
+
   create-pipe: ->
+    args = _.values(arguments)
+    first-arg = args.first!
     switch arguments.length
     case 0
       throw new Error "Must take an argument"
     case 1
-      new AttributePipe arguments[0]
+      new AttributePipe first-arg
     case 2
-      new AttributePipe arguments[0], arguments[1]
+      new AttributePipe first-arg, args.last!
     default
-      throw new Error "Too many arguments, #{arguments}"
+      throw new Error "Too many arguments, #{args}"
 )
 
 module.exports = AttributesPipe

@@ -83,8 +83,19 @@ describe 'AttributesPipe' ->
         specify 'returns attributes' ->
           expect(attrs.add 'age').to.eq attrs
 
-        # TODO: Needs a fix!
-        specify 'adds the AttributePipe to the ModelPipe' ->
-          attr-pipe = attrs.add 'age'
-          # console.log col-pipe.children
-          expect(model-pipe.child '0').to.eq attr-pipe
+        describe 'age attribute pipe added' ->
+          var added, parent-child
+
+          before ->
+            pipe := attrs.add 'age'
+            added := pipe.added.first!
+            parent-child := pipe.parent-pipe.child 'age'
+
+          specify 'adds AttributePipe age' ->
+            expect(added.name).to.eq 'age'
+
+          specify 'adds AttributePipe age' ->
+            expect(parent-child.name).to.eq 'age'
+
+          specify 'adds the AttributePipe age' ->
+            expect(model-pipe.child('age').name).to.eq 'age'

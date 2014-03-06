@@ -9,7 +9,7 @@ require 'sugar'
 
 BasePipe          = requires.pipe 'base'
 PathPipe          = requires.pipe 'path'
-ColModelPipe      = requires.pipe 'col_model'
+ModelPipe         = requires.pipe 'model'
 ModelsPipe        = requires.pipe 'models'
 
 col-name = (arg) ->
@@ -26,8 +26,6 @@ col-name = (arg) ->
 attach-to-path-pipe = (names, col-pipe) ->
   path-pipe = new PathPipe(names)
   path-pipe.attach col-pipe
-
-ColModelPipe    = requires.pipe 'col_model'
 
 # Must be on a model or attribute
 CollectionPipe = new Class(BasePipe,
@@ -61,9 +59,7 @@ CollectionPipe = new Class(BasePipe,
   # attach a model pipe as a child
   # return model pipe for more chaining
   model: (obj) ->
-    console.log 'obj' obj
-    pipe = new ColModelPipe(obj)
-    console.log 'pipe', pipe
+    pipe = new ModelPipe(obj)
     @attach pipe
     pipe
 

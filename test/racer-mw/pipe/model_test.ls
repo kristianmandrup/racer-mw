@@ -7,6 +7,8 @@ expect          = require('chai').expect
 ModelPipe       = requires.pipe     'model'
 ResourceModel   = requires.resource 'model'
 
+PipeAttributes  = requires.pipe     'attributes'
+
 describe 'ModelPipe' ->
   var pipe, obj
 
@@ -167,7 +169,8 @@ describe 'ModelPipe' ->
 
       context 'add model current: user to users collection' ->
         before ->
-          pipes.admin-user = pipes.users.model(current: {_clazz:'user', id: 2}).added
+          pipes.admin-user = pipes.users.model(current: {_clazz: 'user', id: 2})
+          console.log pipes.admin-user
 
         context 'current user pipe' ->
           specify 'pipe-type is Model' ->
@@ -188,14 +191,14 @@ describe 'ModelPipe' ->
             name: 'Kris'
             _clazz: 'user'
 
-          model := new ModelPipe 'user'
+          model := new ModelPipe user: {}
 
         specify 'models returns a PipeModels instance' ->
-          expect(model.attributes).to.be.an.instance-of PipeAttributes
+          expect(model.attributes!).to.be.an.instance-of PipeAttributes
 
         context 'PipeAttributes' ->
           before ->
-            attributes := model.attributes
+            attributes := model.attributes!
 
           describe 'add age' ->
             var res
@@ -207,5 +210,6 @@ describe 'ModelPipe' ->
 
             specify 'adds age and status attributes to model' ->
               res.add(status: 'single')
-              expect(model.attributes.first.name).to.eq 'age'
-              expect(model.attributes.last.name).to.eq 'status'
+              # console.log attributes.first!
+              expect(attributes.first!.name).to.eq 'age'
+              expect(attributes.last!.name).to.eq 'status'

@@ -2,8 +2,9 @@ Class       = require('jsclass/src/core').Class
 
 requires = require '../../requires'
 
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+_     = require 'prelude-ls'
+lo    = require 'lodash'
+util  = require 'util'
 require 'sugar'
 
 BasePipe          = requires.pipe 'base'
@@ -11,6 +12,7 @@ BasePipe          = requires.pipe 'base'
 # Must be on a model
 AttributePipe = new Class(BasePipe,
   initialize: (arg) ->
+    console.log 'new AttributePipe', arg
     if _.is-type 'Array', arg
       throw new Error "AttributePipe cannot be constructed from an Array, was: #{arg}"
     @call-super!
@@ -26,9 +28,13 @@ AttributePipe = new Class(BasePipe,
         @name = obj._clazz
         @value-object = obj
       else
+        key = _.keys(obj).first!
+        console.log 'key', key
+        if key is '0'
+          throw new Error "Bad object, key 0: #{util.inspect obj}"
         # allow customizing attribute name
         # admin: user-obj
-        @name = _.keys(obj).first!
+        @name = key
         @value-object = _.values(obj).first!
     default
       throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"

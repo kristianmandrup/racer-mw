@@ -46,31 +46,42 @@ ModelPipe = new Class(BasePipe,
   # TODO: It should perhaps figure out the ID from the Resource!
   id: ->
     return @object-id if @object-id
-    if @parent
-      return @parent.next-child-id!
-    # if no parent, I must assume i am just a named attribute
+    return @id-from-parent! if @use-parent-id!
+    # if no parent, I must assume i am just a named attribute model
     @name
+
+  use-parent-id: ->
+    @parent and @parent.pipe-type is 'Collection'
+
+  # if in collection
+  id-from-parent: ->
+    @parent.next-child-id!
+
+  attributes: ->
+    new AttributesPipe @
 
     #throw new Error "ModelPipe #{@name} unable to figure out its current id"
 
   # TODO: Major refactoring needed. Split out in separate modules or classes
   collection: ->
-    switch arguments.length
+    args = _.values(arguments)
+    switch args.length
     case 0
       throw new Error "Must take at least one argument to indicate the collection to add"
     case 1
-     collection = new CollectionPipe arguments[0]
+     collection = new CollectionPipe args.first!
      @attach collection
      collection
     default
       throw new Error "Too many arguments, takes only a name (String), or an Object"
 
   model: ->
-    switch arguments.length
+    args = _.values(arguments)
+    switch args.length
     case 0
       throw new Error "Must take a name, a value (object) or a {name: value} as an argument"
     case 1
-     @_add-model arguments[0]
+     @_add-model args.first!
     default
       throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
 
@@ -87,8 +98,8 @@ ModelPipe = new Class(BasePipe,
     @attribute name
 
   _hash-model: (hash) ->
-    key = _.keys(hash).first
-    value = _.values(hash).first
+    key = _.keys(hash).first!
+    value = _.values(hash).first!
     switch key
     case 'collection'
       throw new Error "No such thing as a Collection model. Try adding a collection directly instead, f.ex: .collection('users')"
@@ -105,11 +116,12 @@ ModelPipe = new Class(BasePipe,
 
   # attach an attribute pipe as a child
   attribute: ->
+    args = _.values(arguments)
     switch arguments.length
     case 0
       throw new Error "Must take a name or a {name: value} as an argument"
     case 1
-      @_add-attribute arguments[0]
+      @_add-attribute args.first!
     default
       throw new Error "Too many arguments, takes only a name (string) or an object (hash)"
 
@@ -124,9 +136,9 @@ ModelPipe = new Class(BasePipe,
       throw new Error "Invalid Attribute pipe argument. Must be a name (string) or an object (hash), was: #{arg}"
 
   _name-attribute: (name) ->
-    attr-pipe = new AttributePipe name
-    @attach attr-pipe
-    attr-pipe
+    pipe = new AttributePipe name
+    @attach pipe
+    pipe
 
   _hash-attribute: (hash) ->
     key = _.keys(hash).first!
