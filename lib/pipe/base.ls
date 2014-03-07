@@ -18,7 +18,7 @@ walk = (meth, steps) ->
     throw Error "You should NEVER have more than 10 pipes in a model pipeline!!!"
   inner-walk @, steps
 
-
+ValueObject       = requires.lib 'value_object'
 ParentValidator   = requires.pipe 'validator/parent'
 
 # A Pipe can have one parent but many children. Pipes can thus be made into a tree.
@@ -48,7 +48,7 @@ BasePipe = new Class(
 
   set-value: (value) ->
     if @validate-value value
-      @value = value
+      @value = new ValueObject(value)
 
   validate-value: (value) ->
     true

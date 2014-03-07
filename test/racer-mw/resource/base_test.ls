@@ -16,6 +16,7 @@ BasePipe          = requires.pipe 'base'
 CollectionPipe    = requires.pipe 'collection'
 ModelPipe         = requires.pipe 'model'
 AttributePipe     = requires.pipe 'attribute'
+PathPipe          = requires.pipe 'path'
 
 describe 'BaseResource' ->
   var base-res, model-res, att-res, col-res, pipe
@@ -104,6 +105,27 @@ describe 'BaseResource' ->
 
       specify 'is 27' ->
         expect(base-res.value-object!).to.eq 27
+
+    describe 'obtain path from resource' ->
+      var user
+      before ->
+        user := {name: 'Kris'}
+        pipe = new ModelPipe(user: user)
+        model-res := new ModelResource pipe: pipe
+        model-res.full-path = '_path.user'
+
+      specify 'is user' ->
+        expect(model-res.path!).to.eq 'user'
+
+    describe 'obtain path from Model Pipe' ->
+      var user
+      before ->
+        user := {name: 'Kris'}
+        pipe = new PathPipe('_path').model(user: user)
+        model-res := new ModelResource pipe: pipe
+
+      specify 'is user' ->
+        expect(model-res.path!).to.eq 'user'
 
     describe 'obtain value-object from Model Pipe' ->
       var user

@@ -55,6 +55,11 @@ BaseResource = new Class(ResourceCommand,
 
   pipe: void
 
+  # use pipe path if there
+  path: ->
+    return @pipe.path if @pipe
+    @full-path unless @full-path is void
+
   value-object: ->
     return @value unless @value is void
     return @pipe-value! unless @pipe-value! is void

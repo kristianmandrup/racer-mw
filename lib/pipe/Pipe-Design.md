@@ -481,7 +481,8 @@ looks up a validator for the given pipe (fx by type and name) and then injects a
 It could also inject a `validator` on the pipe which `validate-value` will use to validate if present.
 
 Obviously, having the same validation logic on both Pipe and Resource doesn't make any sense.
-If a Pipe or Resource can be stand-alone with a value, and the value can be transferred between them we need a more clever design:
+If a Pipe or Resource can be stand-alone with a value, and the value can be transferred between them we need a
+more clever design...
 
 ## Value object
 
@@ -492,7 +493,7 @@ The following could be a good, simple design:
 
 ```livescript
 ValueObject = new Class(
-  initialize: (@value)
+  initialize: (@value) ->
     @valid = @validate @value
 
   valid: true
@@ -501,6 +502,15 @@ ValueObject = new Class(
     true
 )
 ```
+
+However how do we inject the correct validation logic per value, or according to the context of the value?
+How do we know a value is an age and should be validated via the age validator?
+
+From the resource: We have the resource type (fx model, attribute), the pipe unless the resource is stand-alone, otherwise we always have the path.
+From the pipe: We have the pipe, pipe type and path. For an attribute we have the name of the attribute etc.
+
+This leads us to conclude, that it is easiest to determine an appropriate validator from the pipe info.
+For a stand-alone resource we would have to take the last part of the path as the name.
 
 ## Advanced class based validation
 
