@@ -11,9 +11,9 @@ AttributePipe     = requires.pipe 'attribute'
 ModelPipe         = requires.pipe 'model'
 CollectionPipe    = requires.pipe 'collection'
 
-PipeBuilder       = requires.pipe 'builder'
+BasePipeBuilder   = requires.pipe-builder 'base'
 
-AttributeBuilder = new Class(PipeBuilder,
+AttributePipeBuilder = new Class(BasePipeBuilder,
   initialize: (@container) ->
 
   attach: (pipe) ->
@@ -76,4 +76,4 @@ AttributeBuilder = new Class(PipeBuilder,
     return new AttributePipe "#{key}": value
 )
 
-module.exports = AttributeBuilder
+module.exports = AttributePipeBuilder

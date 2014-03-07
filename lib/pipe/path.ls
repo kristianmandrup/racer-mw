@@ -27,12 +27,16 @@ PathPipe = new Class(BasePipe,
     @post-init!
     @
 
-  pipe-type: 'Path'
+  attribute: (...args) ->
+    @builder('attribute').build ...args
 
-  # does not create $res
-  # no resource for a Path pipe
-  post-init: ->
-    delete @args
+  model: (...args) ->
+    @builder('model').build ...args
+
+  collection: (...args) ->
+    @builder('collection').build ...args
+
+  pipe-type: 'Path'
 
   has-resource: false
 

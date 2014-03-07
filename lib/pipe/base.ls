@@ -30,6 +30,10 @@ ParentValidator   = requires.pipe 'validator/parent'
 # we need some convenient container of this information
 # same goes for parent (in case we detach and attach to a new parent!)
 
+CollectionPipeBuilder = requires.pipe-builder 'collection'
+ModelPipeBuilder      = requires.pipe-builder 'model'
+AttributePipeBuilder  = requires.pipe-builder 'attribute'
+
 BasePipe = new Class(
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->
@@ -45,6 +49,15 @@ BasePipe = new Class(
     unless @validate-args
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
     @
+
+  config-builders: ->
+    @builders = {}
+    @builders['collection']   = new CollectionPipeBuilder @
+    @builders['model']        = new ModelPipeBuilder @
+    @builders['attribute']    = new AttributePipeBuilder @
+
+  builder: (name) ->
+    @builders[name]
 
   set-value: (value) ->
     if @validate-value value
@@ -74,6 +87,7 @@ BasePipe = new Class(
   post-init: ->
     delete @args
     @$res = @create-res!
+    @config-builders!
     @post-build!
 
   post-build: ->
@@ -81,6 +95,7 @@ BasePipe = new Class(
   pipe-type: 'Base'
 
   create-res: ->
+    return unless @has-resource
     @resource-clazz = requires.resource(@pipe-type.to-lower-case!)
     new @resource-clazz pipe: @
 

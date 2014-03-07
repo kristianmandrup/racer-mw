@@ -8,12 +8,11 @@ util  = require 'util'
 require 'sugar'
 
 PipeBuilder       = requires.pipe 'builder'
-CollectionPipe    = requires.pipe 'attribute'
+CollectionPipe    = requires.pipe 'collection'
 
-PipeBuilder       = requires.pipe 'builder'
+BasePipeBuilder   = requires.pipe-builder 'base'
 
-# TODO: Wrap in a class!
-CollectionBuilder = new Class(PipeBuilder,
+CollectionPipeBuilder = new Class(BasePipeBuilder,
   build: ->
     args = _.values(arguments)
     switch args.length
@@ -27,4 +26,4 @@ CollectionBuilder = new Class(PipeBuilder,
       throw new Error "Too many arguments, takes only a name (String), or an Object"
 )
 
-module.exports = CollectionBuilder
+module.exports = CollectionPipeBuilder

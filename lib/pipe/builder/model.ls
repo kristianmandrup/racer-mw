@@ -9,9 +9,9 @@ require 'sugar'
 
 ModelPipe    = requires.pipe 'model'
 
-PipeBuilder       = requires.pipe 'builder'
+BasePipeBuilder  = requires.pipe-builder 'base'
 
-ModelBuilder = new Class(PipeBuilder,
+ModelPipeBuilder = new Class(BasePipeBuilder,
   build: ->
     args = _.values(arguments)
     switch args.length
@@ -52,4 +52,4 @@ ModelBuilder = new Class(PipeBuilder,
       @attribute hash
 )
 
-module.exports = ModelBuilder
+module.exports = ModelPipeBuilder

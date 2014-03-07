@@ -36,6 +36,9 @@ module.exports =
   error: (...paths) ->
     @lib('errors', ...paths)
 
+  pipe-builder: (...paths) ->
+    @lib('pipe', 'builder', ...paths)
+
   pipe: (...paths) ->
     @lib('pipe', ...paths)
 

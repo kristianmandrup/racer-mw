@@ -11,10 +11,6 @@ AttributePipe     = requires.pipe 'attribute'
 CollectionPipe    = requires.pipe 'collection'
 AttributesPipe    = requires.pipe 'attributes'
 
-CollectionBuilder = requires.builder 'collection'
-ModelBuilder      = requires.builder 'model'
-AttributeBuilder  = requires.builder 'attribute'
-
 # no need for a child validator :)
 # any attachment is always to a parent - simply validate parent is valid for child
 # no need to validate reverse relationship - is implicit :)
@@ -35,7 +31,6 @@ ModelPipe = new Class(BasePipe,
   initialize: ->
     @call-super!
     first-arg = [@args].flatten!.first!
-    # TODO: array is also an object, we need a better way! lodash method?
     obj = first-arg if _.is-type 'Object', first-arg
     unless obj
       throw new Error "ModelPipe constructor must take an Object argument, was: #{@args}"
@@ -43,17 +38,7 @@ ModelPipe = new Class(BasePipe,
     @set-name obj-name(obj)
     @set-value obj
     @post-init!
-    @config-builders!
     @
-
-  config-builders: ->
-    @builders = {}
-    @builders['collection']   = new CollectionBuilder @
-    @builders['model']        = new ModelBuilder @
-    @builders['attribute']    = new ModelBuilder @
-
-  builder: (name) ->
-    @builders[name]
 
   attribute: (...args) ->
     @builder('attribute').build ...args
