@@ -3,96 +3,68 @@
 Abstract underlying Racer model API with a more convenient API/DSL which takes care of much of the underlying complexity
 of setting paths etc.
 
-See [derby-model](http://derbyjs.com/#models) and [racer-example](https://github.com/Sebmaster/racer-example)
-for inspiration and information on how to improve this project...
+The main idea is that *Pipes* and *Resources* encapsulate the following key entities:
 
-Please see [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/The-big-picture) for a general idea of the design/architecture and goals of this project...
+**Pipe**
 
-Also see the [middleware](https://github.com/kristianmandrup/middleware) project for a better understanding of the underlying "mechanics" of the pipeline.
+ - encapsulate the underlying path in the store (model)
+ - is connected to a resource
 
-The current APIs are slowly getting more stable...
-Ideas/suggestions for improvement are more than welcome!
+**Resource**
 
-The main idea is that Pipes and Resources encapsulates the following key points:
+- wraps the Racer model API
+- encapsulates the value of a node in the model
+- uses its pipe to know its current path in the model
 
-- Create Pipes that encapsulate the underlying path in the store (model)
-- Create Resources that wrap the Racer model API more elegantly ;)
+## Pipes
 
- - CollectionResource, such as `users`, that can expect its instances to be of a certain "Class"
- - ModelResource, such as 'user', that is an instance of a "Class" and is contained by a CollectionResource
- - AttributeResource that can access the attribute of a ModelResource
+Each pipe is connected to a resource.
 
- - middleware stack to be applied on Store (model) operations
-  - on Create, Update (auth, validate, marshal)
-  - Delete (auth)
-  - on Get (auth, decorate)
+See [Pipe Design](https://github.com/kristianmandrup/racer-mw/blob/master/lib/pipe/Pipe-Design.md)
 
-For some more thoughts...
+## Resources
 
-- [Mw design](https://github.com/kristianmandrup/racer-mw/lib/mw/Mw-Design.md)
-- [Resource design](https://github.com/kristianmandrup/racer-mw/lib/resource/Resource-Design.md) (needs update)
-- [Architecture overview](https://github.com/kristianmandrup/racer-mw//Architecture-Overview.md)
+A resource will get the model path for where to sync its value from its pipe.
+
+* CollectionResource, such as `users`, that can expect the instances it contains to all be of a certain "Class"
+* ModelResource, such as 'user', that is an instance of a "Class" and is contained by a CollectionResource
+* AttributeResource that can access the attribute of a ModelResource
+
+See [Resource Design](https://github.com/kristianmandrup/racer-mw/blob/master/lib/resource/Resource-Design.md)
+
+## Middleware stack
+
+Any model store operation is categorized as either a Read, Update or Delete (RUD) command.
+Depending on the type of command, a different Middleware stack is applied (injected) as part of the operation.
+
+* Read - authorize, decorate
+* Update - authorize, validate, (container validate?), marshal
+* Delete - authorize, (container validate?)
+
+See [Mw design](https://github.com/kristianmandrup/racer-mw/lib/mw/Mw-Design.md)
+
+Better overview:
+
+* [Architecture overview](https://github.com/kristianmandrup/racer-mw//Architecture-Overview.md)
+* [Files overview](https://github.com/kristianmandrup/racer-mw/blob/master/lib/Files%20overview.md)
+* [Racer Sync Design](https://github.com/kristianmandrup/racer-mw/tree/master/lib/racer/Sync-Design.md)
+* [Promises Design](https://github.com/kristianmandrup/racer-mw/blob/master/Promises-Design.md)
+
+[Wiki](https://github.com/kristianmandrup/racer-mw/wiki)
+
+* [The Big Picture](https://github.com/kristianmandrup/racer-mw/wiki/The-big-picture)
+
+Other links:
+
+* [derby-model](http://derbyjs.com/#models)
+* [racer-example](https://github.com/Sebmaster/racer-example)
+* [middleware](https://github.com/kristianmandrup/middleware) - engine for Middleware
 
 ## TODO
 
-Improve
+Design architecture for leveraging subscriptions and live updates (promises?) (bacon.js?)
 
- * Test suite
- * Documentation
- * DSL
- * Resource API as more "classical" model wrapper on loaded data
-
-Support
-
- * all Racers model methods
  * [subscriptions](https://github.com/kristianmandrup/racer-mw/wiki/Racer-model-subscriptions) to model change events ;)
-
-Would be nice to provide **Promises* as a more convenient way (wrapper) to work with live-updates, such as subscribe, fetch etc.
-which use "old-school" event handlers. We should *promisify* these event handlers!
-
-- [promises are better]https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/
-- [promises](http://howtonode.org/promises)
-- [deferred](https://www.npmjs.org/package/deferred) - *promisify* callback hell functions!
-
-Both **Q** and **PromisedIO** provide utilities for wrapping or calling Node-style functions.
-
-The *deferred* package is another alternative...
-
-```javascript
-var promisify = require('deferred').promisify;
-var fs = require('fs');
-
-// Convert node.js async functions, into ones that return a promise
-var readdir = promisify(fs.readdir);
-```
-
-From [bogart](https://github.com/nrstott/bogart)
-
-```javascript
-function promisify(nodeAsyncFn, context) {
-  return function() {
-    var defer = q.defer()
-      , args = Array.prototype.slice.call(arguments);
-
-    args.push(function(err, val) {
-      if (err !== null) {
-        return defer.reject(err);
-      }
-
-      return defer.resolve(val);
-    });
-
-    nodeAsyncFn.apply(context || {}, args);
-
-    return defer.promise;
-  };
-};
-```
-
-Promises, the way to go!
-
-PS: Perhaps the best (most featurecomplete) Promise library at this time is [bluebird](https://github.com/petkaantonov/bluebird)?
-
 
 ## Contributing
 

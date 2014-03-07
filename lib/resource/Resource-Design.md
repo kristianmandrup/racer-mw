@@ -159,14 +159,79 @@ the result of the query:
 
 *on-filter* : commands that can be run on a filter result (`ref` and `get`)
 
-
-
 ## Marshalling
 
 We have added a few `$` prefixed properties and methods to the Resouce model.
 You don't want these values to be stored in the DB. So the marshalling (marshal-mw) should ensure that any `$` value
 is always discarded and then they will be put back on by the Resource decorator :)
 At least it should always discard `$resource` and `$pipe`.
+
+## Issuing commands
+
+A Racer model API command is of the following form.
+
+`model.refList ( path, collection, ids, [options] )`
+
+The Resource commands are instead all called using a hash syntax, like the following:
+
+```
+  resource.refList collection: col, ids: my-ids
+  resource.refList ids: my-ids, collection: col, options: {deleteRemoved: true}
+```
+
+This call is a little longer, but much clearer.
+
+The benefits of the hash (Object) call approach are:
+
+- easier to remember parameter names than calling order
+- clearer code
+- flexible parameter order
+
+Additionally we can use the parameter names for better error messages and greatly simplify the code base.
+The `lib/resource/arg` contains the code that handles all this.
+
+The arg files such as `array.ls` simply contains json which defines which arguments are required and optional
+for a given "array" command, and (optioanlly) in which variable it should store the result on the resource.
+Given that we always have the arguments as a hash, we can simply look up these rules in the `ArgValidator`.
+We can then validate accordingly and provide clear error messages to the user:
+
+- there are argument names outside the required and optional
+- one or more required arguments have not been assigned in the call
+
+The error message can even respond with the required and optional arguments for the command as part of the error message!
+A much nicer developer experience :)
+
+As a further bonus each command can be simplified to the following blueprint signature:
+
+```
+<command-name>: (hash) ->
+  @perform '<command-name>', hash
+```
+
+Since all commands will be able to follow this simple common signature, we can auto-generate the command functions
+from a simple list of commands allowed for the Resource in question.
+
+```
+commands:
+  * 'get'
+  * 'set'
+  * 'set-null'
+```
+
+Some commands are applicable for all Resources, whereas others such as the Array methods,
+only make sense for a `CollectionResource`.
+
+To further take advantage of this, some methods are scoped, ie. they should set the `scope` variable with the result.
+We can simply wrap the command in a scoped function like this:
+
+```
+scoped: (hash) ->
+  @scope = (@perform '<command-name>', hash)
+  @
+
+<command-name>: (hash) ->
+  @scoped '<command-name>', hash
+```
 
 ### $set current model object as-is
 
