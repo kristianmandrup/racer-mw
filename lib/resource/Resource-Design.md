@@ -69,6 +69,25 @@ You can also attach a resource to a new pipe using `attach-to`:
 resource.attach-to(pipe)
 ```
 
+In order to transfer the value from a pipe to a resource, you can supply `transfer: true` to the arguments
+
+```livescript
+resource.attach-to(pipe, transfer: true)
+
+# Can also be done when detaching
+resource.detach(transfer: true)`
+```
+
+Currently transfer is always uni-directional, from pipe to resource.
+Not sure if it makes sense to support the reverse. Would this make sense?
+
+`resource.detach(transfer: 'pipe')`
+
+There is currently no support for detaching a pipe from its resource, only from its parent pipe.
+Is this API needed?
+
+`pipe.detach-resource()`
+
 ## Resource commands
 
 Each type of Resource can only execute a subset of commands, those commands that are valid for the kind
