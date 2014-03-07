@@ -173,6 +173,7 @@ ModelPipe = new Class(BasePipe,
     return new AttributePipe "#{key}": value
 
   pre-attach-to: (parent) ->
+    @call-super!
     if parent.pipe-type is 'Collection'
       @object-id = parent.next-child-id!
       @_clazz = parent.name.singularize! if @_clazz is void

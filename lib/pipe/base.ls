@@ -153,9 +153,13 @@ BasePipe = new Class(
   clear: ->
     children = {}
 
+  # throw new Error if invalid pipe for parent
+  validate: (parent) ->
+
   post-attach-to: (parent) ->
 
   pre-attach-to: (parent) ->
+    validate parent
 
   _attached-to: (parent) ->
     @parent = parent
