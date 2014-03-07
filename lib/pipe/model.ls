@@ -50,7 +50,7 @@ ModelPipe = new Class(BasePipe,
     key = _.keys(obj).first!
     value = obj
     value = obj[key] if key is @name
-    @value = value
+    @call-super value
 
   # TODO: It should perhaps figure out the ID from the Resource!
   id: ->

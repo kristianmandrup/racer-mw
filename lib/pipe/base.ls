@@ -46,6 +46,13 @@ BasePipe = new Class(
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
     @
 
+  set-value: (value) ->
+    if @validate-value value
+      @value = value
+
+  validate-value: (value) ->
+    true
+
   child-types: ->
     return "no children" unless @child-names!.length > 0
     self = @
@@ -67,6 +74,9 @@ BasePipe = new Class(
   post-init: ->
     delete @args
     @$res = @create-res!
+    @post-build!
+
+  post-build: ->
 
   pipe-type: 'Base'
 
@@ -154,12 +164,12 @@ BasePipe = new Class(
     children = {}
 
   # throw new Error if invalid pipe for parent
-  validate: (parent) ->
+  validate-attch: (parent) ->
 
   post-attach-to: (parent) ->
 
   pre-attach-to: (parent) ->
-    validate parent
+    @validate-attch parent
 
   _attached-to: (parent) ->
     @parent = parent
