@@ -480,6 +480,28 @@ We have a `post-build` method on each pipe, which can be configured (customized)
 looks up a validator for the given pipe (fx by type and name) and then injects an appropriate validation method.
 It could also inject a `validator` on the pipe which `validate-value` will use to validate if present.
 
+Obviously, having the same validation logic on both Pipe and Resource doesn't make any sense.
+If a Pipe or Resource can be stand-alone with a value, and the value can be transferred between them we need a more clever design:
+
+## Value object
+
+The *Value object* should be its own entity which carries the validation logic.
+The transferring the *Value object* would also transfer its validation logic. Much better!
+
+The following could be a good, simple design:
+
+```livescript
+ValueObject = new Class(
+  initialize: (@value)
+    @valid = @validate @value
+
+  valid: true
+
+  validate: ->
+    true
+)
+```
+
 ## Advanced class based validation
 
 The following idea is left as an exercise...
