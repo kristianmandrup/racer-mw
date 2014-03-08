@@ -4,7 +4,7 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-AttributePipe  = requires.pipe 'attribute'
+AttributePipe  = requires.apipe 'attribute'
 
 describe 'AttributePipe' ->
   var pipe, obj
@@ -26,35 +26,30 @@ describe 'AttributePipe' ->
         obj := {_clazz: 'user'}
 
       specify 'fails' ->
-        expect(-> new AttributePipe obj).to.not.throw
+        expect(-> new AttributePipe obj).to.throw
 
-      specify 'sets name to user' ->
-        expect(new AttributePipe(obj).name).to.eq 'user'
-
-      specify 'id is user' ->
-        expect(new AttributePipe(obj).id!).to.eq 'user'
 
     context 'arg: string' ->
       specify 'creates it' ->
-        expect(new AttributePipe 'users').to.be.an.instance-of AttributePipe
+        expect(new AttributePipe 'email').to.be.an.instance-of AttributePipe
 
       specify 'sets name to users' ->
-        expect(new AttributePipe('users').name).to.eq 'users'
+        expect(new AttributePipe('email').name).to.eq 'email'
 
     context 'arg: function' ->
       specify 'creates it' ->
-        expect(-> new AttributePipe (-> 'users')).to.not.throw
+        expect(-> new AttributePipe (-> 'email')).to.not.throw
 
       specify 'creates it' ->
-        expect(new AttributePipe 'users').to.be.an.instance-of AttributePipe
+        expect(new AttributePipe 'email').to.be.an.instance-of AttributePipe
 
     # Does this make sense ???
     context 'arg: array' ->
       specify 'creates it' ->
-        expect(-> new AttributePipe '_page', 'admins').to.not.throw
+        expect(-> new AttributePipe '_page', 'status').to.not.throw
 
       specify 'creates it' ->
-        expect(new AttributePipe '_page', 'admins').to.be.an.instance-of AttributePipe
+        expect(new AttributePipe '_page', 'status').to.be.an.instance-of AttributePipe
 
     context 'arg: number' ->
       specify 'creates it only if child of collection - fails here' ->
@@ -62,7 +57,7 @@ describe 'AttributePipe' ->
 
   context 'Pipe: parentless users' ->
     before ->
-      pipe := new AttributePipe 'users'
+      pipe := new AttributePipe 'status'
 
     describe 'children' ->
       specify 'none' ->

@@ -5,7 +5,7 @@ util = require 'util'
 
 requires = require '../../../requires'
 
-Pipe = requires.pipe 'base'
+Pipe = requires.apipe 'base'
 
 klass-of = (obj) ->
   if typeof obj is 'object' and obj.klass
@@ -34,7 +34,7 @@ ParentValidator = new Class(
       throw new Error "Argument error: Parent must be a kind of Pipe, was a #{klass-of @parent}"
 
     unless is-pipe @pipe
-      throw new Error "Argument error:: Child must be a kind of Pipe, was a #{klass-of @pipe}"
+      throw new Error "Argument error: Child must be a kind of Pipe, was a #{klass-of @pipe}"
 
     if @parent is @pipe
       throw new Error "Argument error: same pipe used as parent and child, #{util.inspect @parent}"

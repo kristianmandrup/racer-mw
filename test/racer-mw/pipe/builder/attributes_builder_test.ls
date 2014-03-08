@@ -4,27 +4,28 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-AttributesPipe    = requires.pipe 'attributes'
-ModelPipe         = requires.pipe 'model'
-AttributePipe     = requires.pipe 'attribute'
-PathPipe          = requires.pipe 'path'
-CollectionPipe    = requires.pipe 'collection'
+AttributesPipe    = requires.apipe-builder 'attributes'
+
+ModelPipe         = requires.apipe 'model'
+AttributePipe     = requires.apipe 'attribute'
+PathPipe          = requires.apipe 'path'
+CollectionPipe    = requires.apipe 'collection'
 
 
-describe 'AttributesPipe' ->
+describe 'AttributesPipeBuilder' ->
   var pipe, obj
 
   describe 'init' ->
     context 'no args' ->
       specify 'fails - must take value for path' ->
-        expect(-> new AttributesPipe).to.throw
+        expect(-> new AttributesPipeBuilder).to.throw
 
     context 'arg: empty object' ->
       before ->
         obj := {}
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new AttributesPipe obj).to.throw
+        expect(-> new AttributesPipeBuilder obj).to.throw
 
     context 'arg: AttributePipe' ->
       var attr-pipe
@@ -33,7 +34,7 @@ describe 'AttributesPipe' ->
         attr-pipe := new AttributePipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new AttributesPipe attr-pipe).to.throw
+        expect(-> new AttributesPipeBuilder attr-pipe).to.throw
 
     context 'arg: PathPipe' ->
       var path-pipe
@@ -42,7 +43,7 @@ describe 'AttributesPipe' ->
         path-pipe := new PathPipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new AttributesPipe path-pipe).to.not.throw
+        expect(-> new AttributesPipeBuilder path-pipe).to.not.throw
 
     # TODO: should allow this :)
     context 'arg: ModelPipe' ->
@@ -52,7 +53,7 @@ describe 'AttributesPipe' ->
         model-pipe := new ModelPipe name: {}
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new AttributesPipe model-pipe).to.not.throw
+        expect(-> new AttributesPipeBuilder model-pipe).to.not.throw
 
     context 'arg: CollectionPipe' ->
       var col-pipe
@@ -61,17 +62,17 @@ describe 'AttributesPipe' ->
         col-pipe := new CollectionPipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new AttributesPipe col-pipe).to.throw
+        expect(-> new AttributesPipeBuilder col-pipe).to.throw
 
     context 'ModelPipe with attributes' ->
       var model-pipe, attrs
 
       before ->
         model-pipe  := new ModelPipe name: {}
-        attrs       := new AttributesPipe model-pipe
+        attrs       := new AttributesPipeBuilder model-pipe
 
       specify 'is a AttributePipesPipe' ->
-        expect(attrs).to.be.an.instance-of AttributesPipe
+        expect(attrs).to.be.an.instance-of AttributesPipeBuilder
 
       specify 'parent-pipe is the ModelPipe' ->
         expect(attrs.parent-pipe).to.eq model-pipe

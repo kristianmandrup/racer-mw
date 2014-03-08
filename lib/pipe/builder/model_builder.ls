@@ -7,34 +7,44 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-ModelPipe    = requires.pipe 'model'
+ModelPipe    = requires.apipe 'model'
 
-BasePipeBuilder  = requires.pipe-builder 'base'
+BasePipeBuilder  = requires.apipe-builder 'base'
 
 ModelPipeBuilder = new Class(BasePipeBuilder,
+  initialize: ->
+    @call-super!
+    @
+
+  type: 'Builder'
+  builder-type: 'Model'
+
   build: ->
     args = _.values(arguments)
     switch args.length
     case 0
       throw new Error "Must take a name, a value (object) or a {name: value} as an argument"
     case 1
-     @_add-model args.first!
+     @add-model args.first!
     default
       throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
 
-  _add-model: (arg) ->
+  add-model: (arg) ->
+    console.log typeof! arg
     switch typeof! arg
     case 'String'
-      @_name-model arg
+      name = arg
+      new ModelPipe name
     case 'Object'
-      @_hash-model arg
+      hash = arg
+      @hash-model hash
     default
-      throw new Error "Invalid Attribute pipe argument. Must a name (string) or an object (hash), was: #{arg}"
+      throw new Error "Invalid Model pipe argument. Must a name (string) or an object (hash), was: #{arg}"
 
-  _name-model: (name) ->
-    @attribute name
+  name-model: (name) ->
+    new ModelPipe name
 
-  _hash-model: (hash) ->
+  hash-model: (hash) ->
     key = _.keys(hash).first!
     value = _.values(hash).first!
     switch key
@@ -42,14 +52,9 @@ ModelPipeBuilder = new Class(BasePipeBuilder,
       throw new Error "No such thing as a Collection model. Try adding a collection directly instead, f.ex: .collection('users')"
     case 'model'
       # just ignore the model key and go with the value ;)
-      @model value
+      @build value
     default
-      #.model(administers: project)
-      # should turn into:
-      #.attribute('administers').model(project)
-
-      # reuse existing attribute functionaility :)
-      @attribute hash
+      new ModelPipe hash
 )
 
 module.exports = ModelPipeBuilder

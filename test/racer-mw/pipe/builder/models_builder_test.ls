@@ -10,20 +10,20 @@ AttributePipe     = requires.pipe 'attribute'
 PathPipe          = requires.pipe 'path'
 CollectionPipe    = requires.pipe 'collection'
 
-describe 'ModelsPipe' ->
+describe 'ModelsPipeBuilder' ->
   var models, obj
 
   describe 'init' ->
     context 'no args' ->
       specify 'fails - must take value for path' ->
-        expect(-> new ModelsPipe).to.throw
+        expect(-> new ModelsPipeBuilder).to.throw
 
     context 'arg: empty object' ->
       before ->
         obj := {}
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new ModelsPipe obj).to.throw
+        expect(-> new ModelsPipeBuilder obj).to.throw
 
     context 'arg: AttributePipe' ->
       var attr-pipe
@@ -32,7 +32,7 @@ describe 'ModelsPipe' ->
         attr-pipe := new AttributePipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new ModelsPipe attr-pipe).to.throw
+        expect(-> new ModelsPipeBuilder attr-pipe).to.throw
 
     context 'arg: PathPipe' ->
       var path-pipe
@@ -41,7 +41,7 @@ describe 'ModelsPipe' ->
         path-pipe := new PathPipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new ModelsPipe path-pipe).to.throw
+        expect(-> new ModelsPipeBuilder path-pipe).to.throw
 
     # TODO: should allow this for named models that become attributes on parent model
     context 'arg: ModelPipe' ->
@@ -51,7 +51,7 @@ describe 'ModelsPipe' ->
         model-pipe := new ModelPipe name: {}
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new ModelsPipe model-pipe).to.throw
+        expect(-> new ModelsPipeBuilder model-pipe).to.throw
 
     context 'arg: CollectionPipe' ->
       var col-pipe
@@ -60,7 +60,7 @@ describe 'ModelsPipe' ->
         col-pipe := new CollectionPipe 'name'
 
       specify 'fails - obj must have a _clazz' ->
-        expect(-> new ModelsPipe col-pipe).to.not.throw
+        expect(-> new ModelsPipeBuilder col-pipe).to.not.throw
 
     context 'CollectionPipe with models' ->
       var col-pipe
@@ -70,7 +70,7 @@ describe 'ModelsPipe' ->
         models   := new ModelsPipe col-pipe
 
       specify 'is a ModelsPipe' ->
-        expect(models).to.be.an.instance-of ModelsPipe
+        expect(models).to.be.an.instance-of ModelsPipeBuilder
 
       specify 'parent-pipe is the CollectionPipe' ->
         expect(models.parent-pipe).to.eq col-pipe

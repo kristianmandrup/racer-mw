@@ -7,9 +7,8 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-BasePipe          = requires.pipe 'base'
-PathPipe          = requires.pipe 'path'
-ModelsPipe        = requires.pipe 'models'
+BasePipe          = requires.apipe 'base'
+PathPipe          = requires.apipe 'path'
 
 col-name = (arg) ->
   switch typeof arg
@@ -74,17 +73,17 @@ CollectionPipe = new Class(BasePipe,
   # attach a model pipe as a child
   # return model pipe for more chaining
   model: (obj) ->
-    ModelPipe = requires.pipe 'model'
-    pipe = new ModelPipe(obj)
-    @attach pipe
-    pipe
+    @builder('model').build obj
 
   models: ->
-    new ModelsPipe @
+    new ModelsPipeBuilder @
 
   valid-parents:
     * 'path'
     * 'model' # collection then becomes as an attribute on the model
+
+  valid-children:
+    * 'model'
 )
 
 module.exports = CollectionPipe

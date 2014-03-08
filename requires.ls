@@ -36,11 +36,20 @@ module.exports =
   error: (...paths) ->
     @lib('errors', ...paths)
 
-  pipe-builder: (...paths) ->
-    @lib('pipe', 'builder', ...paths)
+  apipe-builder: (name) ->
+    @pipe('builder', "#{name}_builder")
+
+  apipe-extractor: (name) ->
+    @pipe('extractor', "#{name}_extractor")
+
+  apipe: (name) ->
+    @lib('pipe', "#{name}_pipe")
 
   pipe: (...paths) ->
     @lib('pipe', ...paths)
+
+  aresource: (name) ->
+    @lib('resource', "#{name}_resource")
 
   resource: (...paths) ->
     @lib('resource', ...paths)
