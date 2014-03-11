@@ -3,6 +3,7 @@ requires    = require '../../requires'
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'
+util = require 'util'
 require 'sugar'
 
 ResourceCommand   = requires.resource 'command'
@@ -11,7 +12,7 @@ BaseResource = new Class(ResourceCommand,
   # created with a Pipe
   initialize: (context) ->
     unless typeof! context is 'Object'
-      throw Error "A resource must be constructed with a context Object, was: #{context}"
+      throw Error "A resource must be constructed with a context Object, was: #{util.inspect context}"
 
     @attach-to context.pipe
     @config-value context.value
@@ -38,7 +39,7 @@ BaseResource = new Class(ResourceCommand,
   attach-to: (pipe, hash)->
     return unless pipe
     unless typeof! pipe is 'Object' and pipe.type is 'Pipe'
-      throw new Error "a Resource can only be attached to a Pipe, was: #{pipe}"
+      throw new Error "a Resource can only be attached to a Pipe, was: #{util.inspect pipe}, type: #{pipe.type}"
 
     unless @resource-type is pipe.pipe-type
       throw new Error "A #{@resource-type} Resource can only be attached to a #{@resource-type} Pipe, was a #{pipe.pipe-type} pipe"

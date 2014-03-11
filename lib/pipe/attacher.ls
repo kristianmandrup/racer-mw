@@ -5,14 +5,19 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
+requires = require '../../requires'
+
+ParentValidator   = requires.pipe 'validator/parent'
+
 # TODO: make into a class?
 Attacher = new Module(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
-    unless _.is-type('Object', pipe) and pipe.type is 'Pipe'
-      throw new Error "Can only attach to a Pipe, was: #{util.inspect pipe}"
+    unless _.is-type('Object', pipe)
+      throw new Error "Can only attach to a Pipe which is an Object was: #{typeof! pipe}"
 
-    console.log pipe.describe!
+    unless pipe.type is 'Pipe'
+      throw new Error "Can only attach to a Pipe object, was: #{util.inspect pipe}, type: #{pipe.type}"
     pipe.attach-to @
 
   detach: ->
@@ -23,7 +28,6 @@ Attacher = new Module(
   attach-to: (parent) ->
     @parent-validator.validate parent, @
 
-    # @id = parent.children.length
     unless @id!
       throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
 
@@ -31,15 +35,15 @@ Attacher = new Module(
 
     parent.children[@id!] = @
     @parent = parent
-    @_attached-to parent
+    @attached-to parent
 
     @post-attach-to parent
     @
 
   pre-attach-to: (parent) ->
-    @validate-attch parent
+    @validate-attach parent
 
-  _attached-to: (parent) ->
+  attached-to: (parent) ->
     @parent = parent
     # update full-name
     @update-name!
@@ -49,6 +53,9 @@ Attacher = new Module(
     if parent
       parent.added = @
     @
+
+
+  parent-validator: new ParentValidator(@valid-parents)
 
   # throw new Error if invalid pipe for parent
   validate-attach: (parent) ->
