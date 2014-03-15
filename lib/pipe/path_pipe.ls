@@ -45,10 +45,10 @@ PathPipe = new Class(BasePipe,
     @name
 
   valid-args:
-    * 'string'
+    * \string
 
   valid-parents:
-    * 'path'
+    * \path
 )
 
 module.exports = PathPipe

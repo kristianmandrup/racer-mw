@@ -21,13 +21,13 @@ PipeBuilders = new Module(
     if @valid-parents
       @valid-parents = [@valid-parents].flatten!
 
-    CollectionPipeBuilder = requires.apipe-builder 'collection'
-    ModelPipeBuilder      = requires.apipe-builder 'model'
-    AttributePipeBuilder  = requires.apipe-builder 'attribute'
+    CollectionPipeBuilder   = requires.apipe-builder 'collection'
+    ModelPipeBuilder        = requires.apipe-builder 'model'
+    AttributePipeBuilder    = requires.apipe-builder 'attribute'
 
-    CollectionsPipeBuilder = requires.apipe-builder 'collections'
-    ModelsPipeBuilder      = requires.apipe-builder 'models'
-    AttributesPipeBuilder  = requires.apipe-builder 'attributes'
+    CollectionsPipeBuilder  = requires.apipe-builder 'collections'
+    ModelsPipeBuilder       = requires.apipe-builder 'models'
+    AttributesPipeBuilder   = requires.apipe-builder 'attributes'
 
     @config-builder 'collection', CollectionPipeBuilder, CollectionsPipeBuilder
     @config-builder 'model', ModelPipeBuilder, ModelsPipeBuilder

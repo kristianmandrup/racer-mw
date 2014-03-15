@@ -1,21 +1,24 @@
+requires = require '../../requires'
+
+CollectionPipe    = requires.apipe 'collection'
+AttributePipe     = requires.apipe 'attribute'
+ModelPipe         = requires.apipe 'model'
+PathPipe          = requires.apipe 'path'
+
 PipeDsl =
-  path: (path) ->
-    @parent.attach new PathPipe(@parent, path)
+  path: (...args) ->
+    new PathPipe ...args
 
   # alias for path
-  container: (path) ->
-    @path(path)
+  container: (...args) ->
+    @path ...args
 
-  collection: (name) ->
-    @parent.attach new CollectionPipe(@parent, name)
-
-  # creates a pipe for a model
-  model: (obj) ->
-    @parent.attach new ModelPipe(@parent, obj)
+  collection: (...args) ->
+    new CollectionPipe ...args
 
   # creates a pipe for a model
-  attribute: (name) ->
-    @parent.attach new AttributePipe(@parent, name)
+  model: (...args) ->
+    new ModelPipe ...args
 
-
+module.exports = PipeDsl
 

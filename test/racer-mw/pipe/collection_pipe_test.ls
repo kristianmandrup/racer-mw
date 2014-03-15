@@ -4,11 +4,11 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-CollectionPipe  = requires.pipe 'collection'
-ModelPipe       = requires.pipe 'model'
-PathPipe        = requires.pipe 'path'
+CollectionPipe  = requires.apipe 'collection'
+ModelPipe       = requires.apipe 'model'
+PathPipe        = requires.apipe 'path'
 
-PipeModels      = requires.pipe     'models'
+PipeModels      = requires.apipe     'models'
 
 describe 'CollectionPipe' ->
   var pipe, obj, collection

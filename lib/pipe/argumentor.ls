@@ -22,10 +22,19 @@ module.exports =
   # unless argumentor.validate @args, @valid-args
   #  ...
   validate: (args, valid-args)->
+    args = [args].flatten!
+    valid-args = [valid-args].flatten!
     unless args
       throw new Error "Pipe must take a value to help it determine a path in the model"
 
+    unless _.is-type 'Array', args
+      throw new Error "Pipe argument must be an Array, was: #{typeof! args}"
+
     return true if valid-args.length is 0
-    valid-args = args.select (arg) ->
+    filtered-args = @filter args, valid-args
+
+    filtered-args.length is args.length
+
+  filter: (args, valid-args) ->
+    args.filter (arg) ->
       typeof(arg) in valid-args
-    valid-args.length is args.length
