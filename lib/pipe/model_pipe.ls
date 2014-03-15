@@ -11,11 +11,6 @@ AttributePipe           = requires.apipe 'attribute'
 CollectionPipe          = requires.apipe 'collection'
 AttributesPipeBuilder   = requires.apipe-builder 'attributes'
 
-# no need for a child validator :)
-# any attachment is always to a parent - simply validate parent is valid for child
-# no need to validate reverse relationship - is implicit :)
-ParentValidator   = requires.pipe 'validator/parent'
-
 extract           = requires.apipe-extractor 'model'
 
 # Must be on a model or attribute

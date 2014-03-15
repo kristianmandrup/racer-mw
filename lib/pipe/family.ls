@@ -19,6 +19,7 @@ PipeFamily = new Module(
   ancestors: ->
     my-ancestors = []
     if @parent
+      my-ancestors.push @parent
       my-ancestors.push @parent.ancestors! if @parent.ancestors
     my-ancestors.flatten!.compact!
 

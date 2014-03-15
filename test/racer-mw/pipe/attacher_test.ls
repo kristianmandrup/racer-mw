@@ -13,6 +13,7 @@ expect          = require('chai').expect
 
 PipeAttacher  = requires.pipe 'attacher'
 PipeInspector = requires.pipe 'inspector'
+PipeFamily    = requires.pipe 'family'
 
 BasicPipe = new Class(
   initialize: (@name) ->
@@ -73,7 +74,7 @@ describe 'PipeAttacher' ->
         expect(-> pipe.attach {}).to.throw Error
 
       specify 'throws when only type: Pipe' ->
-        expect(-> pipe.attach {type: 'Pipe'}).to.throw Error
+        expect(-> pipe.attach type: 'Pipe').to.throw Error
 
       specify 'throws when attaching self' ->
         expect(-> pipe.attach pipe).to.throw Error

@@ -18,6 +18,8 @@ FamilyPipe = new Class(
 describe 'PipeFamily' ->
   var pipe, obj
 
+  pipes = {}
+
   context 'NoInfoPipe' ->
     before ->
       pipe := new FamilyPipe
@@ -59,3 +61,18 @@ describe 'PipeFamily' ->
 
         specify 'makes children empty' ->
           expect(pipe.clear!.children).to.eql {}
+
+    describe 'ancestors' ->
+      context 'family' ->
+        before ->
+          pipes.child := new FamilyPipe 'kid'
+          pipes.pere := new FamilyPipe 'daddy'
+          pipes.grand-pere := new FamilyPipe 'grand daddy'
+          pipes.child.parent = pipes.pere
+          pipes.pere.parent = pipes.grand-pere
+
+        specify 'grand-pere is a child ancestor' ->
+          expect(pipes.grand-pere in pipes.child.ancestors!).to.be.true
+
+        specify 'grand-pere is a parent ancestor' ->
+          expect(pipes.grand-pere in pipes.pere.ancestors!).to.be.true

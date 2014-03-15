@@ -7,7 +7,7 @@ require 'sugar'
 
 requires = require '../../requires'
 
-ParentValidator   = requires.pipe 'validator/parent'
+ParentValidator   = requires.pipe 'validator/parent_validator'
 
 # TODO: make into a class?
 Attacher = new Module(
@@ -26,7 +26,7 @@ Attacher = new Module(
     @
 
   attach-to: (parent) ->
-    @parent-validator.validate parent, @
+    @parent-validator(parent).validate @
 
     unless @id!
       throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
@@ -55,7 +55,8 @@ Attacher = new Module(
     @
 
 
-  parent-validator: new ParentValidator(@valid-parents)
+  parent-validator: (parent) ->
+    new ParentValidator(parent).set-valid @valid-parents
 
   # throw new Error if invalid pipe for parent
   validate-attach: (parent) ->
