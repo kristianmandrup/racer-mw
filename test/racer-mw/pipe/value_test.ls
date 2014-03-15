@@ -13,6 +13,7 @@ PipeWithValue = new Class(
   include: PipeValue
 
   initialize: ->
+    @call-super!
     @
 )
 
@@ -23,23 +24,22 @@ describe 'PipeValue' ->
     before ->
       pipe := new PipeWithValue
 
-    describe 'get-value' ->
-      specify 'returns void' ->
-        expect(pipe.get-value!).to.be.undefined
-
     describe 'set-value' ->
       before ->
         result := pipe.set-value 'x'
 
-      specify 'set value to ValueObject' ->
-        expect(result).to.eq pipe
+      specify 'result is value that was set' ->
+        expect(result).to.eq 'x'
 
-      specify 'set value to ValueObject' ->
-        expect(pipe.value).to.be.an.instance-of ValueObject
+    context 'set value to x' ->
+      before ->
+        pipe.set-value 'x'
 
-      # TODO: should be value-obj.value
-      specify 'set value to ValueObject' ->
+      specify 'value-obj is a ValueObject' ->
+        expect(pipe.value-obj).to.be.an.instance-of ValueObject
+
+      specify 'value-obj.value is x' ->
         expect(pipe.value-obj.value).to.eql 'x'
 
-      specify 'set value to ValueObject' ->
+      specify 'value! is x' ->
         expect(pipe.value!).to.eql 'x'

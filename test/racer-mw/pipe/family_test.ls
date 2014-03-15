@@ -27,7 +27,7 @@ describe 'PipeFamily' ->
         expect(pipe.ancestors).to.not.be.undefined
 
       specify 'returns empty' ->
-        expect(pipe.ancestors).to.eql []
+        expect(pipe.ancestors!).to.eql []
 
     describe 'child' ->
       specify 'no args: void' ->
@@ -38,7 +38,7 @@ describe 'PipeFamily' ->
 
     describe 'parent-name' ->
       specify 'no args: void' ->
-        expect(pipe.parent-name!).to.eql void
+        expect(pipe.parent-name!).to.eql ''
 
     describe 'valid-parents' ->
       specify 'is empty' ->
@@ -50,12 +50,12 @@ describe 'PipeFamily' ->
 
     describe 'children' ->
       specify 'is empty' ->
-        expect(pipe.parent).to.eql {}
+        expect(pipe.children).to.eql {}
 
     describe 'clear' ->
       context 'one child' ->
         before ->
-          pipe := children = {x: 1}
+          pipe.children = {x: 1}
 
         specify 'makes children empty' ->
           expect(pipe.clear!.children).to.eql {}

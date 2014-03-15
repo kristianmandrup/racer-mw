@@ -35,17 +35,11 @@ unpack-obj = (obj) ->
 # Must be on a model
 AttributePipe = new Class(BasePipe,
   initialize: (arg) ->
-    console.log 'attr pipe arg', arg
     if _.is-type 'Array', arg
       throw new Error "AttributePipe cannot be constructed from an Array, was: #{arg}"
-
     @call-super!
-
-    console.log 'type', typeof! arg
     [@name, @value] = unpack arg
-    console.log 'post init', @name
     @post-init!
-    console.log 'return AttributePipe'
     @
 
   pipe-type: 'Attribute'

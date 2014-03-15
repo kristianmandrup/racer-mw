@@ -36,14 +36,6 @@ ParentValidator = new Class(
     unless is-pipe @pipe
       throw new Error "Argument error: Child must be a kind of Pipe, was a #{klass-of @pipe}"
 
-    # if @parent is @pipe
-      # throw new Error "Argument error: same pipe used as parent and child, #{util.inspect @parent}"
-
-    console.log 'ancestors', @ancestors!
-
-    # ancs = @ancestors!.map( (pipe) -> pipe.describe!)
-
-
     if @pipe in @ancestors!
       throw new Error "Circular error: you can't attach an ancestor pipe, #{util.inspect @parent}"
 

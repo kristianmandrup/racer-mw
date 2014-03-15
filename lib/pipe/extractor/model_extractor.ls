@@ -14,7 +14,7 @@ module.exports =
     if _.is-type 'Object', obj
       inner-obj = obj[@name(obj)]
       return inner-obj or obj
-    throw new Error "Unable to extract value from: #{obj}"
+    throw new Error "Unable to extract value from: #{obj} #{typeof! obj}"
 
   clazz: (obj) ->
     return obj if _.is-type 'String', obj

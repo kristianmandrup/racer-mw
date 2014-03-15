@@ -11,9 +11,7 @@ describe = (obj) ->
 
 BasePipeBuilder = new Class(
   initialize: (@container) ->
-    console.log 'BasePipeBuilder'
     @validate-container!
-    console.log 'validated'
     @
 
   validate: ->
@@ -23,9 +21,7 @@ BasePipeBuilder = new Class(
     unless @parent-pipe.type is 'Pipe'
       throw new Error "Attributes can only be used on a Pipes, was: #{@parent-pipe}"
 
-
   validate-container: ->
-    console.log 'validate container', @container.attach, _.is-type 'Function', @container.attach
     unless _.is-type 'Object', @container
       throw new Error "Must be an object, was: #{describe @container}"
 

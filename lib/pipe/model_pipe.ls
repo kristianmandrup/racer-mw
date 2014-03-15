@@ -59,9 +59,6 @@ ModelPipe = new Class(BasePipe,
     * \attribute
     * \model
     * \collection
-
-  valid-child: (name) ->
-    name in @valid-children
 )
 
 module.exports = ModelPipe

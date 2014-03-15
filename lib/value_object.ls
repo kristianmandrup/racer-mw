@@ -7,9 +7,13 @@ require 'sugar'
 ValueObject = new Class(
   initialize: (@container)
 
-  set: (value) ->
+  set-value: (value) ->
     @valid = @validate value
     @value = value if @valid
+
+  # alias
+  set: (value) ->
+    @set-value value
 
   valid: true
 

@@ -93,6 +93,11 @@ describe 'ModelPipeExtractor' ->
       specify 'name: undefined' ->
         expect(extract.name obj).to.be.undefined
 
+  describe 'ModelPipe' ->
+    context '_clazz: user' ->
+      specify 'should not throw' ->
+        expect(-> new ModelPipe _clazz: 'user').to.not.throw
+
   context 'admin obj with clazz: user' ->
     before ->
       obj :=

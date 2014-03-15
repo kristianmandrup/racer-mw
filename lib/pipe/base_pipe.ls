@@ -35,9 +35,10 @@ BasePipe = new Class(
 
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->
-    [@first-arg, @args] = argumentor.extract arguments
+    [@first-arg, @args] = argumentor.extract _.values(arguments)
     unless argumentor.validate @args, @valid-args
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
+    @call-super!
     @
 
   type:       'Pipe'
@@ -54,6 +55,7 @@ BasePipe = new Class(
 
   cleanup: ->
     delete @args
+    delete @first-arg
 
   post-build: ->
 )

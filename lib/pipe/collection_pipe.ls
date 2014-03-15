@@ -79,11 +79,11 @@ CollectionPipe = new Class(BasePipe,
     new ModelsPipeBuilder @
 
   valid-parents:
-    * 'path'
-    * 'model' # collection then becomes as an attribute on the model
+    * \path
+    * \model # collection then becomes as an attribute on the model
 
   valid-children:
-    * 'model'
+    * \model
 )
 
 module.exports = CollectionPipe

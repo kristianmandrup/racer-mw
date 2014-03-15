@@ -21,8 +21,8 @@ describe 'ValueObject' ->
       value-obj := new ValueObject {}
 
     describe 'valid' ->
-      specify 'is initially false' ->
-        expect(value-obj.valid).to.be.false
+      specify 'is initially true' ->
+        expect(value-obj.valid).to.be.true
 
     describe 'validate' ->
       specify 'always true by default' ->

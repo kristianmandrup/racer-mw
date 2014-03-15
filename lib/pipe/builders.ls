@@ -9,9 +9,17 @@ require 'sugar'
 
 
 PipeBuilders = new Module(
+  initialize: ->
+
   config-builders: ->
     return void unless @attach
     @builders ||= {}
+
+    # TODO: refactor - put in initialize...
+    if @valid-children
+      @valid-children = [@valid-children].flatten!
+    if @valid-parents
+      @valid-parents = [@valid-parents].flatten!
 
     CollectionPipeBuilder = requires.apipe-builder 'collection'
     ModelPipeBuilder      = requires.apipe-builder 'model'
@@ -25,7 +33,6 @@ PipeBuilders = new Module(
     @config-builder 'model', ModelPipeBuilder, ModelsPipeBuilder
     @config-builder 'attribute', AttributePipeBuilder, AttributesPipeBuilder
     @
-
 
   config-builder: (name, clazz, clazz-multi = void) ->
     if @valid-child name
@@ -44,6 +51,8 @@ PipeBuilders = new Module(
           @builder(plural).build ...args
 
   builder: (name) ->
+    unless @builders[name]
+      throw new Error "No builder #{name} registered for #{util.inspect @describe!}"
     @builders[name]
 )
 

@@ -6,7 +6,8 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-argumentor = requires.pipe 'argumentor'
+argumentor  = requires.pipe 'argumentor'
+_           = require 'prelude-ls'
 
 describe 'Argumentor' ->
   var first, all, valid
@@ -48,19 +49,33 @@ describe 'Argumentor' ->
       before ->
         [first, all] := argumentor.extract ['a', 'b']
 
-        specify 'first: a' ->
-          expect(first).to.eql 'a'
+      specify 'first: a' ->
+        expect(first).to.eql 'a'
 
-        specify 'all: a,b' ->
-          expect(all).to.eql ['a', 'b']
+      specify 'all: a,b' ->
+        expect(all).to.eql ['a', 'b']
 
   describe 'extract' ->
     context 'named object' ->
       before ->
         [first, all] := argumentor.extract x: [a: 1]
 
-        specify 'first: a' ->
-          expect(first).to.eql x: [a: 1]
+      specify 'first: a' ->
+        expect(first).to.eql x: [a: 1]
 
-        specify 'all: a,b' ->
-          expect(all).to.eql x: [a: 1]
+      specify 'all: a,b' ->
+        expect(all).to.eql x: [a: 1]
+
+  describe 'extract' ->
+    context 'arguments of strings > 0: a, 1: b' ->
+      call-me = ->
+        argumentor.extract _.values(arguments)
+
+      before ->
+        [first, all] := call-me 'a', 'b'
+
+      specify 'first: a' ->
+        expect(first).to.eql 'a'
+
+      xspecify 'all: a,b' ->
+        expect(all).to.eql ['a', 'b']

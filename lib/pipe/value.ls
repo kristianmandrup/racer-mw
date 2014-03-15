@@ -15,18 +15,14 @@ require 'sugar'
 ValueObject       = requires.lib 'value_object'
 
 PipeValue = new Module(
-  # override if necessary
-  get-value: ->
-    void
+  initialize: ->
+    @value-obj = new ValueObject @
 
   value: ->
-    return @value-obj.value unless @value-obj is void
-    @get-value!
+    @value-obj.value
 
   set-value: (value) ->
-    if @validate-value value
-      @value-obj = new ValueObject(@).set value
-    @
+    @value-obj.set value
 )
 
 module.exports = PipeValue

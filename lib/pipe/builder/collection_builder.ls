@@ -13,7 +13,6 @@ BasePipeBuilder   = requires.apipe-builder 'base'
 
 CollectionPipeBuilder = new Class(BasePipeBuilder,
   initialize: (@container) ->
-    console.log 'CollectionPipeBuilder', @container.describe!
     @call-super!
     @
 
@@ -32,7 +31,7 @@ CollectionPipeBuilder = new Class(BasePipeBuilder,
       throw new Error "Too many arguments, takes only a name (String), or an Object"
 
   create-collection: (name) ->
-     collection = new CollectionPipe args.first!
+     collection = new CollectionPipe name
      @attach collection
      collection
 
