@@ -3,12 +3,15 @@ requires = require '../../../requires'
 requires.test 'test_setup'
 
 Pipe              = requires.apipe 'base'
-ParentValidator   = requires.pipe  'validator/parent'
+ModelPipe         = requires.apipe 'model'
+CollectionPipe    = requires.apipe 'collection'
+
+ParentValidator   = requires.pipe  'validator/parent_validator'
 
 expect      = require('chai').expect
 
 describe 'Pipe' ->
-  var pipe
+  var pipe, obj, parent-pipe, model-pipe
 
   describe 'init' ->
     context 'no args' ->
@@ -28,7 +31,6 @@ describe 'Pipe' ->
 
         specify 'has-resource is true by default' ->
           expect(pipe.has-resource).to.be.true
-
 
     context 'arg: string' ->
       specify 'creates it' ->
@@ -54,7 +56,8 @@ describe 'Pipe' ->
 
   context 'Pipe: parentless users' ->
     before ->
-      pipe := new Pipe 'users'
+      pipe        := new Pipe 'users'
+      parent-pipe := new Pipe 'parent'
 
     describe 'children' ->
       specify 'none' ->
@@ -66,4 +69,4 @@ describe 'Pipe' ->
 
     describe 'parent-validator' ->
       specify 'is a ParentValidator' ->
-        expect(pipe.parent-validator).to.be.an.instance-of ParentValidator
+        expect(pipe.parent-validator parent-pipe).to.be.an.instance-of ParentValidator

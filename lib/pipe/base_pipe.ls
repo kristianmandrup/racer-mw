@@ -42,6 +42,15 @@ BasePipe = new Class(
     @clear!
     @
 
+  parse: (obj) ->
+    try
+      Parser  = requires.pipe 'parser'
+      pipes   = new Parser(obj).parse!
+      @attach pipes
+      @
+    finally
+      @
+
   type:       'Pipe'
   pipe-type:  'Base'
 

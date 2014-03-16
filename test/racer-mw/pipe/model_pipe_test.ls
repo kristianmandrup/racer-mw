@@ -4,7 +4,7 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-ModelPipe       = requires.pipe     'model'
+ModelPipe       = requires.apipe     'model'
 ResourceModel   = requires.resource 'model'
 
 PipeAttributes  = requires.pipe     'attributes'

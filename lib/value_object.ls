@@ -21,7 +21,7 @@ ValueObject = new Class(
   # fx, if container is an AttributePipe called email
   # - check it is a non-empty string
   # - use email validation
-  validate: ->
+  validate: (value) ->
     true
 )
 

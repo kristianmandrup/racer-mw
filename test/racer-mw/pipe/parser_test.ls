@@ -222,7 +222,7 @@ describe 'Parser' ->
     specify 'no arg: fails' ->
       expect(-> parser.parse!).to.throw
 
-    context.only 'collection of users' ->
+    context 'collection of users' ->
       before ->
         objs.users  :=
           users:
@@ -232,7 +232,7 @@ describe 'Parser' ->
         parser  := new Parser objs.users
         parser.debug!
         result := parser.parse!
-        console.log 'RESULT', result.describe true
+        # console.log 'RESULT', result.describe true
 
       specify 'is parsed as Collection' ->
         expect(result).to.be.an.instance-of CollectionPipe
@@ -243,8 +243,8 @@ describe 'Parser' ->
       context 'child' ->
         before ->
           child     := result.child-list!.first!
-          children  := child.children
-          console.log 'CHILD', child.describe true
+          children  := child.child-hash
+          # console.log 'CHILD', child.describe true
           # console.log 'CHILDREN', child.describe-children!
 
         specify 'is a ModelPipe' ->
@@ -300,3 +300,22 @@ describe 'Parser' ->
 
       specify 'is parsed' ->
         expect(result).to.be.an.instance-of ModelPipe
+
+  context 'ModelPipe' ->
+    var model-pipe, obj
+
+    before ->
+      model-pipe := new ModelPipe 'user'
+      obj :=
+        name: 'kris'
+        email: 'kris@gmail.com'
+
+      model-pipe.parse obj
+      # console.log model-pipe.describe!
+
+    describe 'parse' ->
+      specify 'parses name pipe' ->
+        expect(model-pipe.child 'name').to.be.an.instance-of AttributePipe
+
+      specify 'parses email pipe' ->
+        expect(model-pipe.child 'email').to.be.an.instance-of AttributePipe
