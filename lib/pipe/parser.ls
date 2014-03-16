@@ -72,7 +72,9 @@ require 'sugar'
 # TODO: Needs major refactoring into sub-parser classes in order to facilitate testing,
 # more granular design, easier reuse and better encapsulation of parser state at each point
 Parser = new Class(
-  initialize: (@obj) ->
+  initialize: (@obj, options = {}) ->
+    @parent = options.parent
+    @debug-on = options.debug
     @
 
   parse: ->
@@ -96,6 +98,14 @@ Parser = new Class(
       throw new Error "Can't parse number: #{obj}"
     default
       throw new Error "Can't parse this object: #{obj}, type: #{typeof! obj}"
+
+  parse-list: (list) ->
+    self = @
+    list.map (item) ->
+      if self.parent-type! is 'Collection'
+        self.build-model item
+      else
+        self.parse-obj item
 
   parse-object: (obj) ->
     self = this
@@ -139,48 +149,35 @@ Parser = new Class(
     default
       throw new Error "Single value for #{key} should be Object, Number or String, was: #{typeof! value}, #{value}"
 
-  build-model: (value) ->
-    @debug-msg "ModelPipe: #{value}"
-    model-pipe = new ModelPipe value
-    # attach pipes on model using value
+  build-children: (value, parent-pipe) ->
     try
-      pipes = @parse-obj value
-      model-pipe.attach pipes
-      model-pipe
+      console.log 'children for', parent-pipe.name
+      pipes = new Parser(value, parent: parent-pipe, debug: @debug).parse!
+      console.log 'pipes', pipes.length
+      pipes.each (pipe) ->
+        console.log 'child pipe', pipe.describe!
+      parent-pipe.attach pipes
+      parent-pipe
     catch e
-      @debug-msg "unable to attach more pipes to model"
-      model-pipe
+      @debug-msg "unable to attach more pipes to: #{parent-pipe.describe!}"
+      parent-pipe
     finally
-      model-pipe
+      parent-pipe
+
+  build-model: (value) ->
+    @debug-msg "ModelPipe for: #{value}"
+    model-pipe = new ModelPipe value
+    @build-children value, model-pipe
 
   build-named-model: (key, value) ->
-    @debug-msg "ModelPipe: #{key}"
+    @debug-msg "ModelPipe named: #{key}"
     model-pipe = new ModelPipe "#{key}": value
-    @parent = model-pipe
-    # attach pipes on model using value
-    try
-      pipes = @parse-obj value
-      model-pipe.attach pipes
-      model-pipe
-    catch e
-      @debug-msg "unable to attach more pipes to model: #{key}"
-      model-pipe
-    finally
-      model-pipe
+    @build-children value, model-pipe
 
   build-collection: (key, value) ->
     @debug-msg "CollectionPipe: #{key}"
     col-pipe = new CollectionPipe "#{key}": value
-    @parent = col-pipe
-    try
-      pipes = @parse-obj value
-      col-pipe.attach pipes
-      col-pipe
-    catch
-      @debug-msg "unable to attach more pipes to collection: #{key}"
-      col-pipe
-    finally
-      col-pipe
+    @build-children value, col-pipe
 
   build-attr: (key, value) ->
     @debug-msg "AttributePipe: #{key}, #{value}"
@@ -189,15 +186,8 @@ Parser = new Class(
   parse-path: (key, value) ->
     @debug-msg "PathPipe: #{key}"
     path-pipe = new PathPipe key
-    return path-pipe unless value
 
-    unless _.is-type 'Object' value
-      throw new Error "PathPipe can not be extended with #{value}, must be an Object, was: #{typeof! value}"
-
-    @parent = path-pipe
-    pipe = @parse-obj value
-    path-pipe.attach pipe
-    path-pipe
+    @build-children value, path-pipe
 
   # collection or simple array
   parse-plural: (key, value) ->
@@ -236,7 +226,6 @@ Parser = new Class(
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
     @build-collection key, value
 
-
   parse-array: (key, value) ->
     unless _.is-type 'Array', value
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
@@ -245,14 +234,6 @@ Parser = new Class(
 
   parse-str: (key) ->
     @build-attr key
-
-  parse-list: (list) ->
-    self = @
-    list.map (item) ->
-      if self.parent-type! is 'Collection'
-        self.build-model item
-      else
-        self.parse-obj item
 
   parent-type: ->
     @parent.pipe-type if @parent

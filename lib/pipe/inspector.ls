@@ -12,9 +12,6 @@ PipeInspector = new Module(
     @child-names!.map (name) ->
       self.child(name).pipe-type
 
-  child-names: ->
-    _.keys @children
-
   describe-children: ->
     return "no children" unless @child-names!.length > 0
     self = @
@@ -28,7 +25,7 @@ PipeInspector = new Module(
       id: @id! if @id
       value: @value
       children: @child-names!.length
-    if children then lo.extend(base, children: @describe-children!) else base
+    if @child-hash then lo.extend(base, children: @describe-children!) else base
 )
 
 module.exports = PipeInspector

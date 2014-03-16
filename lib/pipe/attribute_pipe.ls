@@ -53,6 +53,13 @@ AttributePipe = new Class(BasePipe,
   # only simple values can go here, no models or collections!
   # attach: void
 
+  valid-children: void
+  has-children: false
+
+  valid-parents:
+    * \model
+    * \path
+
 )
 
 module.exports = AttributePipe

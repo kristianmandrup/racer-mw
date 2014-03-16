@@ -60,8 +60,8 @@ ParentValidator = new Class(
       throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@parent.pipe-type}], must be one of: #{@valid-parent-types}"
 
   valid-type: ->
-    return true if @valid-parent-types is void
-    return true if @valid-parent-types.length is 0
+    return false if @valid-parent-types is void
+    return false if @valid-parent-types.length is 0
     return false unless @parent.type
     @parent.pipe-type.to-lower-case! in @valid-parent-types
 )

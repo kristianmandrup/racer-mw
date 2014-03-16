@@ -23,9 +23,10 @@ PathPipe        = requires.apipe   'path'
 util = require 'util'
 
 describe 'Parser' ->
-  var parser, obj, result, child
+  var parser, obj, result, child, children
 
-  objs = {}
+  objs    = {}
+  attrs   = {}
 
   before ->
     parser  := new Parser
@@ -229,21 +230,45 @@ describe 'Parser' ->
               email: 'kmandrup@gmail.com'
             ...
         parser  := new Parser objs.users
+        parser.debug!
         result := parser.parse!
-        console.log result.describe true
+        console.log 'RESULT', result.describe true
 
       specify 'is parsed as Collection' ->
         expect(result).to.be.an.instance-of CollectionPipe
 
       specify 'has one child' ->
-        expect(result.child-list!.length).to.eq 1
+        expect(result.child-count).to.eq 1
 
       context 'child' ->
         before ->
-          child := result.child-list!.first!
+          child     := result.child-list!.first!
+          children  := child.children
+          console.log 'CHILD', child.describe true
+          # console.log 'CHILDREN', child.describe-children!
 
         specify 'is a ModelPipe' ->
           expect(child).to.be.an.instance-of ModelPipe
+
+        specify 'has 2 children' ->
+          expect(child.child-count).to.eq 2
+
+        context 'name:' ->
+          before ->
+            attrs.name := children['name']
+
+          specify 'is an Attribute' ->
+            expect(attrs.name).to.be.an.instance-of AttributePipe
+
+          specify 'has 0 children' ->
+            expect(attrs.name.child-count).to.eq 0
+
+        context 'email:' ->
+          before ->
+            attrs.email := children['email']
+
+          specify 'email child is an Attribute' ->
+            expect(attrs.email).to.be.an.instance-of AttributePipe
 
     context 'page w 2 attributes' ->
       before ->

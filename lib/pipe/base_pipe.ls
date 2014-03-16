@@ -39,6 +39,7 @@ BasePipe = new Class(
     unless argumentor.validate @args, @valid-args
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
     @call-super!
+    @clear!
     @
 
   type:       'Pipe'
