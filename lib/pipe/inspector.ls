@@ -21,12 +21,14 @@ PipeInspector = new Module(
     @child-names!.map (name) ->
       self.child(name).describe!
 
-  describe: ->
-    type: @pipe-type
-    name: @name
-    id: @id! if @id
-    value: @value
-    children: @child-names!.length
+  describe: (children) ->
+    base =
+      type: @pipe-type
+      name: @name
+      id: @id! if @id
+      value: @value
+      children: @child-names!.length
+    if children then lo.extend(base, children: @describe-children!) else base
 )
 
 module.exports = PipeInspector

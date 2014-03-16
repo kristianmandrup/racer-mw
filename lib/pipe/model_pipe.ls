@@ -16,10 +16,12 @@ extract           = requires.apipe-extractor 'model'
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
   initialize: ->
-    @call-super!
-    @set @first-arg
-    @post-init!
-    @
+    try
+      @call-super!
+      @set @first-arg
+      @post-init!
+    finally
+      @
 
   pipe-type: 'Model'
 

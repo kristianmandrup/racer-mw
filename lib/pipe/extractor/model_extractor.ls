@@ -10,10 +10,11 @@ module.exports =
     @normalized _name
 
   value: (obj) ->
+    # console.log 'value', obj
     return {} if _.is-type 'String', obj
     if _.is-type 'Object', obj
       inner-obj = obj[@name(obj)]
-      return inner-obj or obj
+      return inner-obj # or obj
     throw new Error "Unable to extract value from: #{obj} #{typeof! obj}"
 
   clazz: (obj) ->

@@ -26,6 +26,9 @@ PipeFamily = new Module(
   child: (name) ->
     @children[name]
 
+  child-list: ->
+    _.values(@children)
+
   valid-child: (name) ->
     return false if @valid-children is void or @valid-children is []
     name in @valid-children

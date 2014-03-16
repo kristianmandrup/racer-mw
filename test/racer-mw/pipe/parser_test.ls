@@ -23,7 +23,7 @@ PathPipe        = requires.apipe   'path'
 util = require 'util'
 
 describe 'Parser' ->
-  var parser, obj, result
+  var parser, obj, result, child
 
   objs = {}
 
@@ -105,6 +105,14 @@ describe 'Parser' ->
     specify 'xyz: fails' ->
       expect(-> parser.tupel-type 'xyz').to.throw
 
+  describe 'build-model' ->
+    specify 'user: void - ok' ->
+      expect(parser.build-model 'user', void).to.be.an.instance-of ModelPipe
+
+  describe 'build-collection' ->
+    specify 'users: void - ok' ->
+      expect(parser.build-collection 'users', void).to.be.an.instance-of CollectionPipe
+
 
   describe 'parse-tupel' ->
     specify 'no arg: fails' ->
@@ -151,8 +159,18 @@ describe 'Parser' ->
     specify 'one arg: fails' ->
       expect(-> parser.parse-single 'x').to.throw
 
-    specify 'admin: object - ok' ->
-      expect(parser.parse-single 'admin', {name: 'kris'}).to.be.an.instance-of ModelPipe
+    specify 'one arg: user - ok' ->
+      expect(-> parser.parse-single 'user').to.not.throw
+
+    describe 'admin: object - ok' ->
+      before ->
+        result := parser.parse-single 'admin', {name: 'kris'}
+
+      specify 'returns model pipe' ->
+        expect(result).to.be.an.instance-of ModelPipe
+
+      specify 'value is name: kris' ->
+        expect(result.value-obj.value).to.eql name: 'kris'
 
   describe 'parse-path' ->
     specify 'no arg: fails' ->
@@ -164,7 +182,7 @@ describe 'Parser' ->
     specify '_page: x - fails' ->
       expect(-> parser.parse-path '_page', 'x').to.throw
 
-    xspecify '_page: object - ok' ->
+    specify '_page: object - ok' ->
       expect(parser.parse-path '_page', {x: 1}).to.be.an.instance-of PathPipe
 
   describe 'parse-obj' ->
@@ -178,20 +196,20 @@ describe 'Parser' ->
       expect(parser.parse-obj 'x').to.be.an.instance-of AttributePipe
 
     specify 'name: kris - ok' ->
-      expect(parser.parse-obj(name: 'kris')).to.be.an.instance-of ModelPipe
+      expect(parser.parse-obj name: 'kris').to.be.an.instance-of AttributePipe
 
     specify 'userCount: 2 - ok' ->
-      expect(parser.parse-obj(userCount: 2)).to.be.an.instance-of ModelPipe
+      expect(parser.parse-obj userCount: 2).to.be.an.instance-of AttributePipe
 
     specify 'array of strings ok' ->
       expect(parser.parse-obj(['name', 'email']).first!).to.be.an.instance-of AttributePipe
 
     specify 'array of objects ok' ->
-      expect(parser.parse-obj([{name: 'kris'}]).first!).to.be.an.instance-of ModelPipe
+      expect(parser.parse-obj([{name: 'kris'}]).first!).to.be.an.instance-of AttributePipe
 
     describe 'mixed array of objects + strings ok' ->
       before ->
-        result := parser.parse-obj(['email', {name: 'kris'}])
+        result := parser.parse-obj(['email', admin-user: {name: 'kris'}])
 
       specify 'first is AttributePipe' ->
         expect(result.first!).to.be.an.instance-of AttributePipe
@@ -203,7 +221,7 @@ describe 'Parser' ->
     specify 'no arg: fails' ->
       expect(-> parser.parse!).to.throw
 
-    context 'collection of users' ->
+    context.only 'collection of users' ->
       before ->
         objs.users  :=
           users:
@@ -211,9 +229,21 @@ describe 'Parser' ->
               email: 'kmandrup@gmail.com'
             ...
         parser  := new Parser objs.users
+        result := parser.parse!
+        console.log result.describe true
 
-      specify 'is parsed' ->
-        expect(parser.parse!).to.be.an.instance-of CollectionPipe
+      specify 'is parsed as Collection' ->
+        expect(result).to.be.an.instance-of CollectionPipe
+
+      specify 'has one child' ->
+        expect(result.child-list!.length).to.eq 1
+
+      context 'child' ->
+        before ->
+          child := result.child-list!.first!
+
+        specify 'is a ModelPipe' ->
+          expect(child).to.be.an.instance-of ModelPipe
 
     context 'page w 2 attributes' ->
       before ->
@@ -223,8 +253,25 @@ describe 'Parser' ->
             status: 'loading'
 
         parser  := new Parser objs.page
-        parser.debug!
         result := parser.parse!
 
-      specify 'is parsed' ->
+      specify 'is parsed as Path' ->
         expect(result).to.be.an.instance-of PathPipe
+
+    context 'model w 2 model attributes' ->
+      before ->
+        objs.page    :=
+          guest:
+            uncle:
+              name: 'mike'
+            mother:
+              name: 'ursula'
+
+        parser  := new Parser objs.page
+        result := parser.parse!
+
+      specify 'is parsed as Model' ->
+        expect(result).to.be.an.instance-of ModelPipe
+
+      specify 'is parsed' ->
+        expect(result).to.be.an.instance-of ModelPipe

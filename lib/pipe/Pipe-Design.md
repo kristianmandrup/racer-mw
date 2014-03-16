@@ -452,7 +452,7 @@ console.log user-model-pipe.raw-value()
 Further down the line, as this framework develops, it might be nice to extend the data validation
 from attribute types to also include Model class validation.
 
-Any Pipe can implement a `validate-attch(parent)` method which will be called by `pre-attach-to` of `BasePipe` behind the scenes.
+Any Pipe can implement a `validate-attach(parent)` method which will be called by `pre-attach-to` of `BasePipe` behind the scenes.
 Here you can inject your customized validation logic for which pipes (with what values) are valid when attached to a given parent pipe.
 
 This can f.ex be used by a *Collection* to limit the types of "classes" it will allow to be contained.

@@ -128,8 +128,63 @@ Parser = new Class(
     unless _.is-type 'String', key
       throw new Error "Key must be a String, was: #{typeof! key}, #{util.inspect key}"
 
+    @debug-msg "parse-single #{key} #{value}"
+    switch typeof! value
+    case 'Object'
+      @build-named-model key, value
+    case 'String', 'Number'
+      @build-attr key, value
+    case 'Undefined'
+      @build-named-model key
+    default
+      throw new Error "Single value for #{key} should be Object, Number or String, was: #{typeof! value}, #{value}"
+
+  build-model: (value) ->
+    @debug-msg "ModelPipe: #{value}"
+    model-pipe = new ModelPipe value
+    # attach pipes on model using value
+    try
+      pipes = @parse-obj value
+      model-pipe.attach pipes
+      model-pipe
+    catch e
+      @debug-msg "unable to attach more pipes to model"
+      model-pipe
+    finally
+      model-pipe
+
+  build-named-model: (key, value) ->
     @debug-msg "ModelPipe: #{key}"
-    new ModelPipe "#{key}": value
+    model-pipe = new ModelPipe "#{key}": value
+    @parent = model-pipe
+    # attach pipes on model using value
+    try
+      pipes = @parse-obj value
+      model-pipe.attach pipes
+      model-pipe
+    catch e
+      @debug-msg "unable to attach more pipes to model: #{key}"
+      model-pipe
+    finally
+      model-pipe
+
+  build-collection: (key, value) ->
+    @debug-msg "CollectionPipe: #{key}"
+    col-pipe = new CollectionPipe "#{key}": value
+    @parent = col-pipe
+    try
+      pipes = @parse-obj value
+      col-pipe.attach pipes
+      col-pipe
+    catch
+      @debug-msg "unable to attach more pipes to collection: #{key}"
+      col-pipe
+    finally
+      col-pipe
+
+  build-attr: (key, value) ->
+    @debug-msg "AttributePipe: #{key}, #{value}"
+    new AttributePipe key, value
 
   parse-path: (key, value) ->
     @debug-msg "PathPipe: #{key}"
@@ -139,6 +194,7 @@ Parser = new Class(
     unless _.is-type 'Object' value
       throw new Error "PathPipe can not be extended with #{value}, must be an Object, was: #{typeof! value}"
 
+    @parent = path-pipe
     pipe = @parse-obj value
     path-pipe.attach pipe
     path-pipe
@@ -178,29 +234,35 @@ Parser = new Class(
   parse-collection: (key, value) ->
     unless _.is-type 'Array', value
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
+    @build-collection key, value
 
-    @debug-msg "CollectionPipe: #{key}"
-    new CollectionPipe "#{key}": value
 
   parse-array: (key, value) ->
     unless _.is-type 'Array', value
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
 
-    @debug-msg "AttributePipe: #{key}"
-    new AttributePipe "#{key}": value
+    @build-attr key, value
 
-  parse-str: (text) ->
-    @debug-msg "AttributePipe: #{text}"
-    new AttributePipe text
+  parse-str: (key) ->
+    @build-attr key
 
   parse-list: (list) ->
     self = @
     list.map (item) ->
-      self.parse-obj item
+      if self.parent-type! is 'Collection'
+        self.build-model item
+      else
+        self.parse-obj item
+
+  parent-type: ->
+    @parent.pipe-type if @parent
 
   debug-on: false
   debug: ->
     @debug-on = true
+
+  debug-off: ->
+    @debug-on = false
 
   debug-msg: (msg) ->
     console.log msg if @debug-on

@@ -17,6 +17,8 @@ unpack = (arg) ->
   # allow object, setting name by _clazz and then value
   case 'Object'
      unpack-obj arg
+  case 'Array'
+     unpack-obj (arg.first!): arg.last!
   default
     throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"
 
@@ -25,20 +27,20 @@ unpack-obj = (obj) ->
     throw new Error "Unable to create Attribute from, #{util.inspect obj} with class: #{obj._clazz}"
   else
     key = _.keys(obj).first!
-    # detect if constructed from arguments hash
+    # detect if arguments hash
     if key is '0'
       throw new Error "Bad arguments: #{util.inspect obj}"
     # allow customizing attribute name
     # admin: user-obj
     [key, _.values(obj).first!]
 
-# Must be on a model
+# Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,
-  initialize: (arg) ->
-    if _.is-type 'Array', arg
-      throw new Error "AttributePipe cannot be constructed from an Array, was: #{arg}"
+  initialize: ->
     @call-super!
-    [@name, @value] = unpack arg
+    [name, value] = unpack @args
+    @set-name name
+    @set-value value
     @post-init!
     @
 

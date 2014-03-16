@@ -23,6 +23,7 @@ Attacher = new Module(
     unless pipe.type is 'Pipe'
       throw new Error "Can only attach to a Pipe object, was: #{util.inspect pipe}, type: #{pipe.type}"
     pipe.attach-to @
+    @
 
   attach-list: (pipes) ->
     unless _.is-type('Array', pipes)
