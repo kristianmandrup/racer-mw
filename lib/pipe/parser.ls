@@ -76,13 +76,13 @@ Parser = new Class(
     @
 
   parse: ->
-    switch typeof! obj
+    switch typeof! @obj
     case 'Array'
-      @parse-list obj
+      @parse-list @obj
     case 'Object'
-      @parse-obj obj
+      @parse-obj @obj
     default
-      throw new Error "Value being parsed must be an Object or Array, was: #{typeof! obj}"
+      throw new Error "Value being parsed must be an Object or Array, was: #{typeof! @obj}"
 
   parse-obj: (obj) ->
     switch typeof! obj
@@ -99,29 +99,40 @@ Parser = new Class(
 
   parse-object: (obj) ->
     self = this
-    _.keys(obj).map (key) ->
+    keys = _.keys(obj)
+    return [] if keys.length is 0
+    mapped = keys.map (key) ->
       value = obj[key]
       self.parse-tupel key, value
+    if mapped.length is 1 then mapped.first! else mapped
 
   parse-tupel: (key, value) ->
-    parser = switch  tupel-type key
-    case 'single' then @parse-single
-    case 'plural' then @parse-plural
-    case 'path' then @parse-path
-    parser key, value
+    parser = switch @tupel-type key
+    case 'single' then 'parseSingle'
+    case 'plural' then 'parsePlural'
+    case 'path' then 'parsePath'
+    @[parser] key, value
 
   tupel-type: (key) ->
-    return 'single' if key.singularize! is key
-    return 'plural' if key.pluralize! is key
+    unless _.is-type 'String', key
+      throw new Error "Key must be a String, was: #{typeof! key}, #{util.inspect key}"
+
     first-char = key[0]
     return 'path' if first-char is '_' or first-char is '$'
+
+    return 'single' if key.singularize! is key
+    return 'plural' if key.pluralize! is key
     throw new Error "Can't determine tupel type from key: #{key}"
 
   parse-single: (key, value) ->
+    unless _.is-type 'String', key
+      throw new Error "Key must be a String, was: #{typeof! key}, #{util.inspect key}"
     new ModelPipe "#{key}": value
 
   parse-path: (key, value) ->
     path-pipe = new PathPipe key
+    return path-pipe unless value
+
     unless _.is-type 'Object' value
       throw new Error "PathPipe can not be extended with #{value}, must be an Object, was: #{typeof! value}"
 
@@ -130,31 +141,55 @@ Parser = new Class(
 
   # collection or simple array
   parse-plural: (key, value) ->
-    type = @list-type-detect key, value
+    type = @list-type(key, value)
     switch type
     case 'collection'
       @parse-collection key, value
     case 'array'
       @parse-array key, value
+    case 'empty'
+      @parse-collection key, []
     default
       throw new Error "Unable to determine if plural: #{key} is a collection or array, was: #{type}"
 
   # test if value is list of Object or list of simple types
   # if mixed, throw error
-  list-type-detect: (key, value) ->
+  list-type: (key, value) ->
+    return 'empty' if value is void
+
     unless _.is-type 'Array', value
       throw new Error "plural value #{key} must be an Array, was: #{typeof! value} #{util.inspect value}"
 
+    return 'empty' if value.length is 0
+
+    all-objects = value.every (item) ->
+      _.is-type 'Object', item
+    return 'collection' if all-objects
+
+    all-simple = value.every (item) ->
+      _.is-type('String', item) or _.is-type('Number', item)
+    return 'array' if all-simple
+    'mixed'
+
   parse-collection: (key, value) ->
+    unless _.is-type 'Array', value
+      throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
+
     new CollectionPipe "#{key}": value
 
   parse-array: (key, value) ->
+    unless _.is-type 'Array', value
+      throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
+
     new AttributePipe "#{key}": value
 
   parse-str: (text) ->
     new AttributePipe text
 
   parse-list: (list) ->
+    self = @
     list.map (item) ->
-      @parse item
+      self.parse-obj item
 )
+
+module.exports = Parser
