@@ -20,6 +20,8 @@ CollectionPipe  = requires.apipe   'collection'
 AttributePipe   = requires.apipe   'attribute'
 PathPipe        = requires.apipe   'path'
 
+util = require 'util'
+
 describe 'Parser' ->
   var parser, obj, result
 
@@ -162,7 +164,6 @@ describe 'Parser' ->
     specify '_page: x - fails' ->
       expect(-> parser.parse-path '_page', 'x').to.throw
 
-    # TODO: make attach pipe work with Arrays!
     xspecify '_page: object - ok' ->
       expect(parser.parse-path '_page', {x: 1}).to.be.an.instance-of PathPipe
 
@@ -176,8 +177,11 @@ describe 'Parser' ->
     specify 'string: ok' ->
       expect(parser.parse-obj 'x').to.be.an.instance-of AttributePipe
 
-    specify 'object: ok' ->
+    specify 'name: kris - ok' ->
       expect(parser.parse-obj(name: 'kris')).to.be.an.instance-of ModelPipe
+
+    specify 'userCount: 2 - ok' ->
+      expect(parser.parse-obj(userCount: 2)).to.be.an.instance-of ModelPipe
 
     specify 'array of strings ok' ->
       expect(parser.parse-obj(['name', 'email']).first!).to.be.an.instance-of AttributePipe
@@ -195,23 +199,32 @@ describe 'Parser' ->
       specify 'last is ModelPipe' ->
         expect(result.last!).to.be.an.instance-of ModelPipe
 
-/*
   describe 'parse' ->
-    before ->
-      objs.users  :=
-        users:
-          * name: 'Kris'
-            email: 'kmandrup@gmail.com'
-          ...
+    specify 'no arg: fails' ->
+      expect(-> parser.parse!).to.throw
 
-      parser  := new Parser objs.users
+    context 'collection of users' ->
+      before ->
+        objs.users  :=
+          users:
+            * name: 'Kris'
+              email: 'kmandrup@gmail.com'
+            ...
+        parser  := new Parser objs.users
 
-    specify 'can parse users collection' ->
-      expect(parser.parse!).to.be.an.instance-of CollectionPipe
+      specify 'is parsed' ->
+        expect(parser.parse!).to.be.an.instance-of CollectionPipe
 
+    context 'page w 2 attributes' ->
+      before ->
+        objs.page    :=
+          _page:
+            user-count: 2
+            status: 'loading'
 
-      objs.page    :=
-        _page:
-          user-count: 2
-          status: loading
-*/
+        parser  := new Parser objs.page
+        parser.debug!
+        result := parser.parse!
+
+      specify 'is parsed' ->
+        expect(result).to.be.an.instance-of PathPipe

@@ -32,6 +32,7 @@ ParentValidator = new Class(
 
   set-valid: (valid-parent-types) ->
     @valid-parent-types = [valid-parent-types].flatten!.compact!
+    @
 
   validate-args: ->
     unless @pipe
@@ -56,13 +57,13 @@ ParentValidator = new Class(
     @validate-args!
 
     unless @valid-type!
-      throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@pipe.type}], must be one of: #{@valid-parent-types}"
+      throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@parent.pipe-type}], must be one of: #{@valid-parent-types}"
 
   valid-type: ->
     return true if @valid-parent-types is void
     return true if @valid-parent-types.length is 0
     return false unless @parent.type
-    @parent.type in @valid-parent-types
+    @parent.pipe-type.to-lower-case! in @valid-parent-types
 )
 
 

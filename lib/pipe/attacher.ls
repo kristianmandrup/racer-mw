@@ -13,12 +13,24 @@ ParentValidator   = requires.pipe 'validator/parent_validator'
 Attacher = new Module(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
+    if _.is-type 'Array', pipe
+      @attach-list pipe
+      return @
+
     unless _.is-type('Object', pipe)
       throw new Error "Can only attach to a Pipe which is an Object was: #{typeof! pipe}"
 
     unless pipe.type is 'Pipe'
       throw new Error "Can only attach to a Pipe object, was: #{util.inspect pipe}, type: #{pipe.type}"
     pipe.attach-to @
+
+  attach-list: (pipes) ->
+    unless _.is-type('Array', pipes)
+      throw new Error "Can only attach to a list of Pipes, was: #{typeof! pipes}"
+
+    self = @
+    pipes.each (pipe) ->
+      self.attach pipe
 
   detach: ->
     @parent = void
@@ -53,7 +65,6 @@ Attacher = new Module(
     if parent
       parent.added = @
     @
-
 
   parent-validator: (parent) ->
     new ParentValidator(parent).set-valid @valid-parents

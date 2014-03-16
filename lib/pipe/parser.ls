@@ -127,17 +127,21 @@ Parser = new Class(
   parse-single: (key, value) ->
     unless _.is-type 'String', key
       throw new Error "Key must be a String, was: #{typeof! key}, #{util.inspect key}"
+
+    @debug-msg "ModelPipe: #{key}"
     new ModelPipe "#{key}": value
 
   parse-path: (key, value) ->
+    @debug-msg "PathPipe: #{key}"
     path-pipe = new PathPipe key
     return path-pipe unless value
 
     unless _.is-type 'Object' value
       throw new Error "PathPipe can not be extended with #{value}, must be an Object, was: #{typeof! value}"
 
-    pipe = @parse-object value
+    pipe = @parse-obj value
     path-pipe.attach pipe
+    path-pipe
 
   # collection or simple array
   parse-plural: (key, value) ->
@@ -175,21 +179,31 @@ Parser = new Class(
     unless _.is-type 'Array', value
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
 
+    @debug-msg "CollectionPipe: #{key}"
     new CollectionPipe "#{key}": value
 
   parse-array: (key, value) ->
     unless _.is-type 'Array', value
       throw new Error "value must be an Array, was: #{typeof! value} #{util.inspect value}"
 
+    @debug-msg "AttributePipe: #{key}"
     new AttributePipe "#{key}": value
 
   parse-str: (text) ->
+    @debug-msg "AttributePipe: #{text}"
     new AttributePipe text
 
   parse-list: (list) ->
     self = @
     list.map (item) ->
       self.parse-obj item
+
+  debug-on: false
+  debug: ->
+    @debug-on = true
+
+  debug-msg: (msg) ->
+    console.log msg if @debug-on
 )
 
 module.exports = Parser
