@@ -18,6 +18,15 @@ PipeValue = new Module(
   initialize: ->
     @value-obj = new ValueObject @
 
+  raw-value: ->
+    if @child-count > 0
+      obj = {}
+      @child-list!.each (child) ->
+        obj[child.id!] = child.raw-value!
+      (@id!): obj
+    else
+      @value!
+
   value: ->
     @value-obj.value
 

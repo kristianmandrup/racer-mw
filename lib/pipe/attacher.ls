@@ -46,16 +46,12 @@ Attacher = new Module(
     unless @id!
       throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
 
-    console.log @.describe!, 'ATTACH TO', parent.describe!
-
     @pre-attach-to parent
 
     parent.add-child @id!, @
     @attached-to parent
 
     @post-attach-to parent
-    console.log 'PARENT', parent.describe true
-    console.log 'CHILD', @describe true
     @
 
   pre-attach-to: (parent) ->
@@ -72,7 +68,6 @@ Attacher = new Module(
     @
 
   parent-validator: (parent) ->
-    console.log '@valid-parents', @valid-parents, 'for', @pipe-type
     new ParentValidator(parent).set-valid @valid-parents
 
   # throw new Error if invalid pipe for parent

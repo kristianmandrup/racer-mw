@@ -151,11 +151,7 @@ Parser = new Class(
 
   build-children: (value, parent-pipe) ->
     try
-      console.log 'children for', parent-pipe.name
       pipes = new Parser(value, parent: parent-pipe, debug: @debug).parse!
-      console.log 'pipes', pipes.length
-      pipes.each (pipe) ->
-        console.log 'child pipe', pipe.describe!
       parent-pipe.attach pipes
       parent-pipe
     catch e
@@ -246,7 +242,7 @@ Parser = new Class(
     @debug-on = false
 
   debug-msg: (msg) ->
-    console.log msg if @debug-on
+    console.log msg if @debug-on is true
 )
 
 module.exports = Parser

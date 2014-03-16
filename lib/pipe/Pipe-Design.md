@@ -400,10 +400,10 @@ _path:
   projects:
     *
       name: 'my project'
-      user: '_path.users.1'
+      user: _path.users.1
     *
       name: 'your project'
-      user: '_path.users.2'
+      user: _path.users.2
 ```
 
 The parser should understand that the top most node `_path` since it has an underscore, is a `PathPipe`.
@@ -421,7 +421,7 @@ Which would internally handle each model something like:
 
 `.model(name: 'Kris', email: 'kris@gmail.com')`
 
-It should internally add attributes like so, where 'user' is an (optional) "class" indicator.
+It should internally add attributes pretty much like so, where 'user' is an (optional) "class" indicator.
 
 `.model('user').attributes().add(name: 'Kris', email: 'kris@gmail.com')`
 
@@ -430,6 +430,8 @@ Could even allow without class, if collection is "class-less"
 `.model().attributes()`
 
 Calling `collection.model(...)` should always ensure that the model gets an appropriate id according to its position in the parent collection.
+
+The parser should pretty much work as described above. However it needs real-life testing to see how well it holds up!
 
 ## Marshalling a pipe value
 
@@ -446,6 +448,21 @@ console.log user-model-pipe.raw-value()
   _clazz: 'user'
 }
 ```
+
+The implementation would look something like this...
+
+```
+  raw-value: ->
+    if @child-count > 0
+      obj = {}
+      @child-list!.each (child) ->
+        obj[child.id!] = child.raw-value!
+      (@id!): obj
+    else
+      @value!
+```
+
+Ugly as hell, but seems to work ok for now... at least for some (most? or all?) cases...
 
 ### Validation
 
