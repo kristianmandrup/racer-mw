@@ -7,16 +7,16 @@ expect        = require('chai').expect
 
 requires = require '../../../requires'
 
-BaseResource        = requires.resource 'base'
-ModelResource       = requires.resource 'model'
-AttributeResource   = requires.resource 'attribute'
-CollectionResource  = requires.resource 'collection'
+BaseResource        = requires.aresource 'base'
+ModelResource       = requires.aresource 'model'
+AttributeResource   = requires.aresource 'attribute'
+CollectionResource  = requires.aresource 'collection'
 
-BasePipe          = requires.pipe 'base'
-CollectionPipe    = requires.pipe 'collection'
-ModelPipe         = requires.pipe 'model'
-AttributePipe     = requires.pipe 'attribute'
-PathPipe          = requires.pipe 'path'
+BasePipe          = requires.apipe 'base'
+CollectionPipe    = requires.apipe 'collection'
+ModelPipe         = requires.apipe 'model'
+AttributePipe     = requires.apipe 'attribute'
+PathPipe          = requires.apipe 'path'
 
 describe 'BaseResource' ->
   var base-res, model-res, att-res, col-res, pipe

@@ -52,7 +52,7 @@ PipeBuilders = new Module(
 
   builder: (name) ->
     unless @builders[name]
-      throw new Error "No builder #{name} registered for #{util.inspect @describe!}"
+      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}"
     @builders[name]
 )
 

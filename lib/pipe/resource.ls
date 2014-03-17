@@ -23,7 +23,7 @@ PipeResource = new Module(
     unless _.is-type 'String', @pipe-type
       throw new Error "Pipe must have a pipe-type to know what resource to create"
 
-    resource-clazz = requires.resource(@pipe-type.to-lower-case!)
+    resource-clazz = requires.aresource(@pipe-type.to-lower-case!)
     @$res = new resource-clazz pipe: @
 )
 

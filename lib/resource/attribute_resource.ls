@@ -2,9 +2,7 @@ Class       = require('jsclass/src/core').Class
 
 requires = require '../../requires'
 
-requires.resource 'base'
-
-BaseResource   = requires.resource 'base'
+BaseResource   = requires.aresource 'base'
 
 AttributeResource = new Class(BaseResource,
   initialize: (@pipe) ->

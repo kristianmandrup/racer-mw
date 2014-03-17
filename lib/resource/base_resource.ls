@@ -68,10 +68,8 @@ BaseResource = new Class(ResourceCommand,
     throw new Error "No value set for this resource #{pipe-error}"
 
   pipe-value: ->
-    return unless @pipe
-    valo = @pipe.get-value!
-    return valo if valo isnt void
-    @pipe.value if @pipe.value isnt void
+    return void unless @pipe
+    @pipe.value!
 
   commands:
     basic:

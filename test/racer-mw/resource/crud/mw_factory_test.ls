@@ -26,7 +26,7 @@ describe 'MwFactory' ->
       expect(-> new MwFactory 'unknwon').to.throw Error
 
     specify 'valid arg: read  ok :)' ->
-      expect(-> new MwFactory 'read).to.throw Error
+      expect(-> new MwFactory 'read').to.throw Error
 
   xcontext 'read action' ->
     before ->

@@ -49,6 +49,11 @@ PathPipe = new Class(BasePipe,
 
   valid-parents:
     * \path
+
+  valid-children:
+    * \attribute
+    * \model
+    * \collection
 )
 
 module.exports = PathPipe

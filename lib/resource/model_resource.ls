@@ -6,7 +6,7 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-BaseResource   = requires.resource 'base'
+BaseResource   = requires.aresource 'base'
 Filtering      = requires.resource 'filtering'
 
 ModelResource = new Class(BaseResource,
