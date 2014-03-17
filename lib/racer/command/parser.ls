@@ -22,10 +22,12 @@ CommandParser = new Class(
     unless @command-name
       throw new Error "Missing arguments, must take a command name and an argument hash"
 
-    unless typeof @command-name is 'string'
+    unless typeof! @command-name is 'String'
       throw new Error "Command name argument must be a String, was: #{@command-name}"
 
-    unless typeof @arg-hash is 'object'
+    return if @arg-hash is void
+
+    unless typeof! @arg-hash is 'Object'
       throw new Error "Argument hash must be an Object, was: #{@arg-hash}"
 
   extract: ->
@@ -40,7 +42,7 @@ CommandParser = new Class(
   # name is command-name
   command-rule: (name) ->
     unless @command-map[name]
-      throw new Error "No rule for #{name} in command map: #{util.inspect @command-map, depth: 2}"
+      throw new Error "No rule for #{name} in command map: #{_.keys @command-map}"
     @command-map[name]
 )
 

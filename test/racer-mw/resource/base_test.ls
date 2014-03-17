@@ -57,7 +57,7 @@ describe 'BaseResource' ->
           expect(model-res.pipe).to.be.undefined
 
         specify 'does not transfer value from pipe' ->
-          expect(model-res.value).to.not.eq pipe.value
+          expect(model-res.value).to.not.eq pipe.value!
 
       context 'transfer pipe value' ->
         before ->
@@ -69,7 +69,7 @@ describe 'BaseResource' ->
           expect(model-res.pipe).to.be.undefined
 
         specify 'transfers value from pipe' ->
-          expect(model-res.value).to.eq pipe.value
+          expect(model-res.value).to.eq pipe.value!
 
     describe 'attach' ->
       context 'default: no transfer pipe value' ->
@@ -81,7 +81,7 @@ describe 'BaseResource' ->
           expect(model-res.pipe).to.eq pipe
 
         specify 'does not transfer value from pipe' ->
-          expect(model-res.value).to.not.eq pipe.value
+          expect(model-res.value).to.not.eq pipe.value!
 
       context 'transfer pipe value' ->
         before ->
@@ -93,7 +93,7 @@ describe 'BaseResource' ->
           expect(model-res.pipe).to.eq pipe
 
         specify 'transfers value from pipe' ->
-          expect(model-res.value).to.eq pipe.value
+          expect(model-res.value).to.eq pipe.value!
 
     describe 'value-object' ->
       specify 'has none' ->
@@ -106,7 +106,7 @@ describe 'BaseResource' ->
       specify 'is 27' ->
         expect(base-res.value-object!).to.eq 27
 
-    describe 'obtain path from resource' ->
+    describe.only 'obtain path from resource' ->
       var user
       before ->
         user := {name: 'Kris'}

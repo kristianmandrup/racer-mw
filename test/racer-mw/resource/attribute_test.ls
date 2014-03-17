@@ -2,11 +2,11 @@ requires = require '../../../requires'
 
 requires.test 'test_setup'
 
-AttributeResource   = requires.resource 'attribute'
-AttributePipe       = requires.pipe 'attribute'
-ModelPipe           = requires.pipe 'model'
+AttributeResource   = requires.aresource 'attribute'
+AttributePipe       = requires.apipe 'attribute'
+ModelPipe           = requires.apipe 'model'
 
-expect        = require('chai').expect
+expect              = require('chai').expect
 
 describe 'AttributeResource' ->
   var att-res, pipe
@@ -24,18 +24,18 @@ describe 'AttributeResource' ->
       pipes.model := new ModelPipe admin: {}
 
     specify 'fails' ->
-      expect(-> new AttributeResource pipes.model).to.throw
+      expect(-> new AttributeResource pipe: pipes.model).to.throw
 
   context 'AttributeResource obj created from Attribute pipe' ->
     before ->
       pipes.att       := new AttributePipe admin: 7
-      resources.att   := new AttributeResource pipes.att
+      resources.att   := new AttributeResource pipe: pipes.att
 
     specify 'resource set with pipe' ->
       expect(resources.att.pipe).to.eq pipes.att
 
-    specify 'pipe set with resource' ->
-      expect(pipes.att.$res).to.eq resources.att
+    specify.only 'pipe set with resource' ->
+      expect(pipes.att.$res.pipe).to.eq resources.att.pipe
 
     specify 'has a function scoped' ->
       expect(resources.att.scoped).to.be.an.instance-of Function

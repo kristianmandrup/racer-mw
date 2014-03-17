@@ -21,6 +21,8 @@ ArgumentsExtractor = new Class(
     unless typeof @rule is 'object'
       throw new Error "rule argument must be an Object, was: #{@rule}"
 
+    return if @arg-hash is void
+
     unless typeof @arg-hash is 'object'
       throw new Error "Argument hash must be an Object, was: #{@arg-hash}"
 

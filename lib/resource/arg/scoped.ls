@@ -6,3 +6,7 @@ module.exports =
     result: 'scoped'
   'parent':
     result: 'scoped'
+  'path':
+    result: 'scoped'
+  'leaf':
+    result: 'scoped'

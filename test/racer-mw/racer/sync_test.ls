@@ -25,6 +25,7 @@ describe 'RacerSync' ->
       before ->
         command := new RacerCommand {}
 
+      # TODO: huh?
       specify 'fails' ->
         expect(new RacerSync command).to.be.undefined
 

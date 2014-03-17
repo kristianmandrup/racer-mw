@@ -5,21 +5,23 @@ requires.test 'test_setup'
 
 requires = require '../../../requires'
 
-ModelResource   = requires.resource 'model'
+ModelResource   = requires.aresource 'model'
+ModelPipe       = requires.apipe     'model'
 
 expect        = require('chai').expect
 
 describe 'ModelResource' ->
-  var model-res
+  var model-res, pipe
 
   describe 'init' ->
     context 'no args' ->
-      specify 'creates it' ->
-        expect(-> new ModelResource).to.not.throw
+      specify 'fails - no context' ->
+        expect(-> new ModelResource).to.throw
 
   context 'a base resource' ->
     before ->
-      model-res := new ModelResource
+      pipe      := new ModelPipe 'user'
+      model-res := new ModelResource pipe
 
     specify 'has a function scoped' ->
       expect(model-res.scoped).to.be.an.instance-of Function

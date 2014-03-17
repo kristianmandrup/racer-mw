@@ -5,21 +5,23 @@ requires.test 'test_setup'
 
 requires = require '../../../requires'
 
-CollectionResource   = requires.resource 'collection'
+CollectionResource   = requires.aresource 'collection'
+CollectionPipe       = requires.apipe     'collection'
 
 expect        = require('chai').expect
 
 describe 'CollectionResource' ->
-  var model-res
+  var model-res, pipe
 
   describe 'init' ->
     context 'no args' ->
-      specify 'creates it' ->
-        expect(-> new CollectionResource).to.not.throw
+      specify 'fails - no context' ->
+        expect(-> new CollectionResource).to.throw
 
   context 'a base resource' ->
     before ->
-      model-res := new CollectionResource
+      pipe      := new CollectionPipe 'users'
+      model-res := new CollectionResource pipe: pipe
 
     specify 'has a function scoped' ->
       expect(model-res.scoped).to.be.an.instance-of Function

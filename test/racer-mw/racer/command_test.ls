@@ -49,8 +49,8 @@ describe 'RacerCommand' ->
     describe 'with' ->
       context 'arg: 7' ->
         specify 'fails' ->
-          expect(-> command.pass 7).to.throw Error
+          expect(-> command.using 7).to.throw Error
 
       context "arg: value: 'x'" ->
         specify 'return list with 7' ->
-          expect(command.pass(value: 'x').first!).to.equal 'x'
+          expect(command.using(value: 'x').first!).to.equal 'x'

@@ -35,7 +35,7 @@ CommandBuilder = new Class(
     functions.each (fun) ->
       fun-name = fun.camelize false
       self.commander[fun-name] = (args) ->
-        @promise fun-name, args
+        @perform fun-name, args
         @
 
   # creates and sets a Filter or Query

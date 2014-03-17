@@ -32,9 +32,9 @@ RacerCommand = new Class(
 
   mw-context: ->
 
-
-  pass: (hash) ->
+  using: (hash) ->
     @command-args = @command-parser(hash).extract!
+    @
 
   command-parser: (hash) ->
     new CommandParser(@action, hash)

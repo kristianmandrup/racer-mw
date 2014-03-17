@@ -18,7 +18,7 @@ RacerSync = new Class(
 
   validate-arg: (command) ->
     unless command
-      throw new Error "Missing racer-command argument"
+      throw new Error "Missing racer-command argument, #{command}"
 
     unless typeof command is 'object'
       arg-error command

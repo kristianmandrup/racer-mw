@@ -6,14 +6,16 @@ Filter  = requires.resource 'filter'
 Query   = requires.resource 'query'
 
 CommandBuilder = requires.resource 'command/builder'
+RacerCommand   = requires.racer    'command'
+RacerSync      = requires.racer    'sync'
 
 ResourceCommand = new Class(
   initialize: (@resource) ->
     new CommandBuilder(@).build!
 
   # we need to somehow inject the RacerStore
-  racer-sync: ->
-    @my-sync ||= new RacerSync
+  racer-sync: (command) ->
+    @my-sync ||= new RacerSync command
 
   get-path: ->
     @resource.pipe.get-path! # calculate or get cached ;)
@@ -22,11 +24,14 @@ ResourceCommand = new Class(
   # ‘push’, object: value, cb: cb-fun
   perform: (action, hash) ->
     # save last executed command, just coz we can ;)
-    @command = new RacerCommand(@resource).run(action).with hash
+    @command = new RacerCommand(@resource).run(action).using hash
     @execute @command
 
   execute: (racer-command) ->
-    @racer-sync.execute racer-command
+    unless racer-command
+      throw new Error "No RacerCommand to execute, was: #{racer-command}"
+
+    @racer-sync(racer-command).execute!
 
   scoped: (command, hash) ->
     @scope = @perform command, hash
