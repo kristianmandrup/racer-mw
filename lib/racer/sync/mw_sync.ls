@@ -1,15 +1,12 @@
 Class   = require('jsclass/src/core').Class
 
-requires      = require '../../requires'
+requires      = require '../../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 util          = require 'util'
 
 RacerCommand  = requires.racer 'command'
 BaseSync      = requires.racer 'sync/base_sync'
-
-arg-error = ->
-  throw new Error "Argument racer-command must be a RacerCommand instance, was: #{util.inspect command} [#{typeof command}]"
 
 MwSync = new Class(BaseSync,
   initialize: (racer-command) ->

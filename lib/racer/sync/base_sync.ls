@@ -1,6 +1,6 @@
 Class   = require('jsclass/src/core').Class
 
-requires      = require '../../requires'
+requires      = require '../../../requires'
 lo            = require 'lodash'
 _             = require 'prelude-ls'
 util          = require 'util'
@@ -16,7 +16,7 @@ BaseSync = new Class(
   initialize: (racer-command) ->
     @validate-arg racer-command
     @racer-command = racer-command
-    @racer-store = RacerSync.racer-store!
+    @racer-store = BaseSync.racer-store!
 
   validate-arg: (command) ->
     unless command
@@ -41,4 +41,4 @@ BaseSync = new Class(
     @racer-command.name
 )
 
-module.exports = RacerSync
+module.exports = BaseSync
