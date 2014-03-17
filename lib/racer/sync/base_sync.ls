@@ -17,6 +17,7 @@ BaseSync = new Class(
     @validate-arg racer-command
     @racer-command = racer-command
     @racer-store = BaseSync.racer-store!
+    @
 
   validate-arg: (command) ->
     unless command
@@ -27,6 +28,13 @@ BaseSync = new Class(
 
     unless command.klass is RacerCommand
       arg-error command
+
+    unless command.action
+      throw new Error "RacerCommand #{util.inspect command} is missing an: action. Please use: .run(action)"
+
+    # TODO: if command action requires args?
+    # unless command.command-args
+      # throw new Error "RacerCommand #{util.inspect command} is missing: command-args, Please use: .run(action).using args"
 
   run-args: ->
     @racer-command.args!
