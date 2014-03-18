@@ -12,7 +12,7 @@ ModelResource   = requires.aresource 'model'
 expect          = require('chai').expect
 
 describe 'BaseSync' ->
-  var command, pipe, resource
+  var command, pipe, resource, value, sync
 
   describe 'init and validate-args' ->
     context 'no args' ->
@@ -43,3 +43,49 @@ describe 'BaseSync' ->
 
           specify 'is ok' ->
             expect(new BaseSync(command)).to.be.an.instance-of BaseSync
+
+  context 'BaseSync instance' ->
+    before ->
+      pipe      := new ModelPipe 'user'
+      resource  := new ModelResource pipe: pipe
+
+    context 'action: path' ->
+      before ->
+        command   := new RacerCommand(resource).run('path')
+        sync      := new BaseSync(command)
+
+      describe 'command-name' ->
+        specify 'is action of RacerCommand: path' ->
+          expect(sync.command-name!).to.eq 'path'
+
+      describe 'command-args' ->
+        specify 'is command-args of RacerCommand' ->
+          expect(sync.command-args!).to.eq command.command-args
+
+        specify 'is undefined' ->
+          expect(sync.command-args!).to.be.undefined
+
+      xdescribe 'execute' ->
+        specify 'executes command on Racer = x' ->
+          expect(sync.execute!).to.eq 'x'
+
+    context 'action: set value' ->
+      before ->
+        value     := {x: 2}
+        command   := new RacerCommand(resource).run('set').using value: value
+        sync      := new BaseSync(command)
+
+      describe 'command-name' ->
+        specify 'is action of RacerCommand: path' ->
+          expect(sync.command-name!).to.eq command.action
+
+      describe 'command-args' ->
+        specify 'is command-args of RacerCommand' ->
+          expect(sync.command-args!).to.eq command.command-args
+
+        specify 'is a list' ->
+          expect(sync.command-args!).to.eql [ { x: 2 } ]
+
+      describe 'execute' ->
+        specify 'executes command on Racer = x' ->
+          expect(sync.execute!).to.throw

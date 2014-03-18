@@ -3,19 +3,22 @@ module.exports =
   racer-store: ->
     @store ||= @default-store!
 
+  racer-model: ->
+    @model ||= @racer-store!.create-model!
+
   default-store: ->
     # see: https://github.com/share/livedb-mongo
     @racer = require 'racer'
     @local-store!
 
   local-store: ->
-    @racer.createStore(
+    @racer.create-store(
       redis:   @local-redis! # or use @redis-client!
       db:      @live-db('localhost:27017/test?auto_reconnect', {safe: true})
     )
 
   remote-store: ->
-    @racer.createStore(
+    @racer.create-store(
       redis:   @redis!
       db:      @mongo!
     )
@@ -31,7 +34,7 @@ module.exports =
     require 'http'
 
   server: ->
-    @http!.createServer(@app!).listen @port!
+    @http!.create-server(@app!).listen @port!
 
   port: ->
     process.env.PORT || 8081
@@ -40,7 +43,7 @@ module.exports =
     require('redis-url')
 
   redis-client: ->
-    require('redis').createClient!
+    require('redis').create-client!
 
   redis: ->
     @redis-url!.connect(@db-urls.redis)

@@ -13,10 +13,11 @@ arg-error = ->
 BaseSync = new Class(
   extend: requires.racer('store_config')
 
-  initialize: (racer-command) ->
-    @validate-arg racer-command
-    @racer-command = racer-command
+  initialize: (command) ->
+    @validate-arg command
+    @command = command
     @racer-store = BaseSync.racer-store!
+    @racer-model = BaseSync.racer-model!
     @
 
   validate-arg: (command) ->
@@ -33,20 +34,24 @@ BaseSync = new Class(
       throw new Error "RacerCommand #{util.inspect command} is missing an: action. Please use: .run(action)"
 
     # TODO: if command action requires args?
+    # already validated ?
     # unless command.command-args
       # throw new Error "RacerCommand #{util.inspect command} is missing: command-args, Please use: .run(action).using args"
 
-  run-args: ->
-    @racer-command.args!
+  racer-command: ->
+    @racer-model[@command-name!]
+
+  racer-execute: ->
+    @racer-command!.apply @racer-model, @command-args!
 
   execute: ->
-    @racer-store[@command-name!] @command-args!
+    @racer-execute!
 
   command-args: ->
-    @racer-command.arguments
+    @command.command-args
 
   command-name: ->
-    @racer-command.name
+    @command.action
 )
 
 module.exports = BaseSync

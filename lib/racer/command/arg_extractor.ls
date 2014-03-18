@@ -47,7 +47,7 @@ ArgumentsExtractor = new Class(
     self = @
     @required-args!.each (req) ->
       unless self.arg-hash[req]
-        throw new Error "Missing required argument #{req} in: #{self.arg-hash}"
+        throw new Error "Missing required argument '#{req}' in: #{self.arg-hash}"
       self.result-args.push self.arg-hash[req]
     @
 
