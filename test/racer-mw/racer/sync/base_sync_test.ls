@@ -30,7 +30,7 @@ describe 'BaseSync' ->
 
       context 'with resource' ->
         before ->
-          pipe      := new ModelPipe 'user'
+          pipe      := new CollectionPipe('users').models.add 'user'
           resource  := new ModelResource pipe: pipe
           command   := new RacerCommand(resource)
 
@@ -71,9 +71,14 @@ describe 'BaseSync' ->
 
     context 'action: set value' ->
       before ->
-        value     := {x: 2}
+        value     := {name: 'emma'}
         command   := new RacerCommand(resource).run('set').using value: value
         sync      := new BaseSync(command)
+        sync.racer-store.init(
+          users: [
+            {name: 'kris'}
+          ]
+        )
 
       describe 'command-name' ->
         specify 'is action of RacerCommand: path' ->
@@ -84,7 +89,7 @@ describe 'BaseSync' ->
           expect(sync.command-args!).to.eq command.command-args
 
         specify 'is a list' ->
-          expect(sync.command-args!).to.eql [ { x: 2 } ]
+          expect(sync.command-args!).to.eql [ value ]
 
       describe 'execute' ->
         specify 'executes command on Racer = x' ->
