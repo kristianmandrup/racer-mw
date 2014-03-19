@@ -57,10 +57,6 @@ PipeFamily = new Module(
   child-list: ->
     _.values(@child-hash).compact!
 
-  valid-child: (name) ->
-    return false if @valid-children is void or @valid-children is []
-    name in @valid-children
-
   parent-name: ->
     if @parent then @parent.full-name else ''
 

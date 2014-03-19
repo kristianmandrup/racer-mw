@@ -11,14 +11,14 @@ BasePipeBuilder     = requires.apipe-builder 'base'
 
 # Must be on a model or attribute
 AttributesPipeBuilder = new Class(BasePipeBuilder,
-  initialize: (@parent-pipe) ->
-    @validate!
+  initialize: (@container) ->
+    @call-super!
     @
 
   validate: ->
     @call-super!
-    unless 'attribute' in @parent-pipe.valid-children
-      throw new Error "Parent Pipe #{@parent-pipe.pipe-type} may not contain any Attribute pipe, only: #{@parent-pipe.valid-children}"
+    unless 'attribute' in @container.valid-children
+      throw new Error "Parent Pipe #{@container.pipe-type} may not contain any Attribute pipe, only: #{@container.valid-children}"
 
   type: 'Builder'
   builder-type: 'Attributes'

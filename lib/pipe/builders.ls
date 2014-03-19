@@ -37,9 +37,13 @@ PipeBuilders = new Module(
     @
 
   config-builder: (name, clazz, multi-clazz) ->
-    return unless @valid-child @name
-    builders = new ConfigBuilder(name, clazz, multi-clazz).config!
+    return unless @valid-child name
+    builders = new ConfigBuilder(@, name, clazz: clazz, multi-clazz: multi-clazz).config!
     lo.extend @builders, builders
+
+  valid-child: (name) ->
+    return false if @valid-children is void or @valid-children is []
+    name in @valid-children
 
   # used by generated builder functions (see ConfigBuilder)
   builder: (name) ->

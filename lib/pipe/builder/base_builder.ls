@@ -7,19 +7,12 @@ require 'sugar'
 
 describe = (obj) ->
   return obj.describe! if _.is-type 'Function', obj.describe
-  util.inspect obj
+  util.inspect obj, depth: 1
 
 BasePipeBuilder = new Class(
   initialize: (@container) ->
     @validate-container!
     @
-
-  validate: ->
-    unless typeof @parent-pipe is 'object'
-      throw new Error "Attributes can only be used on a Pipe Object, was: #{@parent-pipe}"
-
-    unless @parent-pipe.type is 'Pipe'
-      throw new Error "Attributes can only be used on a Pipes, was: #{@parent-pipe}"
 
   validate-container: ->
     unless _.is-type 'Object', @container

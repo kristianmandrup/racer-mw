@@ -35,9 +35,6 @@ AllPipe = new Class(
     * \model
     * \collection
 
-  valid-child: (name) ->
-    name in @valid-children
-
   type: 'Pipe'
   pipe-type: 'Path'
 
@@ -77,4 +74,12 @@ describe 'PipeBuilders' ->
         expect(pipe.config-builders).to.not.be.undefined
 
       specify 'returns self' ->
-        expect(pipe.config-builders!).to.not.be.undefined
+        expect(pipe.config-builders!).to.eq pipe
+
+    context 'configured builders' ->
+      before ->
+        pipe.config-builders!
+
+      specify 'builders contain the builders' ->
+        expect(pipe.builders).to.not.be.empty
+
