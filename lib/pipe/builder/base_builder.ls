@@ -37,7 +37,6 @@ BasePipeBuilder = new Class(
   add: (...args)->
     pipe = @create-pipe ...args
     @push pipe
-    # @parent-pipe.
     @attach pipe
     @
 

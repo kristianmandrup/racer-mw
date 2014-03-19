@@ -72,8 +72,8 @@ describe 'ModelsPipeBuilder' ->
       specify 'is a ModelsPipeBuilder' ->
         expect(models).to.be.an.instance-of ModelsPipeBuilder
 
-      specify 'parent-pipe is the CollectionPipe' ->
-        expect(models.parent-pipe).to.eq col-pipe
+      specify 'container is the CollectionPipe' ->
+        expect(models.container).to.eq col-pipe
 
       specify 'create-pipe returns a ModelPipe' ->
         expect(models.create-pipe name: {}).to.be.an.instance-of ModelPipe
@@ -83,24 +83,22 @@ describe 'ModelsPipeBuilder' ->
           expect(models.add name: {}).to.eq models
 
         specify 'describe-children' ->
-          # console.log col-pipe.describe-children!.first!
           expect(col-pipe.describe-children!.first!.id).to.eq '0'
 
         specify 'child-types' ->
-          # console.log col-pipe.child-types!
           expect(col-pipe.child-types!.first!).to.eq 'Model'
 
         specify 'adds the ModelPipe to the CollectionPipe' ->
-          model-pipe = models.add(name: {}).first!
+          model-pipe = models.add(name: {}).last!
           expect(col-pipe.child '0').to.eq model-pipe
 
         specify 'child names 0, 1' ->
           expect(col-pipe.child-names!).to.include('0', '1')
 
-      describe.only 'add models without clazz' ->
+      describe 'add models without clazz' ->
         specify 'assume clazz is singular of collection: user' ->
           models.add name: 'Kris'
-          expect(models.first!.clazz).to.eq 'user'
+          expect(models.last!.clazz).to.eq 'user'
 
     context 'ModelPipe with models' ->
       var mod-pipe

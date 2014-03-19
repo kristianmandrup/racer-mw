@@ -11,14 +11,14 @@ BasePipeBuilder     = requires.apipe-builder 'base'
 
 # Must be on a model or attribute
 CollectionsPipeBuilder = new Class(BasePipeBuilder,
-  initialize: (@parent-pipe) ->
-    @validate!
+  initialize: (@container) ->
+    @call-super!
     @
 
-  validate: ->
+  validate-container: ->
     @call-super!
-    unless @parent-pipe.pipe-type in ['Model', 'Path']
-      throw new Error "collections can only be used on a Model- or PathPipe, was: #{@parent-pipe.pipe-type}"
+    unless @container.pipe-type in ['Model', 'Path']
+      throw new Error "collections can only be used on a Model- or PathPipe, was: #{@container.pipe-type}"
 
   type: 'Builder'
   builder-type: 'Collections'

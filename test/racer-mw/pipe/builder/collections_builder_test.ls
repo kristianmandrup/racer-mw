@@ -65,6 +65,26 @@ describe 'CollectionsPipeBuilder' ->
       specify 'is a CollectionsPipeBuilder' ->
         expect(collections).to.be.an.instance-of CollectionsPipeBuilder
 
+      specify 'container is the ModelPipe' ->
+        expect(collections.container).to.eq modl-pipe
+
+      specify 'create-pipe returns a CollectionPipe' ->
+        expect(collections.create-pipe 'user').to.be.an.instance-of CollectionPipe
+
+      describe 'add' ->
+        specify 'returns models' ->
+          expect(collections.add 'projects').to.eq collections
+
+        specify 'describe-children' ->
+          expect(modl-pipe.describe-children!.first!.name).to.eq 'projects'
+
+        specify 'child-types' ->
+          expect(modl-pipe.child-types!.first!).to.eq 'Collection'
+
+        specify 'adds the CollectionPipe to the ModelPipe' ->
+          col-pipe = collections.add('cats').last!
+          expect(modl-pipe.child 'cats').to.eq col-pipe
+
     context 'PathPipe with collections' ->
       var path-pipe
 
