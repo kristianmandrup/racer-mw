@@ -12,9 +12,10 @@ ConfigBuilder    = requires.apipe-builder 'config'
 PipeBuilders = new Module(
   initialize: ->
 
+  # TODO: Needs refactoring!!! Single Responsibility pleeeease...
   config-builders: ->
     return void unless @attach
-    @builders ||= {}
+    @builders = {}
 
     # TODO: refactor - put in initialize...
     if @valid-children
@@ -37,8 +38,14 @@ PipeBuilders = new Module(
 
   config-builder: (name, clazz, multi-clazz) ->
     return unless @valid-child @name
-    new ConfigBuilder(name, clazz, multi-clazz).config!
+    builders = new ConfigBuilder(name, clazz, multi-clazz).config!
+    lo.extend @builders, builders
 
+  # used by generated builder functions (see ConfigBuilder)
+  builder: (name) ->
+    unless @builders[name]
+      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}"
+    @builders[name]
 )
 
 module.exports = PipeBuilders

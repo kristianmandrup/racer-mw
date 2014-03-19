@@ -6,7 +6,17 @@ util  = require 'util'
 require 'sugar'
 
 ConfigBuilder = new Class(
-  initialize: (@name, @clazz, @multi-clazz) ->
+  initialize: (@name, @clazz, @multi-clazz = void) ->
+    @validate-args!
+    @builders = {}
+    @
+
+  validate-args: ->
+    unless @name
+      throw new Error "Must take a name as first argument"
+
+    unless @clazz and _.is-type 'Function', @clazz
+      throw new Error "Must take a constructor function (or class) as seconds argument, was: #{@clazz}"
 
   config: ->
     @builders[@name]   ||= new clazz @
@@ -16,6 +26,7 @@ ConfigBuilder = new Class(
       @builder(@name).build ...args
 
     @multi-config if @clazz-multi
+    @builders
 
   multi-config: ->
     plural = @name.pluralize!
@@ -24,11 +35,6 @@ ConfigBuilder = new Class(
 
     @[plural] = (...args) ->
       @builder(plural).build ...args
-
-  builder: (name) ->
-    unless @builders[name]
-      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}"
-    @builders[name]
 )
 
 module.exports = ConfigBuilder
