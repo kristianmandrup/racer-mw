@@ -30,6 +30,7 @@ ModelsPipeBuilder = new Class(BasePipeBuilder,
     case 0
       throw Error "Must take an argument"
     case 1
+      console.log 'ModelPipe', ModelPipe
       new ModelPipe first-arg
     case 2
       new ModelPipe first-arg, args.last!
