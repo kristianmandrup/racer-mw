@@ -7,6 +7,8 @@ RacerCommand    = requires.racer 'command'
 BaseSync        = requires.racer 'sync/base_sync'
 
 ModelPipe       = requires.apipe     'model'
+CollectionPipe  = requires.apipe     'collection'
+
 ModelResource   = requires.aresource 'model'
 
 expect          = require('chai').expect
@@ -30,7 +32,9 @@ describe 'BaseSync' ->
 
       context 'with resource' ->
         before ->
-          pipe      := new CollectionPipe('users').models.add 'user'
+          pipe      := new CollectionPipe('users')
+          pipe.models!.add 'user'
+
           resource  := new ModelResource pipe: pipe
           command   := new RacerCommand(resource)
 

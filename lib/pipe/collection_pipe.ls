@@ -10,6 +10,8 @@ require 'sugar'
 BasePipe          = requires.apipe 'base'
 PathPipe          = requires.apipe 'path'
 
+ModelsPipeBuilder = requires.apipe-builder 'models'
+
 col-name = (arg) ->
   switch typeof arg
   case 'string'

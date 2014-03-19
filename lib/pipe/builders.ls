@@ -7,6 +7,7 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
+ConfigBuilder    = requires.apipe-builder 'config'
 
 PipeBuilders = new Module(
   initialize: ->
@@ -34,26 +35,10 @@ PipeBuilders = new Module(
     @config-builder 'attribute', AttributePipeBuilder, AttributesPipeBuilder
     @
 
-  config-builder: (name, clazz, clazz-multi = void) ->
-    if @valid-child name
-      @builders[name]   ||= new clazz @
+  config-builder: (name, clazz, multi-clazz) ->
+    return unless @valid-child @name
+    new ConfigBuilder(name, clazz, multi-clazz).config!
 
-      # create builder function
-      @[name] = (...args) ->
-        @builder(name).build ...args
-
-      if clazz-multi
-        plural = name.pluralize!
-
-        @builders[plural] ||= new clazz-multi @
-
-        @[plural] = (...args) ->
-          @builder(plural).build ...args
-
-  builder: (name) ->
-    unless @builders[name]
-      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}"
-    @builders[name]
 )
 
 module.exports = PipeBuilders
