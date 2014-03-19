@@ -1,14 +1,14 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect            = require('chai').expect
 
-ModelsPipe        = requires.pipe 'models'
-ModelPipe         = requires.pipe 'model'
-AttributePipe     = requires.pipe 'attribute'
-PathPipe          = requires.pipe 'path'
-CollectionPipe    = requires.pipe 'collection'
+ModelsPipeBuilder = requires.apipe-builder 'models'
+ModelPipe         = requires.apipe 'model'
+AttributePipe     = requires.apipe 'attribute'
+PathPipe          = requires.apipe 'path'
+CollectionPipe    = requires.apipe 'collection'
 
 describe 'ModelsPipeBuilder' ->
   var models, obj
@@ -67,9 +67,9 @@ describe 'ModelsPipeBuilder' ->
 
       before ->
         col-pipe := new CollectionPipe 'users'
-        models   := new ModelsPipe col-pipe
+        models   := new ModelsPipeBuilder col-pipe
 
-      specify 'is a ModelsPipe' ->
+      specify 'is a ModelsPipeBuilder' ->
         expect(models).to.be.an.instance-of ModelsPipeBuilder
 
       specify 'parent-pipe is the CollectionPipe' ->
@@ -97,7 +97,18 @@ describe 'ModelsPipeBuilder' ->
         specify 'child names 0, 1' ->
           expect(col-pipe.child-names!).to.include('0', '1')
 
-      describe 'add models without clazz' ->
+      describe.only 'add models without clazz' ->
         specify 'assume clazz is singular of collection: user' ->
           models.add name: 'Kris'
-          expect(models.first!._clazz).to.eq 'user'
+          expect(models.first!.clazz).to.eq 'user'
+
+    context 'ModelPipe with models' ->
+      var mod-pipe
+
+      before ->
+        mod-pipe := new ModelPipe 'admin'
+        models   := new ModelsPipeBuilder mod-pipe
+
+      specify 'is a ModelsPipeBuilder' ->
+        expect(models).to.be.an.instance-of ModelsPipeBuilder
+

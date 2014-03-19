@@ -29,6 +29,7 @@ ModelPipe = new Class(BasePipe,
     return String(@object-id) unless @object-id is void
     # if no parent, I must assume i am just a named attribute model
     return @name unless @name is void
+    return @clazz unless @clazz is void
     throw new Error "Unable to determine id, please set either object-id or name"
 
   set: (obj) ->

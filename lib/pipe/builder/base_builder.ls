@@ -30,14 +30,18 @@ BasePipeBuilder = new Class(
 
   attach: (pipe) ->
     @container.attach pipe
+    @post-attach(pipe)
+
+  post-attach: (pipe) ->
 
   add: (...args)->
     pipe = @create-pipe ...args
-    @_push pipe
-    @parent-pipe.attach pipe
+    @push pipe
+    # @parent-pipe.
+    @attach pipe
     @
 
-  _push: (pipe) ->
+  push: (pipe) ->
     @added ||= []
     @added.push pipe
 

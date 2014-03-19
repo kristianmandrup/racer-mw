@@ -5,6 +5,7 @@ requires.test 'test_setup'
 expect              = require('chai').expect
 
 PathPipe            = requires.apipe 'path'
+ModelPipe           = requires.apipe 'model'
 ModelPipeBuilder    = requires.apipe-builder 'model'
 
 describe 'ModelPipeBuilder' ->
@@ -38,5 +39,6 @@ describe 'ModelPipeBuilder' ->
           proj-model := builder.build project
 
         describe 'model to add project model attribute' ->
+          # should use _clazz as id: project
           specify 'is a project model' ->
             expect(proj-model).to.be.an.instance-of ModelPipe
