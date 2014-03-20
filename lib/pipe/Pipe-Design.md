@@ -452,20 +452,8 @@ console.log user-model-pipe.raw-value()
 }
 ```
 
-The implementation would look something like this...
-
-```
-  raw-value: ->
-    if @child-count > 0
-      obj = {}
-      @child-list!.each (child) ->
-        obj[child.id!] = child.raw-value!
-      (@id!): obj
-    else
-      @value!
-```
-
-Ugly as hell, but seems to work ok for now... at least for some (most? or all?) cases...
+Also, whenever a child node (child pipe value) is updated, the values of each parent in the chain should also be updated using the `raw-value`.
+This is achieved internally via a `on-child-update` notification system, where each parent is notified recursively.
 
 ### Validation
 
@@ -502,18 +490,17 @@ It could also inject a `validator` on the pipe which `validate-value` will use t
 
 Obviously, having the same validation logic on both Pipe and Resource doesn't make any sense.
 If a Pipe or Resource can be stand-alone with a value, and the value can be transferred between them we need a
-more clever design...
+more clever design... (see below). We need to encapsulate the value in a *ValueObject* that can have its own validation
+logic assigned to guard the update of its value!
 
 ## Value object
 
 The *Value object* should be its own entity which carries the validation logic.
-The transferring the *Value object* would also transfer its validation logic. Much better!
-
-The following could be a good, simple design:
+Then when transferring the *Value object* we also transfer its validation logic.
 
 ```livescript
 ValueObject = new Class(
-  initialize: (@value) ->
+  initialize: (@container, @value) ->
     @valid = @validate @value
 
   valid: true
@@ -529,7 +516,7 @@ How do we know a value is an age and should be validated via the age validator?
 From the resource: We have the resource type (fx model, attribute), the pipe unless the resource is stand-alone, otherwise we always have the path.
 From the pipe: We have the pipe, pipe type and path. For an attribute we have the name of the attribute etc.
 
-This leads us to conclude, that it is easiest to determine an appropriate validator from the pipe info.
+This leads us to conclude, that it is easiest to determine an appropriate validator from the pipe/resource info.
 For a stand-alone resource we would have to take the last part of the path as the name.
 
 ## Advanced class based validation
@@ -657,4 +644,5 @@ Inserting a string on a collection is invalid however (and made impossible).
 users-pipe.$resource.string-insert ...
 ```
 
-For more details on how to use Resources and some of the internal Resource machinery, see the Resource doc.
+For more details on how to use Resources and some of the internal Resource machinery, see the **Resource doc**
+in this project (lib/resource folder).
