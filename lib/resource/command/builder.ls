@@ -40,7 +40,7 @@ CommandBuilder = new Class(
     self = @
     functions.each (fun) ->
       fun-name = fun.camelize(false)
-      self.commander[@function-name fun-name] = (args) ->
+      self.commander[self.function-name fun-name] = (args) ->
         @perform fun-name, args
         @
 
@@ -56,7 +56,7 @@ CommandBuilder = new Class(
         fun-name  = parts.first!
         clazz     = parts.last!
 
-      self.commander[@function-name fun-name] = (args) ->
+      self.commander[self.function-name fun-name] = (args) ->
         @[fun-name] = new requires.resource(clazz)(self.commander, args)
         @
 
@@ -66,7 +66,7 @@ CommandBuilder = new Class(
     self = @
     functions.each (fun) ->
       fun-name = fun.camelize false
-      self.commander[@function-name fun-name] = (args) ->
+      self.commander[self.function-name fun-name] = (args) ->
         @[set-var] = @promise fun-name, args
         @
 
@@ -76,7 +76,7 @@ CommandBuilder = new Class(
     functions = [functions].flatten!
     functions.each (fun) ->
       fun-name = fun.camelize false
-      self.commander[@function-name fun-name] = (args) ->
+      self.commander[self.function-name fun-name] = (args) ->
         return on-var[fun-name]! if on-var?
         @perform fun-name, args
         @
