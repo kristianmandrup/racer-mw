@@ -58,7 +58,7 @@ describe 'PipeNavigator' ->
           expect(nav.prev!).to.eq pipes.col
 
 
-  context 'for attribute pipe in model, collection' ->
+  context.only 'for attribute pipe in model, collection' ->
     before ->
       pipes.modl = new CollectionPipe('users').model('user')
       pipes.attr = pipes.modl.attribute('name')

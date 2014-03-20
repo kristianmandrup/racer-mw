@@ -30,10 +30,12 @@ ConfigBuilder = new Class(
     return unless @clazz
 
     @builders[@name]   ||= new @clazz @pipe
+    name = @name
 
-    # create builder function
-    @[@name] = (...args) ->
-      @builder(@name).build ...args
+    # create builder function on pipe
+    @pipe[name] = (...args) ->
+      b = @builder(name)
+      unless lo.is-empty args then b.build(...args) else b
     @
 
   multi-config: ->
@@ -43,8 +45,10 @@ ConfigBuilder = new Class(
 
     @builders[plural] ||= new @multi-clazz @pipe
 
-    @[plural] = (...args) ->
-      @builder(plural).build ...args
+    # create builder function on pipe
+    @pipe[plural] = (...args) ->
+      b = @builder(plural)
+      unless lo.is-empty args then b.build(...args) else b
     @
 
   builder: (name) ->

@@ -33,6 +33,9 @@ BasePipeBuilder = new Class(
     @attach pipe
     @
 
+  build: (...args)->
+    @add ...args
+
   push: (pipe) ->
     @added ||= []
     @added.push pipe

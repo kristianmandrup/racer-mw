@@ -5,9 +5,9 @@ requires.test 'test_setup'
 expect          = require('chai').expect
 
 ModelPipe       = requires.apipe     'model'
-ResourceModel   = requires.resource 'model'
+ResourceModel   = requires.aresource 'model'
 
-PipeAttributes  = requires.pipe     'attributes'
+AttributesPipeBuilder  = requires.apipe-builder 'attributes'
 
 describe 'ModelPipe' ->
   var pipe, obj
@@ -80,8 +80,8 @@ describe 'ModelPipe' ->
           before ->
             pipe.model 'user'
 
-          specify 'attached pipe is an Attribute pipe' ->
-            expect(pipe.child('user').pipe-type).to.eq 'Attribute'
+          specify 'attached pipe is an a Model pipe' ->
+            expect(pipe.child('user').pipe-type).to.eq 'Model'
 
         specify 'number arg' ->
           expect(-> pipe.model 3).to.throw
@@ -142,16 +142,17 @@ describe 'ModelPipe' ->
     describe 'detach' ->
       context 'child: collection users' ->
         before ->
+          pipe := new ModelPipe(admin: {})
           pipes.users = pipe.collection('user')
           pipes.users.detach!
 
         specify 'collection returns the parent Model pipe' ->
           expect(pipes.users.pipe-type).to.eq 'Collection'
 
-        specify 'parent is void' ->
+        specify 'full-name reset to users' ->
           expect(pipes.users.full-name).to.eq 'users'
 
-        specify 'full-name reset to users' ->
+        specify 'parent is void' ->
           expect(pipes.users.parent).to.be.undefined
 
     describe 'attach an current: user model' ->
@@ -229,8 +230,8 @@ describe 'ModelPipe' ->
 
           model := new ModelPipe user: {}
 
-        specify 'models returns a PipeModels instance' ->
-          expect(model.attributes!).to.be.an.instance-of PipeAttributes
+        specify 'models returns a AttributesPipeBuilder instance' ->
+          expect(model.attributes!).to.be.an.instance-of AttributesPipeBuilder
 
         context 'PipeAttributes' ->
           before ->
@@ -241,8 +242,8 @@ describe 'ModelPipe' ->
             before ->
               res := attributes.add 'age'
 
-            specify 'returns a PipeModels instance' ->
-              expect(res).to.be.an.instance-of PipeAttributes
+            specify 'returns a AttributesPipeBuilder instance' ->
+              expect(res).to.be.an.instance-of AttributesPipeBuilder
 
             specify 'adds age and status attributes to model' ->
               res.add(status: 'single')

@@ -48,8 +48,12 @@ PipeBuilders = new Module(
   # used by generated builder functions (see ConfigBuilder)
   builder: (name) ->
     unless @builders[name]
-      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}"
+      throw new Error "No builder '#{name}' registered for #{util.inspect @describe!}, only: #{@builder-names!}"
     @builders[name]
+
+  builder-names: ->
+    _.keys @builders
+
 )
 
 module.exports = PipeBuilders

@@ -77,5 +77,5 @@ describe 'Argumentor' ->
       specify 'first: a' ->
         expect(first).to.eql 'a'
 
-      xspecify 'all: a,b' ->
+      specify 'all: a,b' ->
         expect(all).to.eql ['a', 'b']

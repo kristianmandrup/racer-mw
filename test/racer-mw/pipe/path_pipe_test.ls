@@ -4,7 +4,7 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-PathPipe  = requires.pipe 'path'
+PathPipe  = requires.apipe 'path'
 
 describe 'PathPipe' ->
   var pipe, obj
@@ -36,14 +36,8 @@ describe 'PathPipe' ->
         expect(new PathPipe('users').name).to.eq 'users'
 
     context 'arg: function' ->
-      specify 'creates it' ->
-        expect(-> new PathPipe(-> 'users')).to.not.throw
-
-      specify 'instance of PathPipe' ->
-        expect(new PathPipe(-> 'users')).to.be.an.instance-of PathPipe
-
-      specify 'sets name to users' ->
-        expect(new PathPipe(-> 'users').name).to.eq 'users'
+      specify 'fails' ->
+        expect(-> new PathPipe(-> 'users')).to.throw
 
     context 'arg: array' ->
       specify 'creates it' ->

@@ -34,7 +34,7 @@ ModelPipe = new Class(BasePipe,
 
   set: (obj) ->
     @set-class obj
-    @set-name extract.name(obj)
+    @set-name extract.name(obj, @clazz)
     @set-value obj
 
   set-class: (obj) ->
@@ -52,6 +52,7 @@ ModelPipe = new Class(BasePipe,
   valid-parents:
     * \path
     * \collection
+    * \model
 
   valid-children:
     * \attribute

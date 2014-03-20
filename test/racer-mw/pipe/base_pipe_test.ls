@@ -51,7 +51,7 @@ describe 'Pipe' ->
         expect(new Pipe '_page', 'admins').to.be.an.instance-of Pipe
 
     context 'arg: number' ->
-      specify 'creates it only if child of collection - fails here' ->
+      specify 'always fails' ->
         expect(-> new Pipe 1).to.throw Error
 
   context 'Pipe: parentless users' ->

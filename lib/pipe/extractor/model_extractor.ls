@@ -2,10 +2,10 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 
 module.exports =
-  name: (obj) ->
+  name: (obj, clazz) ->
     _name = obj if _.is-type 'String', obj
     if _.is-type 'Object', obj
-      return void if obj._clazz isnt void
+      return clazz if obj._clazz isnt void
       _name = _.keys(obj).first!
     @normalized _name
 

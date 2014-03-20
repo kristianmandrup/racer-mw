@@ -36,11 +36,21 @@ BasePipe = new Class(
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->
     [@first-arg, @args] = argumentor.extract _.values(arguments)
+
+    @validate-first-arg!
     unless argumentor.validate @args, @valid-args
       throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
     @call-super!
     @clear!
     @
+
+  validate-first-arg: ->
+    switch typeof! @first-arg
+    case 'Number'
+      throw new Error "First arg can not be a Number, was: #{@first-arg}"
+    case 'Function'
+      throw new Error "First arg can not be a Function"
+
 
   parse: (obj) ->
     try

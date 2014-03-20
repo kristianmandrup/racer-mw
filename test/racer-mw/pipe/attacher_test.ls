@@ -60,7 +60,7 @@ describe 'PipeAttacher' ->
       pipes.other       := new BasicPipe 'other side'
 
       # cheating for setup ;)
-      pipes.node.parent  = pipes.parent
+      pipes.node.parent  = pipes.daddy
       pipes.daddy.parent = pipes.grand-pere
 
     describe 'attach' ->

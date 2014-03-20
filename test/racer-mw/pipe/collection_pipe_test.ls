@@ -8,7 +8,7 @@ CollectionPipe  = requires.apipe 'collection'
 ModelPipe       = requires.apipe 'model'
 PathPipe        = requires.apipe 'path'
 
-PipeModels      = requires.apipe     'models'
+ModelsPipeBuilder  = requires.apipe-builder     'models'
 
 describe 'CollectionPipe' ->
   var pipe, obj, collection
@@ -105,7 +105,7 @@ describe 'CollectionPipe' ->
           collection := new CollectionPipe 'users'
 
         specify 'models returns a PipeModels instance' ->
-          expect(collection.models!).to.be.an.instance-of PipeModels
+          expect(collection.models!).to.be.an.instance-of ModelsPipeBuilder
 
         context 'PipeModels' ->
           before ->
@@ -124,7 +124,7 @@ describe 'CollectionPipe' ->
               # console.log added
 
             specify 'returns a PipeModels instance' ->
-              expect(res).to.be.an.instance-of PipeModels
+              expect(res).to.be.an.instance-of ModelsPipeBuilder
 
             specify 'adds user to collection' ->
               expect(added.name).to.eq 'user'

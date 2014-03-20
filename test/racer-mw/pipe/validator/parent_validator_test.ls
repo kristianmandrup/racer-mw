@@ -27,7 +27,6 @@ describe 'Pipe ParentValidator' ->
   describe 'init' ->
     before ->
       pipe := new Pipe 'simple'
-      console.log 'pipe', pipe.describe!
 
     describe 'must take an array of valid types to validate pipes against' ->
       context 'no args' ->
@@ -64,10 +63,12 @@ describe 'Pipe ParentValidator' ->
       pipes.pere.parent = pipes.grand-pere
 
       validator := new ParentValidator pipes.child
-      console.log validator.ancestors!
 
     specify 'grand-pere is in parent ancestor' ->
       expect(pipes.grand-pere in validator.ancestors!).to.be.true
+
+    specify 'pere is-ancestor' ->
+      expect(validator.is-ancestor pipes.pere).to.be.true
 
     specify 'grand-pere is-ancestor' ->
       expect(validator.is-ancestor pipes.grand-pere).to.be.true

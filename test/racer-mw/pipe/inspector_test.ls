@@ -6,6 +6,8 @@ requires.test 'test_setup'
 
 expect          = require('chai').expect
 
+_ = require 'prelude-ls'
+
 PipeInspector   = requires.pipe 'inspector'
 
 NoInfoPipe = new Class(
@@ -14,7 +16,10 @@ NoInfoPipe = new Class(
   initialize: ->
     @
 
-  children: void
+  child-names: ->
+    _.keys(@child-hash)
+
+  child-hash: void
 )
 
 InfoPipe = new Class(
@@ -23,7 +28,11 @@ InfoPipe = new Class(
   initialize: ->
     @
 
-  children: {}
+  child-hash: {}
+
+  child-names: ->
+    _.keys(@child-hash)
+
 
   type: 'Pipe'
   pipe-type: 'Path'
@@ -35,7 +44,7 @@ ChildrenPipe = new Class(
   initialize: ->
     @
 
-  children: {
+  child-hash: {
     'x':
       pipe-type: 'Model'
       describe: ->
@@ -46,8 +55,11 @@ ChildrenPipe = new Class(
         'y'
   }
 
+  child-names: ->
+    _.keys(@child-hash)
+
   child: (name) ->
-    @children[name]
+    @child-hash[name]
 
   type: 'Pipe'
   pipe-type: 'Path'

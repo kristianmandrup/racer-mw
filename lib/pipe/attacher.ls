@@ -22,7 +22,7 @@ Attacher = new Module(
     unless pipe.type is 'Pipe'
       throw new Error "Can only attach to a Pipe object, was: #{util.inspect pipe}, type: #{pipe.type}"
 
-    # console.log 'ATTACH', pipe.describe!, 'TO', @.describe!
+    # check if ancestor is done via: @parent-validator(parent).validate @
 
     pipe.attach-to @
     @
@@ -37,6 +37,7 @@ Attacher = new Module(
     @
 
   detach: ->
+    @parent = void
     @attached-to!
     @
 

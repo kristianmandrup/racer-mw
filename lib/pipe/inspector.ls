@@ -25,7 +25,7 @@ PipeInspector = new Module(
       id: @id! if @id
       value: @value
       children: @child-names!.length
-    if @child-hash then lo.extend(base, children: @describe-children!) else base
+    if @child-hash and children then lo.extend(base, children: @describe-children!) else base
 )
 
 module.exports = PipeInspector
