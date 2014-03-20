@@ -23,16 +23,9 @@ CollectionsPipeBuilder = new Class(BasePipeBuilder,
   type: 'Builder'
   builder-type: 'Collections'
 
-  create-pipe: ->
-    args = _.values(arguments)
-    first-arg = args.first!
-    switch args.length
-    case 0
-      throw Error "Must take an argument"
-    case 1
-      new CollectionPipe first-arg
-    default
-      new CollectionPipe args
+  create-pipe: (...args) ->
+    @call-super!
+    new CollectionPipe ...args
 )
 
 module.exports = CollectionsPipeBuilder

@@ -1,10 +1,10 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-AttributesPipe    = requires.apipe-builder 'attributes'
+AttributesPipeBuilder    = requires.apipe-builder 'attributes'
 
 ModelPipe         = requires.apipe 'model'
 AttributePipe     = requires.apipe 'attribute'
@@ -74,8 +74,8 @@ describe 'AttributesPipeBuilder' ->
       specify 'is a AttributePipesPipe' ->
         expect(attrs).to.be.an.instance-of AttributesPipeBuilder
 
-      specify 'parent-pipe is the ModelPipe' ->
-        expect(attrs.parent-pipe).to.eq model-pipe
+      specify 'container is the ModelPipe' ->
+        expect(attrs.container).to.eq model-pipe
 
       specify 'create-pipe returns a AttributePipe' ->
         expect(attrs.create-pipe 'age').to.be.an.instance-of AttributePipe
@@ -90,7 +90,7 @@ describe 'AttributesPipeBuilder' ->
           before ->
             pipe := attrs.add 'age'
             added := pipe.added.first!
-            parent-child := pipe.parent-pipe.child 'age'
+            parent-child := pipe.container.child 'age'
 
           specify 'adds AttributePipe age to attributes' ->
             expect(added.name).to.eq 'age'

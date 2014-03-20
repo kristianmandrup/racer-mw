@@ -52,14 +52,17 @@ BasePipe = new Class(
       throw new Error "First arg can not be a Function"
 
 
-  parse: (obj) ->
+  parse: (...args) ->
     try
       Parser  = requires.pipe 'parser'
-      pipes   = new Parser(obj).parse!
+      pipes   = new Parser(...args).parse!
       @attach pipes
       @
     finally
       @
+
+  add: (...args) ->
+    @parse ...args
 
   type:       'Pipe'
   pipe-type:  'Base'

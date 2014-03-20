@@ -28,19 +28,10 @@ ModelsPipeBuilder = new Class(BasePipeBuilder,
       if parent and parent.pipe-type is 'Collection'
         pipe.clazz = parent.name.singularize!
 
-  create-pipe: ->
+  create-pipe: (...args) ->
+    @call-super!
     ModelPipe  = requires.apipe 'model'
-    args = _.values(arguments)
-    first-arg = args.first!
-    switch args.length
-    case 0
-      throw Error "Must take an argument"
-    case 1
-      new ModelPipe first-arg
-    case 2
-      new ModelPipe first-arg, args.last!
-    default
-      throw Error "Too many arguments, #{args}"
+    new ModelPipe ...args
 )
 
 module.exports = ModelsPipeBuilder

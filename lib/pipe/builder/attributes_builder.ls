@@ -23,18 +23,9 @@ AttributesPipeBuilder = new Class(BasePipeBuilder,
   type: 'Builder'
   builder-type: 'Attributes'
 
-  create-pipe: ->
-    args = _.values(arguments)
-    first-arg = args.first!
-    switch arguments.length
-    case 0
-      throw new Error "Must take an argument"
-    case 1
-      new AttributePipe first-arg
-    case 2
-      new AttributePipe first-arg, args.last!
-    default
-      throw new Error "Too many arguments, #{args}"
+  create-pipe: (...args) ->
+    @call-super!
+    new AttributePipe ...args
 )
 
 module.exports = AttributesPipeBuilder

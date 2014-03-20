@@ -63,6 +63,13 @@ Example:
 Each pipe builder returns the pipe that was built in order that you can build on it.
 This way it is efficient to build the whole pipe path to reflect the underlying data model.
 
+This is the underlying chaining API for building up a model. There are various shortcuts such as parse,
+ which can parse an object and build a model accordingly using specific rules.
+
+However for full control of the build process, you will need to use this underlying API.
+Often a mix is useful, where you build large parts of the model simply by parsing a blue-print model
+and then fine-tune specific parts that the parser can't determine on its own.
+
 ### Path
 
 The following is a typical example for when to use the `Path` pipe.
@@ -74,10 +81,6 @@ path('_page.current').collection('visitors').model(user)
 ```
 
 ### Model
-
-```livescript
-model('user')
-```
 
 The simplest way to build a Model pipe with data is to call the model constructor with an object
 which contains a `_clazz` key with the name of the model (class) to be built to hold that data.
@@ -99,7 +102,7 @@ Builds:
    }
 ```
 
-We can however also override this default naming strategy and call the model node
+We can however also override this default naming strategy:
 
 ```livescript
 model(admin: user)
@@ -113,27 +116,12 @@ Builds:
    }
 ```
 
-This strategy can also be used for the container object such as `_page` and `_session` if used in **Derby** or
-some other Racer compatible framework with similar concepts.
-
-```livescript
-page = model(_page: page)
-```
-
-Builds:
-
-```
- + _page: {
-     _clazz: 'page'
-   }
-```
-
 **Auto-wrapped models**
 
-We can also make the model wrap itself inside a collection.
+The model can also be added to a collection.
 
 When model pipe is created, it will try to determine if it is meant to be created as a
- model at that level or to wrap itself as a member of a collection.
+ model at that level or to be used as a member of a collection.
 
 It will base this decision on the name it is given. If it is being named a singular, such as `user`,
 it will jut create a normal model of that name. If it is named with a plural, such as `users`,
@@ -154,7 +142,7 @@ Builds:
    ]
 ```
 
-Note: This is a more efficient way to build a more complex pipe (no DSL chaining).
+Note: This is a more efficient way to build a more complex pipe.
 
 A model can contain named properties, where each property is one of:
 
@@ -255,6 +243,19 @@ page.attributes
   .add(status: 'string', value: 'ok')
 ```
 
+```livescript
+hits   = {hits: 'number', value: 3}
+status = {status: 'string', value: 'ok'}
+
+page.attributes.parse [hits, status]
+```
+
+And even shorter :)
+
+```livescript
+page.parse-attrs [hits, status]
+```
+
 ### Collection
 
 To build a `Users` collection with one `User`:
@@ -299,6 +300,24 @@ or pass the users as an Array:
 user-list = [kris, ...]
 collection('users').models
   .add(user-list)
+```
+
+Using the shortcut `parse` method to achieve the same
+
+```livescript
+collection('users').parse kris, emily, adam
+```
+
+And even shorter :)
+
+```livescript
+parse users: [kris, emily, adam]
+```
+
+And even...
+
+```livescript
+page.parse-cols users, projects
 ```
 
 ## Pipe navigation

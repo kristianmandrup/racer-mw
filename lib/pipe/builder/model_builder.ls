@@ -32,7 +32,6 @@ ModelPipeBuilder = new Class(BasePipeBuilder,
     pipe
 
   post-attach: (pipe) ->
-    console.log 'post-attach', pipe.clazz
     if pipe.clazz is void
       parent = pipe.parent
       console.log 'set class via parent'

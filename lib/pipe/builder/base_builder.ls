@@ -27,8 +27,17 @@ BasePipeBuilder = new Class(
 
   post-attach: (pipe) ->
 
-  add: (...args)->
-    pipe = @create-pipe ...args
+  add: (...args) ->
+    @set @create-pipe ...args
+
+  parse: (...args) ->
+    Parser = requires.pipe 'parser'
+    try
+      @set new Parser(...args).parse!
+    finally
+      @
+
+  set: (pipe) ->
     @push pipe
     @attach pipe
     @
@@ -39,6 +48,14 @@ BasePipeBuilder = new Class(
   push: (pipe) ->
     @added ||= []
     @added.push pipe
+
+  create-pipe: (...args) ->
+    return create-pipes(first-arg) if _.is-type 'Array', args.first!
+
+  create-pipes: (list) ->
+    self = @
+    list.map (item) ->
+      self.create-pipe item
 
   first: ->
     @added.first!

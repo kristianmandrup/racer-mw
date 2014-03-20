@@ -36,7 +36,6 @@ describe 'AttributePipeBuilder' ->
 
       context 'a name attribute' ->
         before ->
-          console.log 'PathPipe', pipe.describe!
           builder = new AttributePipeBuilder pipe
           attr := builder.build 'name'
 
