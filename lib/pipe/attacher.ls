@@ -9,7 +9,6 @@ requires = require '../../requires'
 
 ParentValidator   = requires.pipe 'validator/parent_validator'
 
-# TODO: make into a class?
 Attacher = new Module(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->

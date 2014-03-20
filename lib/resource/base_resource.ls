@@ -6,9 +6,16 @@ lo  = require 'lodash'
 util = require 'util'
 require 'sugar'
 
-ResourceCommand   = requires.resource 'command'
+ResourceCommand   = requires.resource 'resource_command'
+
+ResourceAttacher  = requires.resource 'resource_attacher'
+ResourceValue     = requires.resource 'resource_value'
 
 BaseResource = new Class(ResourceCommand,
+  include:
+    * ResourceValue
+    * ResourceAttacher
+
   # created with a Pipe
   initialize: (context) ->
     unless typeof! context is 'Object'
@@ -19,39 +26,6 @@ BaseResource = new Class(ResourceCommand,
 
     @call-super @
 
-    # should use Pipe path to always pre-resolve scope
-    # @scoped 'path'
-
-  config-value: (value) ->
-    @value = value
-
-  # Design note:
-  # should it copy the value from the pipe before detaching if
-  # the resource doesn't have its own value?
-  detach: (hash)->
-    @transfer-pipe-value hash
-    @pipe = void
-
-  transfer-pipe-value: (hash) ->
-    if @value is void and _.is-type('Object', hash)
-      @value = @pipe-value! if hash.transfer
-
-  attach-to: (pipe, hash)->
-    return unless pipe
-    unless typeof! pipe is 'Object' and pipe.type is 'Pipe'
-      throw new Error "a Resource can only be attached to a Pipe, was: #{util.inspect pipe}, type: #{pipe.type}"
-
-    unless @resource-type is pipe.pipe-type
-      throw new Error "A #{@resource-type} Resource can only be attached to a #{@resource-type} Pipe, was a #{pipe.pipe-type} pipe"
-
-    @pipe = pipe
-    @transfer-pipe-value hash
-
-    # set $resource of pipe
-    # but only for those pipes that allow a resource!
-    if @pipe.has-resource
-      @pipe.$resource = @
-
   resource-type: 'Base'
 
   pipe: void
@@ -60,16 +34,6 @@ BaseResource = new Class(ResourceCommand,
   path: ->
     return @pipe.path if @pipe
     @full-path unless @full-path is void
-
-  value-object: ->
-    return @value unless @value is void
-    return @pipe-value! unless @pipe-value! is void
-    pipe-error = if @pipe then "or its pipe" else ''
-    throw new Error "No value set for this resource #{pipe-error}"
-
-  pipe-value: ->
-    return void unless @pipe
-    @pipe.value!
 
   commands:
     basic:
