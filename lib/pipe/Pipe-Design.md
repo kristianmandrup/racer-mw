@@ -642,6 +642,8 @@ Inserting a string on a collection is invalid however (and made impossible).
 
 ```livescript
 users-pipe.$resource.string-insert ...
+
+=> Error
 ```
 
 For more details on how to use Resources and some of the internal Resource machinery, see the **Resource doc**

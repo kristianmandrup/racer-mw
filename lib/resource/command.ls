@@ -11,9 +11,13 @@ RacerSync      = requires.racer    'sync'
 
 ResourceCommand = new Class(
   initialize: (@resource) ->
+    # add commands to resource
     new CommandBuilder(@).build!
+    if @pipe
+      # and to pipe of resource with $ prefix
+      new CommandBuilder(@pipe, '$').build!
 
-  # we need to somehow inject the RacerStore
+  # inject the RacerStore
   racer-sync: (command) ->
     @my-sync ||= new RacerSync command
 

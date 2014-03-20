@@ -5,7 +5,7 @@ _  = require 'prelude-ls'
 require 'sugar'
 
 CommandBuilder = new Class(
-  initialize: (@commander) ->
+  initialize: (@commander, @prefix) ->
     @commands = @commander.commands
     @
 
@@ -29,12 +29,18 @@ CommandBuilder = new Class(
     return 'set' if name.match /^on/
     return 'create' if name.match /^create/
 
+  function-name: (name) ->
+    if @prefix
+      unless name.match /#{prefix}/
+        return "#{prefix}#{name}"
+    name
+
   command: (functions) ->
     functions = [functions].flatten!
     self = @
     functions.each (fun) ->
-      fun-name = fun.camelize false
-      self.commander[fun-name] = (args) ->
+      fun-name = fun.camelize(false)
+      self.commander[@function-name fun-name] = (args) ->
         @perform fun-name, args
         @
 
@@ -43,14 +49,14 @@ CommandBuilder = new Class(
     functions = [functions].flatten!
     self = @
     functions.each (fun) ->
-      fun-name = fun.camelize false
+      fun-name = fun.camelize(false)
       clazz = fun-name
       if fun-name.match /:/
         parts     = fun-name.split(':')
         fun-name  = parts.first!
         clazz     = parts.last!
 
-      self.commander[fun-name] = (args) ->
+      self.commander[@function-name fun-name] = (args) ->
         @[fun-name] = new requires.resource(clazz)(self.commander, args)
         @
 
@@ -60,7 +66,7 @@ CommandBuilder = new Class(
     self = @
     functions.each (fun) ->
       fun-name = fun.camelize false
-      self.commander[fun-name] = (args) ->
+      self.commander[@function-name fun-name] = (args) ->
         @[set-var] = @promise fun-name, args
         @
 
@@ -70,7 +76,7 @@ CommandBuilder = new Class(
     functions = [functions].flatten!
     functions.each (fun) ->
       fun-name = fun.camelize false
-      self.commander[fun-name] = (args) ->
+      self.commander[@function-name fun-name] = (args) ->
         return on-var[fun-name]! if on-var?
         @perform fun-name, args
         @
