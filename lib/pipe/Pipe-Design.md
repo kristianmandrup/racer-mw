@@ -331,12 +331,12 @@ You can get the *parent* pipe of a pipe using the `parent` property. Naturally `
 ```livescript
 kris = collection('users').model(kris)
 users = kris.parent
-kris = users.children[0]
+kris = users.child-list[0]
 ```
 
-A `get` method is provided for a smoother API:
+A `get` method is also provided:
 
-`kris = users.get 0` or `kris = users.first()` and `kris = users.last()`
+`kris = users.get 1` or `kris = users.first()` and `kris = users.last()`
 
 To get a child attribute from a model:
 
@@ -345,11 +345,12 @@ user = model(user)
 name = user.child 'name'
 ```
 
-A `get` method is provided for a smoother API in this case:
+You can also use either of the dsl methods: `col`, `modl` and `attr` as wrappers of child.
+`name = user.attr 'name'` to get the attribute pipe 'name' of user.
 
-`name = user.get 'name'`
+The `get` method can also be used: `name = user.get 'name'`
 
-You can nvaigate multiple levels up a pipe using prev(levels):
+You can navigate multiple levels up a pipe using prev(levels):
 
 ```livescript
 user = model('_page').model(users: user)
@@ -372,11 +373,11 @@ You can detach, clone and attach the same pipe in multiple places. This way, if 
 parts of the data model that share similar properties, it is easy to leverage this fact.
 
 ```livescript
-user = model('_page').model(users: user)
+user = path('_page').model(users: user)
 name = user.get 'name'
 user = name.prev()
 
-current-user = model('_session').model(current-user: user)
+current-user = path('_session').model(current-user: user)
 ```
 
 We can also leverage the efficient "multi-builder" API.
@@ -386,19 +387,7 @@ Each `add` returns the collection of attributes that have so far been added.
 page-attributes = page.attributes
   .add(hits: 'number', value: 3)
   .add(status: 'string', value: 'ok')
-
-session.attributes
-  .add(page-attributes)
-  .add(current-user: user)
 ```
-
-Here we introduce another powerful shortcut, adding a model property current user via an attribute.
-The attribute builder method will here detect that the value being set is an object, and try to build a model
- from this instead. The same can be done for a collection.
-
-`.add(users: [kris, emily])`
-
-This will build and attach (add) a collection property `users` with those models wrapped inside.
 
 ## Parsing and building complex models
 
@@ -425,13 +414,13 @@ _path:
       user: _path.users.2
 ```
 
-The parser should understand that the top most node `_path` since it has an underscore, is a `PathPipe`.
-Then it should understand that users and projects are both collections, since they have plural names,
+The parser will determine that the top most node `_path` since it has an underscore, is a `PathPipe`.
+Then it will parse users and projects as collections, since they have plural names,
 and each has an array of objects.
 
 `path-pipe('_path').collections.add(users: users).add(projects: projects)`
 
-Internally, as each user or project is added, it should create an attribute pipe for each own property key that does
+Internally, as each user or project is added, it will create a model pipe for each own property key that does
 not start with a special character such as `_` or `$`.
 
 `collection('users').models().add(name: 'Kris', email: 'kris@gmail.com')`
@@ -444,13 +433,8 @@ It should internally add attributes pretty much like so, where 'user' is an (opt
 
 `.model('user').attributes().add(name: 'Kris', email: 'kris@gmail.com')`
 
-Could even allow without class, if collection is "class-less"
 
-`.model().attributes()`
-
-Calling `collection.model(...)` should always ensure that the model gets an appropriate id according to its position in the parent collection.
-
-The parser should pretty much work as described above. However it needs real-life testing to see how well it holds up!
+Calling `collection.model(...)` will always ensure that the model gets an appropriate id according to its position in the parent collection.
 
 ## Marshalling a pipe value
 

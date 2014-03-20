@@ -57,6 +57,30 @@ PipeFamily = new Module(
   child-list: ->
     _.values(@child-hash).compact!
 
+  get: (index) ->
+    switch typeof! index
+    case 'Number'
+      @child-list[index]
+    case 'String'
+      @child index
+    default
+      throw new Error "Must be a Number index or name of a child, was: #{index} #{typeof! index}"
+
+  attr: (name) ->
+    p = @child name
+    unless p.pipe-type is 'Attribute'
+      throw new Error "The child pipe #{name} is not an Attribute"
+
+  modl: (name) ->
+    p = @child name
+    unless p.pipe-type is 'Model'
+      throw new Error "The child pipe #{name} is not a Model"
+
+  col: (name) ->
+    p = @child name
+    unless p.pipe-type is 'Collection'
+      throw new Error "The child pipe #{name} is not a Collection"
+
   parent-name: ->
     if @parent then @parent.full-name else ''
 
