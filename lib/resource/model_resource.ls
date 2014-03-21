@@ -7,7 +7,7 @@ lo  = require 'lodash'
 require 'sugar'
 
 BaseResource   = requires.aresource 'base'
-Filtering      = requires.resource 'filtering'
+Filtering      = requires.resource 'resource_filtering'
 
 ModelResource = new Class(BaseResource,
   initialize: (@pipe) ->

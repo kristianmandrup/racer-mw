@@ -3,7 +3,7 @@ requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-MwFactory = requires.resource 'crud/mw_factory'
+MwFactory = requires.resource 'crud/resource_crud_mw_factory'
 
 _  = require 'prelude-ls'
 require 'sugar'

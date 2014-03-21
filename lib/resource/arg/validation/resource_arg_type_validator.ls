@@ -9,7 +9,7 @@ TypeValidator = new Class(
   initialize: (@error, @args) ->
 
   type-map: ->
-    @map ||= requires.resource 'arg/validation/type_map'
+    @map ||= requires.resource 'arg/validation/resource_arg_type_map'
 
   validate: ->
     return unless @args

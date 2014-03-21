@@ -2,8 +2,8 @@ requires = require '../../../../../requires'
 
 requires.test 'test_setup'
 
-TypeValidator = requires.resource 'arg/validation/type_validator'
-ErrorHandler  = requires.resource 'arg/validation/error_handler'
+TypeValidator = requires.resource 'arg/validation/resource_arg_type_validator'
+ErrorHandler  = requires.resource 'arg/validation/resource_arg_error_handler'
 
 expect = require('chai').expect
 

@@ -6,7 +6,7 @@ lo  = require 'lodash'
 require 'sugar'
 
 BaseResource   = requires.aresource 'base'
-Filtering      = requires.resource 'filtering'
+Filtering      = requires.resource 'resource_filtering'
 
 CollectionResource = new Class(BaseResource,
   # value-object

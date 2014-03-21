@@ -6,9 +6,9 @@ _  = require 'prelude-ls'
 require 'sugar'
 
 ValidateArgs  = requires.lib 'validate_args'
-ArgStore      = requires.resource 'arg/store'
-ErrorHandler  = requires.resource 'arg/validation/error_handler'
-TypeValidator = requires.resource 'arg/validation/type_validator'
+ArgStore      = requires.resource 'arg/resource_arg_store'
+ErrorHandler  = requires.resource 'arg/validation/resource_arg_error_handler'
+TypeValidator = requires.resource 'arg/validation/resource_arg_type_validator'
 
 Validator = new Class(
   initialize: (@command-name, @args) ->

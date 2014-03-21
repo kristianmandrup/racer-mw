@@ -2,7 +2,7 @@ requires = require '../../../../../requires'
 
 requires.test 'test_setup'
 
-ErrorHandler = requires.resource 'arg/validation/error_handler'
+ErrorHandler = requires.resource 'arg/validation/resource_arg_error_handler'
 
 expect = require('chai').expect
 

@@ -31,7 +31,7 @@ BasePipeBuilder = new Class(
     @set @create-pipe ...args
 
   parse: (...args) ->
-    Parser = requires.pipe 'parser'
+    Parser = requires.pipe 'pipe_parser'
     try
       @set new Parser(...args).parse!
     finally

@@ -3,7 +3,7 @@ requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-CommandBuilder = requires.resource 'command/builder'
+CommandBuilder = requires.resource 'command/resource_command_builder'
 
 _  = require 'prelude-ls'
 require 'sugar'

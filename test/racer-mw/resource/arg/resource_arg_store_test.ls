@@ -2,7 +2,7 @@ requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-ArgStore        = requires.resource 'arg/store'
+ArgStore        = requires.resource 'arg/resource_arg_store'
 
 expect = require('chai').expect
 
