@@ -5,7 +5,9 @@ lo  = require 'lodash'
 require 'sugar'
 
 ValueObject = new Class(
-  initialize: (@container)
+  initialize: (@container, options = {}) ->
+    @set-value options.value if options.value
+    @
 
   set-value: (value) ->
     @valid = @validate value

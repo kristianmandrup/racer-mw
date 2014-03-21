@@ -20,9 +20,12 @@ BaseResource = new Class(ResourceCommand,
   initialize: (context) ->
     unless typeof! context is 'Object'
       throw Error "A resource must be constructed with a context Object, was: #{util.inspect context}"
+    @set-value context.value
 
-    @attach-to context.pipe
-    @config-value context.value
+    # transfer pipe value if no value set for context and transfer = true
+    transfer = if context.value isnt void then false else context.transfer
+
+    @attach-to context.pipe, transfer: transfer
 
     @call-super @
 

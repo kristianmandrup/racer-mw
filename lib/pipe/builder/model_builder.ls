@@ -34,7 +34,6 @@ ModelPipeBuilder = new Class(BasePipeBuilder,
   post-attach: (pipe) ->
     if pipe.clazz is void
       parent = pipe.parent
-      console.log 'set class via parent'
       if parent and parent.pipe-type is 'Collection'
         pipe.clazz = parent.name.singularize!
 
