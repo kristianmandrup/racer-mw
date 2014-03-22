@@ -143,9 +143,12 @@ describe 'PipeValue' ->
         expect(users.value!).to.eql { 0: {name: 'kris', email: 'kris@the.man'} }
 
     describe 'set value' ->
+      var res
       before ->
+        console.log users.describe!
         child = users.get 0
-        child.set-value {name: 'mike', email: 'mike@the.man'}
+        res := child.set-value {name: 'mike', email: 'mike@the.man'}
+        console.log 'RES', res
 
       specify.only 'notify parent on child value change' ->
         expect(users.value!).to.eql { 0: {name: 'mike', email: 'mike@the.man'} }

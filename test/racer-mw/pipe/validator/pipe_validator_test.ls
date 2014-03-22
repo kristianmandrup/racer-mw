@@ -5,6 +5,11 @@ requires.test 'test_setup'
 BasePipe          = requires.apipe 'base'
 PipeValidator     = requires.pipe 'validator/pipe_validator'
 
+CollectionPipe    = requires.apipe 'collection'
+ModelPipe         = requires.apipe 'model'
+AttributePipe     = requires.apipe 'attribute'
+PathPipe          = requires.apipe 'path'
+
 expect      = require('chai').expect
 
 describe 'PipeValidator' ->
@@ -63,12 +68,24 @@ describe 'PipeValidator' ->
       expect(-> new PipeValidator(pipe).is-pipe!).to.not.throw Error
 
   describe 'validate' ->
+    specify 'model is valid when no valid-types' ->
+      expect(-> new PipeValidator(pipe).validate!).to.not.throw Error
+
+    specify 'CollectionPipe is valid' ->
+      expect(-> new PipeValidator(new CollectionPipe('users')).validate!).to.not.throw Error
+
+    specify 'ModelPipe is valid' ->
+      expect(-> new PipeValidator(new ModelPipe('user')).validate!).to.not.throw Error
+
+    specify 'AttributePipe is valid' ->
+      expect(-> new PipeValidator(new AttributePipe('name')).validate!).to.not.throw Error
+
+    specify 'PathPipe is valid' ->
+      expect(-> new PipeValidator(new PathPipe('_page')).validate!).to.not.throw Error
+
     # @validate-many @obj if typeof! @obj is 'Array'
     specify 'array calls validate-many' ->
       expect(-> new PipeValidator([]).validate!).to.not.throw Error
-
-    specify 'model is valid when no valid-types' ->
-      expect(-> new PipeValidator(pipe).validate!).to.not.throw Error
 
     # @validate-types!
     specify 'model is not valid when not in valid-types' ->
@@ -76,6 +93,9 @@ describe 'PipeValidator' ->
 
     specify 'model is valid when in valid-types' ->
       expect(-> new PipeValidator(pipe, ['collection', 'model']).validate!).to.not.throw Error
+
+
+
 
   describe 'validate-many (objs)' ->
 

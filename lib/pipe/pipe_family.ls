@@ -62,11 +62,19 @@ PipeFamily = new Module(
   get: (index) ->
     switch typeof! index
     case 'Number'
-      @child-list![index]
+      @get-by-index index
     case 'String'
       @child index
     default
       throw new Error "Must be a Number index or name of a child, was: #{index} #{typeof! index}"
+
+  get-by-index: (index) ->
+    if index < 0
+      throw new Error "Index must be 0 or higher, was: #{index}"
+    num = @child-names!.length
+    if index >= num
+      throw new Error "Index #{index} too high, Pipe has #{num} children"
+    @child-list![index]
 
   first: ->
     @get 0

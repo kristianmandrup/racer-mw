@@ -46,8 +46,16 @@ CollectionPipe = new Class(BasePipe,
     @
 
   set-value: (value) ->
-    builder = if _.is-type('Array', value) then @models else @model
-    builder value
+    console.log 'builders', @builder-names!
+    builder = @builder-for(value)
+    builder.build value
+
+  builder-for: (value) ->
+    @builder(@builder-name value)
+
+  builder-name: (value) ->
+    return 'models' if _.is-type('Array', value)
+    'model'
 
   get-value: ->
     _.values(@children).map (child) ->

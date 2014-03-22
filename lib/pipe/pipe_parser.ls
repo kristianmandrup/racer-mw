@@ -68,6 +68,7 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
+PipeValidator = requires.pipe 'validator/pipe_validator'
 
 # TODO: Needs major refactoring into sub-parser classes in order to facilitate testing,
 # more granular design, easier reuse and better encapsulation of parser state at each point
@@ -76,6 +77,9 @@ Parser = new Class(
     @parent = options.parent
     @debug-on = options.debug
     @
+
+  is-pipe: (pipe) ->
+    new PipeValidator(pipe).validate!
 
   parse: ->
     switch typeof! @obj
@@ -151,10 +155,14 @@ Parser = new Class(
 
   build-children: (value, parent-pipe) ->
     try
+      console.log 'parent-pipe', parent-pipe.describe!
+      @is-pipe parent-pipe
       pipes = new Parser(value, parent: parent-pipe, debug: @debug).parse!
       parent-pipe.attach pipes
       parent-pipe
     catch e
+      @debug-msg value
+      console.log e
       @debug-msg "unable to attach more pipes to: #{parent-pipe.describe!}"
       parent-pipe
     finally
@@ -173,6 +181,7 @@ Parser = new Class(
   build-collection: (key, value) ->
     @debug-msg "CollectionPipe: #{key}"
     col-pipe = new CollectionPipe "#{key}": value
+    @debug-msg col-pipe.describe!
     @build-children value, col-pipe
 
   build-attr: (key, value) ->

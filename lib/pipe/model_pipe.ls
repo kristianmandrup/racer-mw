@@ -41,6 +41,7 @@ ModelPipe = new Class(BasePipe,
     @clazz = extract.clazz(obj)
 
   set-value: (obj) ->
+    console.log "Model: #{@id!} set value", obj
     @call-super extract.value(obj)
 
   pre-attach-to: (parent) ->

@@ -9,18 +9,13 @@ requires = require '../../requires'
 
 ParentValidator   = requires.pipe 'validator/parent_validator'
 
-Attacher = new Module(
+PipeAttacher = new Module(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
     if _.is-type 'Array', pipe
       return @attach-list pipe
 
-    unless _.is-type('Object', pipe)
-      throw new Error "Can only attach to a Pipe which is an Object was: #{typeof! pipe}"
-
-    unless pipe.type is 'Pipe'
-      throw new Error "Can only attach to a Pipe object, was: #{util.inspect pipe}, type: #{pipe.type}"
-
+    @is-pipe pipe
     # check if ancestor is done via: @parent-validator(parent).validate @
 
     pipe.attach-to @
@@ -76,4 +71,4 @@ Attacher = new Module(
   post-attach-to: (parent) ->
 )
 
-module.exports = Attacher
+module.exports = PipeAttacher

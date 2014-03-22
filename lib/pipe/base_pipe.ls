@@ -19,6 +19,8 @@ PipeFamily      = requires.pipe 'pipe_family'
 PipeValue       = requires.pipe 'pipe_value'
 PipeIdentifier  = requires.pipe 'pipe_identifier'
 PipeResource    = requires.pipe 'pipe_resource'
+PipeValidation  = requires.pipe 'pipe_validation'
+
 argumentor      = requires.pipe 'pipe_argumentor'
 
 BasePipe = new Class(
@@ -31,6 +33,7 @@ BasePipe = new Class(
     * PipeValue
     * PipeIdentifier
     * PipeResource
+    * PipeValidation
 
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->

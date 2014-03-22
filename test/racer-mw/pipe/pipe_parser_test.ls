@@ -47,7 +47,7 @@ describe 'Parser' ->
         parser  := new Parser objs.users
         parser.debug!
         result := parser.parse!
-        # console.log 'RESULT', result.describe true
+        console.log 'RESULT', result.describe true
 
       specify 'is parsed as Collection' ->
         expect(result).to.be.an.instance-of CollectionPipe
@@ -135,7 +135,7 @@ describe 'Parser' ->
       specify 'parses email pipe' ->
         expect(model-pipe.child 'email').to.be.an.instance-of AttributePipe
 
-  context 'ModelPipe' ->
+  context 'parse CollectionPipe users' ->
     var users, obj, fchild
 
     before ->
@@ -152,7 +152,7 @@ describe 'Parser' ->
       console.log obj
       console.log 'USERS', users.describe true
       child := users.first!
-      console.log 'CHILD', child
+      # console.log 'CHILD', child
 
     specify 'has one child' ->
       expect(users.child-list!.length).to.equal 1

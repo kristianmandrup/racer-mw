@@ -8,26 +8,23 @@ requires = require '../../../requires'
 
 Pipe = requires.apipe 'base'
 
+PipeValidation = requires.pipe 'pipe_validation'
+
 klass-of = (obj) ->
   if typeof obj is 'object' and obj.klass
     obj.klass.display-name || typeof! obj
   else
     typeof(obj)
 
-is-pipe = (obj) ->
-  return false unless typeof obj is 'object'
-  obj.type and obj.type is 'Pipe'
-
 ParentValidator = new Class(
+  include:
+    * PipeValidation
+    ...
+
   initialize: (@parent) ->
     unless @parent
       throw new Error "Missing parent pipe argument in #{util.inspect _.values(arguments)}"
-
-    unless typeof @parent is 'object'
-      throw new Error "Argument error: Parent must be an object, was a #{klass-of @parent}"
-
-    unless is-pipe @parent
-      throw new Error "Argument error: Parent must be a kind of Pipe, was a #{klass-of @parent} type: #{@parent.type}"
+    @is-pipe @parent
     @
 
   set-valid: (valid-parent-types) ->
@@ -35,11 +32,7 @@ ParentValidator = new Class(
     @
 
   validate-args: ->
-    unless @pipe
-      throw new Error "Missing child pipe argument in #{util.inspect arguments}"
-
-    unless is-pipe @pipe
-      throw new Error "Argument error: Child must be a kind of Pipe, was a #{klass-of @pipe}"
+    @is-pipe @pipe
 
     if @pipe is @parent
       throw new Error "Circular error: you can't attach to yourself, #{util.inspect @pipe}"
@@ -56,13 +49,15 @@ ParentValidator = new Class(
   validate: (@pipe) ->
     @validate-args!
 
+    @is-pipe @pipe
+
     unless @valid-type!
-      throw new Error "Invalid parent pipe for #{util.inspect @pipe} [#{@parent.pipe-type}], must be one of: #{@valid-parent-types}"
+      console.log @pipe.describe!
+      throw new Error "#{@parent.pipe-type} is an invalid parent pipe for #{@pipe.pipe-type}, must be one of: #{@valid-parent-types}"
 
   valid-type: ->
     return true if @valid-parent-types is void
     return true if @valid-parent-types.length is 0
-    return false unless @parent.type
     @parent.pipe-type.to-lower-case! in @valid-parent-types
 )
 

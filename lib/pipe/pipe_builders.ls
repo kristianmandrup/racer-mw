@@ -23,24 +23,16 @@ PipeBuilders = new Module(
     if @valid-parents
       @valid-parents = [@valid-parents].flatten!
 
-    CollectionPipeBuilder   = requires.apipe-builder 'collection'
-    ModelPipeBuilder        = requires.apipe-builder 'model'
-    AttributePipeBuilder    = requires.apipe-builder 'attribute'
-
-    CollectionsPipeBuilder  = requires.apipe-builder 'collections'
-    ModelsPipeBuilder       = requires.apipe-builder 'models'
-    AttributesPipeBuilder   = requires.apipe-builder 'attributes'
-
-    @config-builder 'collection', CollectionPipeBuilder, CollectionsPipeBuilder
-    @config-builder 'model', ModelPipeBuilder, ModelsPipeBuilder
-    @config-builder 'attribute', AttributePipeBuilder, AttributesPipeBuilder
+    @config-builder 'collection'
+    @config-builder 'model'
+    @config-builder 'attribute'
     @
 
   config-builder: (name, clazz, multi-clazz) ->
     return unless @valid-child name
     @config-parser name
 
-    builders = new ConfigBuilder(@, name, clazz: clazz, multi-clazz: multi-clazz).config!
+    builders = new ConfigBuilder(@, name).config!
     lo.extend @builders, builders
 
   config-parser: (name) ->

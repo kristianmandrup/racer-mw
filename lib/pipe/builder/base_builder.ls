@@ -5,18 +5,25 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
+requires = require '../../../requires'
+
 describe = (obj) ->
   return obj.describe! if _.is-type 'Function', obj.describe
   util.inspect obj, depth: 1
 
+PipeValidation      = requires.pipe 'pipe_validation'
+
 BasePipeBuilder = new Class(
+  include:
+    * PipeValidation
+    ...
+
   initialize: (@container) ->
     @validate-container!
     @
 
   validate-container: ->
-    unless _.is-type 'Object', @container
-      throw new Error "Must be an object, was: #{describe @container}"
+    @is-pipe @container
 
     unless _.is-type 'Function', @container.attach
       throw new Error "Must have an attach function, was: #{describe @container}"
@@ -33,7 +40,8 @@ BasePipeBuilder = new Class(
   parse: (...args) ->
     Parser = requires.pipe 'pipe_parser'
     try
-      @set new Parser(...args).parse!
+      parser = new Parser(...args)
+      @set parser.parse!
     finally
       @
 
@@ -50,7 +58,8 @@ BasePipeBuilder = new Class(
     @added.push pipe
 
   create-pipe: (...args) ->
-    return create-pipes(first-arg) if _.is-type 'Array', args.first!
+    return @create-pipes(args.first!) if _.is-type 'Array', args.first!
+    @parse ...args
 
   create-pipes: (list) ->
     self = @

@@ -25,7 +25,7 @@ ModelPipeBuilder = new Class(BasePipeBuilder,
     case 0
       throw new Error "Must take a name, a value (object) or a {name: value} as an argument"
     case 1
-     pipe = @add-model args.first!
+      pipe = @add-model args.first!
     default
       throw new Error "Too many arguments, takes only a name, a value (object) or a {name: value}"
     @attach pipe

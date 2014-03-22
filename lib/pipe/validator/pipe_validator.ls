@@ -17,6 +17,7 @@ PipeValidator = new Class(
     return @validate-many @obj if typeof! @obj is 'Array'
     @is-pipe!
     @validate-types!
+    true
 
   is-obj: ->
     unless typeof @obj is 'object'

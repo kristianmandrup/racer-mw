@@ -8,6 +8,11 @@ expect          = require('chai').expect
 
 PipeBuilders    = requires.pipe 'pipe_builders'
 
+AttributePipe     = requires.apipe 'attribute'
+ModelPipe         = requires.apipe 'model'
+PathPipe          = requires.apipe 'path'
+CollectionPipe    = requires.apipe 'collection'
+
 SimpleObj = new Class(
 )
 
@@ -83,3 +88,37 @@ describe 'PipeBuilders' ->
       specify 'builders contain the builders' ->
         expect(pipe.builders).to.not.be.empty
 
+      specify 'builders contain the right builder' ->
+        expect(pipe.builder-names!).to.include 'model', 'models', 'collection', 'collections', 'attribute', 'attributes'
+
+  context 'CollectionPipe' ->
+    before ->
+      pipe := new CollectionPipe 'users'
+      pipe.config-builders!
+
+    specify 'builders contain model, models' ->
+      expect(pipe.builder-names!).to.include 'model', 'models'
+
+  context 'ModelPipe' ->
+    before ->
+      pipe := new ModelPipe 'admin'
+      pipe.config-builders!
+
+    specify 'builders contain all' ->
+      expect(pipe.builder-names!).to.include 'model', 'models', 'collection', 'collections', 'attribute', 'attributes'
+
+  context 'PathPipe' ->
+    before ->
+      pipe := new PathPipe '_page'
+      pipe.config-builders!
+
+    specify 'builders contain all' ->
+      expect(pipe.builder-names!).to.include 'model', 'models', 'collection', 'collections', 'attribute', 'attributes'
+
+  context 'AttributePipe' ->
+    before ->
+      pipe := new AttributePipe 'name'
+      pipe.config-builders!
+
+    specify 'builders contain none' ->
+      expect(pipe.builder-names!).to.be.empty

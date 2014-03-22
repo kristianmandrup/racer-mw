@@ -50,39 +50,41 @@ PipeValue = new Module(
   value: ->
     @value-obj.value
 
-  on-parent-update: (parent, new-value) ->
+  on-parent-update: (parent, value) ->
     # console.log 'on-parent-update', new-value
     return unless @auto-update
 
     # TODO: For some odd reason the following call doesn't work correctly!! Please shed light on this mystery...
     # @set-value new-value
 
+    console.log 'on-parent-update', value
     updated-value = @value-obj.set value
 
     if updated-value
       new FamilyNotifier(@).notify-family updated-value
     updated-value
 
-  on-child-update: (child, new-value) ->
+  on-child-update: (child, value) ->
     # console.log 'on-child-update', new-value
     # console.log 'notified', new-value
     return unless @auto-update
     # recompute raw value
     # console.log 'update parent', new-value, @raw-value!
     # TODO: For some odd reason the following call doesn't work correctly!! Please shed light on this mystery...
-    @set-value @raw-value!
-    /*
-    updated-value = @value-obj.set value
+    console.log 'on-child-update', value
+    # @set-value value # @raw-value!
 
+    updated-value = @value-obj.set value
+    console.log 'updated-value', updated-value
     if updated-value
       new FamilyNotifier(@).notify-family updated-value
     updated-value
-    */
+
 
   auto-update: true
 
   set-value: (value) ->
-    # console.log 'set-value', value
+    console.log 'VALUE - set-value', value
     updated-value = @value-obj.set value
 
     if updated-value
