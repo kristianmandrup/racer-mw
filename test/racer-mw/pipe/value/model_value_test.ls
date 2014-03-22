@@ -20,5 +20,5 @@ describe 'PipeValue' ->
         result := pipe.set-value { name: 'mike', email: 'mike@the.man' }
 
       specify 'result is value that was set' ->
-        expect(result).to.equal { name: 'mike', email: 'mike@the.man' }
+        expect(result).to.eql { name: 'mike', email: 'mike@the.man' }
 

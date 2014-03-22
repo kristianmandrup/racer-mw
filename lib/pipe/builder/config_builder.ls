@@ -24,7 +24,6 @@ ConfigBuilder = new Class(
       throw new Error "Must take a name as first argument"
 
   config: ->
-    console.log 'name', @name
     @single-config!
     @plural-config!
     @builders

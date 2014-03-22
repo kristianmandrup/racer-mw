@@ -39,16 +39,18 @@ BasePipeBuilder = new Class(
 
   parse: (...args) ->
     Parser = requires.pipe 'pipe_parser'
-    try
-      parser = new Parser(...args)
-      @set parser.parse!
-    finally
-      @
+    parser = new Parser(args, parent: @container)
+    @set parser.parse!
+
+  set-many: (pipes) ->
+    for pipe in pipes
+      @set pipe
 
   set: (pipe) ->
+    @set-many(pipe.flatten!.compact!) if typeof! pipe is 'Array'
     @push pipe
     @attach pipe
-    @
+    pipe
 
   build: (...args)->
     @add ...args

@@ -10,7 +10,6 @@ ValueObject = new Class(
     @
 
   set-value: (value) ->
-    console.log 'ValueObject', value
     @valid = @validate value
     @value = value if @valid
 

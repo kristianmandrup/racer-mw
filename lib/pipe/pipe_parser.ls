@@ -155,7 +155,6 @@ Parser = new Class(
 
   build-children: (value, parent-pipe) ->
     try
-      console.log 'parent-pipe', parent-pipe.describe!
       @is-pipe parent-pipe
       pipes = new Parser(value, parent: parent-pipe, debug: @debug).parse!
       parent-pipe.attach pipes

@@ -46,9 +46,12 @@ CollectionPipe = new Class(BasePipe,
     @
 
   set-value: (value) ->
-    console.log 'builders', @builder-names!
-    builder = @builder-for(value)
-    builder.build value
+    @call-super value
+    # depends on whether one or more of the children the match the Array are already there
+
+    # builder = @builder-for(value)
+    # builder.build value
+    # @raw-value!
 
   builder-for: (value) ->
     @builder(@builder-name value)

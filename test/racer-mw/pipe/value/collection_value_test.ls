@@ -26,5 +26,5 @@ describe 'PipeValue' ->
 
 
       specify 'result is value that was set' ->
-        expect(result).to.equal obj
+        expect(result).to.eql [{name: 'kris', email: 'km@gmail.com' }]
 

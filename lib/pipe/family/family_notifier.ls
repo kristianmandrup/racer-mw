@@ -5,21 +5,35 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
+requires = require '../../../requires'
+
+PipeValidation      = requires.pipe 'pipe_validation'
 
 FamilyNotifier = new Class(
-  initialize: (@pipe) ->
+  include:
+    * PipeValidation
+    ...
+
+  initialize: (@pipe, options = {}) ->
+    @is-pipe @pipe
+
     @parent = @pipe.parent
-    @child-list = @pipe.child-list!
+    @not-parent = options.parent
+    @not-child  = options.child
     @
 
+  child-list: ->
+    @pipe.child-list!
+
   notify-family: (@updated-value) ->
-    # @notify-children @pipe
-    @notify-ancestors!
+    @notify-children @pipe unless @not-child
+    @notify-ancestors! unless @not-parent
 
   notify-children: (pipe)->
-    parent = @parent
-    @child-list.each (child) ->
-      child.on-parent-update parent, @updated-value
+    @is-pipe pipe
+
+    for child in @child-list!
+      child.on-parent-update @parent, @updated-value
 
   notify-ancestors: ->
     @parent.on-child-update(@, @updated-value) if @parent

@@ -3,18 +3,13 @@ Class       = require('jsclass/src/core').Class
 require 'sugar'
 util  = require 'util'
 _     = require 'prelude-ls'
+lo    = require 'lodash'
 
 requires = require '../../../requires'
 
 Pipe = requires.apipe 'base'
 
 PipeValidation = requires.pipe 'pipe_validation'
-
-klass-of = (obj) ->
-  if typeof obj is 'object' and obj.klass
-    obj.klass.display-name || typeof! obj
-  else
-    typeof(obj)
 
 ParentValidator = new Class(
   include:
@@ -23,7 +18,7 @@ ParentValidator = new Class(
 
   initialize: (@parent) ->
     unless @parent
-      throw new Error "Missing parent pipe argument in #{util.inspect _.values(arguments)}"
+      throw new Error "Missing parent pipe argument"
     @is-pipe @parent
     @
 
@@ -31,14 +26,12 @@ ParentValidator = new Class(
     @valid-parent-types = [valid-parent-types].flatten!.compact!
     @
 
-  validate-args: ->
-    @is-pipe @pipe
-
+  validate-pipe-relations: ->
     if @pipe is @parent
-      throw new Error "Circular error: you can't attach to yourself, #{util.inspect @pipe}"
+      throw new Error "Circular error: you can't attach to yourself, #{@pipe.describe!}"
 
     if @is-ancestor @pipe
-      throw new Error "Circular error: you can't attach an ancestor pipe, #{util.inspect @parent}"
+      throw new Error "Circular error: you can't attach an ancestor pipe, #{@parent.describe!}"
 
   is-ancestor: (pipe) ->
     pipe in @ancestors!
@@ -47,18 +40,19 @@ ParentValidator = new Class(
     @parent.ancestors!
 
   validate: (@pipe) ->
-    @validate-args!
-
     @is-pipe @pipe
+    @validate-pipe-relations!
 
     unless @valid-type!
       console.log @pipe.describe!
       throw new Error "#{@parent.pipe-type} is an invalid parent pipe for #{@pipe.pipe-type}, must be one of: #{@valid-parent-types}"
 
   valid-type: ->
-    return true if @valid-parent-types is void
-    return true if @valid-parent-types.length is 0
+    return true if @no-valid-parent-types!
     @parent.pipe-type.to-lower-case! in @valid-parent-types
+
+  no-valid-parent-types: ->
+    lo.is-empty @valid-parent-types
 )
 
 

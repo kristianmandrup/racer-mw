@@ -35,14 +35,14 @@ ModelPipe = new Class(BasePipe,
   set: (obj) ->
     @set-class obj
     @set-name extract.name(obj, @clazz)
-    @set-value obj
+    @set-value extract.value(obj)
 
   set-class: (obj) ->
     @clazz = extract.clazz(obj)
 
+  # don't use extract.value here!!
   set-value: (obj) ->
-    console.log "Model: #{@id!} set value", obj
-    @call-super extract.value(obj)
+    @call-super obj
 
   pre-attach-to: (parent) ->
     @call-super!
