@@ -45,6 +45,7 @@ CollectionPipe = new Class(BasePipe,
     @post-init!
     @
 
+  # TODO: so far only works when setting with values where children already there...
   set-value: (value) ->
     @call-super value
     # depends on whether one or more of the children the match the Array are already there
@@ -52,6 +53,28 @@ CollectionPipe = new Class(BasePipe,
     # builder = @builder-for(value)
     # builder.build value
     # @raw-value!
+
+  post-set-value: (value)->
+    @build-children value
+
+  # Array
+  build-children: (value) ->
+    console.log 'build-children - NOT yet implemented'
+    # for each item compare with current value
+    # if different, create new ModelPipe and overwrite
+    # else skip
+
+    # if more items than original array, create and insert new children by parsing
+    # if less items than original, either: remove remaining children or return? take extra options param?
+    # to contract value if this array smaller than current
+
+    # set-value [x, y, z], contract: true
+    # to only overwrite 3 first but ignore the rest
+    # set-value [x, y, z]
+
+    # insert lists at specific positions
+    # set-value-at 3: [x, y, z], 6: [a, b]
+
 
   builder-for: (value) ->
     @builder(@builder-name value)

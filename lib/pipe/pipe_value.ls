@@ -62,12 +62,19 @@ PipeValue = new Module(
 
   auto-update: true
 
+  # TODO: improve of FamilyNotifier
   set-value: (value) ->
     updated-value = @value-obj.set value
 
     if updated-value
+      # only updates existing children. What if value should create additional children?
+      # We need a way to check if value contains new children to be created, then create them
+      # These newly created children should not be notified, so should be created after Family is Notified...
       new FamilyNotifier(@).notify-family updated-value
+      @post-set-value value
     updated-value
+
+  post-set-value: (value) ->
 )
 
 module.exports = PipeValue
