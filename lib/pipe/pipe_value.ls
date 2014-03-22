@@ -53,8 +53,15 @@ PipeValue = new Module(
   on-parent-update: (parent, new-value) ->
     # console.log 'on-parent-update', new-value
     return unless @auto-update
-    # hmmm
-    @set-value new-value
+
+    # TODO: For some odd reason the following call doesn't work correctly!! Please shed light on this mystery...
+    # @set-value new-value
+
+    updated-value = @value-obj.set value
+
+    if updated-value
+      new FamilyNotifier(@).notify-family updated-value
+    updated-value
 
   on-child-update: (child, new-value) ->
     # console.log 'on-child-update', new-value

@@ -45,18 +45,13 @@ CollectionPipe = new Class(BasePipe,
     @post-init!
     @
 
-  # TODO: should create model(s) from value
   set-value: (value) ->
-    if _.is-type 'Array', value
-      list = value
-      for item in list
-        @model item
-    else
-      @model value
+    builder = if _.is-type('Array', value) then @models else @model
+    builder value
 
   get-value: ->
     _.values(@children).map (child) ->
-      child.value
+      child.value!
 
   config-via-array: ->
     attach-to-path-pipe @args[0 to -2], @
@@ -70,15 +65,6 @@ CollectionPipe = new Class(BasePipe,
 
   id: ->
     @name
-
-  # pipe builder
-  # attach a model pipe as a child
-  # return model pipe for more chaining
-  model: (obj) ->
-    @builder('model').build obj
-
-  models: ->
-    new ModelsPipeBuilder @
 
   valid-parents:
     * \path

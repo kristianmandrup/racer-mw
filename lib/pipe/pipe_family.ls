@@ -26,6 +26,8 @@ PipeFamily = new Module(
     my-ancestors.flatten!.compact!
 
   child: (name) ->
+    unless @child-hash[name] then
+      throw new Error "Pipe has no named: #{name}"
     @child-hash[name]
 
   remove-child: (name) ->
@@ -60,11 +62,17 @@ PipeFamily = new Module(
   get: (index) ->
     switch typeof! index
     case 'Number'
-      @child-list[index]
+      @child-list![index]
     case 'String'
       @child index
     default
       throw new Error "Must be a Number index or name of a child, was: #{index} #{typeof! index}"
+
+  first: ->
+    @get 0
+
+  last: ->
+    @get @child-names!.length-1
 
   attr: (name) ->
     p = @child name

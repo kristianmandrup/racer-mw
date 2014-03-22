@@ -1,20 +1,30 @@
 Class       = require('jsclass/src/core').Class
 
+requires = require '../../../requires'
+
 _     = require 'prelude-ls'
 lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
+BuilderConfigurator = requires.pipe 'builder/builder_configurator'
+
 ConfigBuilder = new Class(
   initialize: (@pipe, @name, @clazzes = {}) ->
     @clazz       = @clazzes.clazz
-    @multi-clazz = @clazzes.multi-clazz
+    @plural-clazz = @clazzes.plural-clazz
 
     @validate-args!
     @builders = {}
     @
 
   validate-args: ->
+    unless _.is-type 'Object', @pipe
+      throw new Error "Pipe must be an Object, was: #{@pipe}"
+
+    unless @pipe.type is 'Pipe'
+      throw new Error "Pipe must be a type: Pipe, was: #{@pipe.type}"
+
     unless @name
       throw new Error "Must take a name as first argument"
 
@@ -23,33 +33,14 @@ ConfigBuilder = new Class(
 
   config: ->
     @single-config!
-    @multi-config!
+    @plural-config!
     @builders
 
   single-config: ->
-    return unless @clazz
+    new BuilderConfigurator(@name.pluralize!, @, @plural-clazz).configure!
 
-    @builders[@name]   ||= new @clazz @pipe
-    name = @name
-
-    # create builder function on pipe
-    @pipe[name] = (...args) ->
-      b = @builder(name)
-      unless lo.is-empty args then b.build(...args) else b
-    @
-
-  multi-config: ->
-    return unless @multi-clazz
-
-    plural = @name.pluralize!
-
-    @builders[plural] ||= new @multi-clazz @pipe
-
-    # create builder function on pipe
-    @pipe[plural] = (...args) ->
-      b = @builder(plural)
-      unless lo.is-empty args then b.build(...args) else b
-    @
+  plural-config: ->
+    new BuilderConfigurator(@name, @, @clazz).configure!
 
   builder: (name) ->
     @builders[name]

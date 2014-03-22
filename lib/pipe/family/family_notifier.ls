@@ -13,7 +13,7 @@ FamilyNotifier = new Class(
     @
 
   notify-family: (@updated-value) ->
-    @notify-children @pipe
+    # @notify-children @pipe
     @notify-ancestors!
 
   notify-children: (pipe)->

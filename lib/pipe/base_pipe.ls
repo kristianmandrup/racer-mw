@@ -54,7 +54,8 @@ BasePipe = new Class(
   parse: (...args) ->
     try
       Parser  = requires.pipe 'pipe_parser'
-      pipes   = new Parser(...args).parse!
+      parser = new Parser(...args)
+      pipes   = parser.parse!
       @attach pipes
       @
     finally
