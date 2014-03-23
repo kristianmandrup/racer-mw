@@ -1,16 +1,13 @@
 Class       = require('jsclass/src/core').Class
 
-_     = require 'prelude-ls'
-lo    = require 'lodash'
-util  = require 'util'
-require 'sugar'
+requires = require '../../../../requires'
 
-requires = require '../../requires'
+ModelPipe           = requires.apipe 'model'
 
-ModelPipe         = requires.apipe 'model'
+ParserBaseBuilder   = requires.pipe 'parser/builder/parser_base_builder'
 
-ParserModelBuilder = new Class(
-  initialize: (@value)->
+ParserModelBuilder = new Class(ParserBaseBuilder,
+  initialize: (@value) ->
     @call-super!
 
   build: (key) ->
@@ -20,3 +17,5 @@ ParserModelBuilder = new Class(
   build-named: (name) ->
     @build-children @value, new ModelPipe("#{name}": @value)
 )
+
+module.exports = ParserModelBuilder

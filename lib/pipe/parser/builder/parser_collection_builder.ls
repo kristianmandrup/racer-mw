@@ -1,15 +1,12 @@
 Class       = require('jsclass/src/core').Class
 
-_     = require 'prelude-ls'
-lo    = require 'lodash'
-util  = require 'util'
-require 'sugar'
+requires = require '../../../../requires'
 
-requires = require '../../requires'
+ParserBaseBuilder   = requires.pipe 'parser/builder/parser_base_builder'
 
 CollectionPipe    = requires.apipe 'collection'
 
-ParserCollectionBuilder = new Class(
+ParserCollectionBuilder = new Class(ParserBaseBuilder,
   initialize: (@value)->
     @call-super!
 
@@ -19,3 +16,5 @@ ParserCollectionBuilder = new Class(
   build-collection: ->
     new CollectionPipe("#{key}": @value)
 )
+
+module.exports = ParserCollectionBuilder

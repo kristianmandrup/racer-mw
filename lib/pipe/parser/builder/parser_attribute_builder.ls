@@ -1,10 +1,12 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+requires = require '../../../../requires'
 
-AttributePipe     = requires.apipe 'attribute'
+ParserBaseBuilder   = requires.pipe 'parser/builder/parser_base_builder'
 
-ParserAttributeBuilder = new Class(
+AttributePipe       = requires.apipe 'attribute'
+
+ParserAttributeBuilder = new Class(ParserBaseBuilder,
   initialize: (@value)->
     @call-super!
 

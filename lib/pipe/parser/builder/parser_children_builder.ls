@@ -1,10 +1,12 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+requires = require '../../../../requires'
+
+ParserBaseBuilder   = requires.pipe 'parser/builder/parser_base_builder'
 
 PipeParser    = requires.pipe 'pipe_parser'
 
-ParserChildrenBuilder = new Class(
+ParserChildrenBuilder = new Class(ParserBaseBuilder,
   initialize: (@value)->
     @call-super!
 
@@ -22,3 +24,5 @@ ParserChildrenBuilder = new Class(
     finally
       parent-pipe
 )
+
+module.exports = ParserChildrenBuilder
