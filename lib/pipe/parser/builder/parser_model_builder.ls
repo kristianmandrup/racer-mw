@@ -10,16 +10,13 @@ requires = require '../../requires'
 ModelPipe         = requires.apipe 'model'
 
 ParserModelBuilder = new Class(
-  initialize: ->
+  initialize: (@value)->
+    @call-super!
 
   build: (key) ->
     return @build-named(key) if key
-    @debug-msg "ModelPipe for: #{@value}"
-    model-pipe = new ModelPipe @value
-    @build-children @value, model-pipe
+    @build-children @value, new ModelPipe(@value)
 
   build-named: ->
-    @debug-msg "ModelPipe named: #{key}"
-    model-pipe = new ModelPipe "#{key}": @value
-    @build-children @value, model-pipe
+    @build-children @value, new ModelPipe("#{key}": @value)
 )

@@ -10,11 +10,12 @@ requires = require '../../requires'
 CollectionPipe    = requires.apipe 'collection'
 
 ParserCollectionBuilder = new Class(
-  initialize: ->
+  initialize: (@value)->
+    @call-super!
 
   build: (key) ->
-    @debug-msg "CollectionPipe: #{key}"
-    col-pipe = new CollectionPipe "#{key}": @value
-    @debug-msg col-pipe.describe!
-    @build-children @value, col-pipe
+    @build-children build-collection!
+
+  build-collection: ->
+    new CollectionPipe("#{key}": @value)
 )

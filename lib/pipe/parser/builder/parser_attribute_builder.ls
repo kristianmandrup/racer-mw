@@ -5,10 +5,10 @@ requires = require '../../requires'
 AttributePipe     = requires.apipe 'attribute'
 
 ParserAttributeBuilder = new Class(
-  initialize: ->
+  initialize: (@value)->
+    @call-super!
 
   build: (key) ->
-    @debug-msg "AttributePipe: #{key}, #{@value}"
     new AttributePipe key, @value
 )
 

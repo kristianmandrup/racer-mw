@@ -5,7 +5,8 @@ requires = require '../../requires'
 PipeParser    = requires.pipe 'pipe_parser'
 
 ParserChildrenBuilder = new Class(
-  initialize: ->
+  initialize: (@value)->
+    @call-super!
 
   build: (parent-pipe) ->
     try
