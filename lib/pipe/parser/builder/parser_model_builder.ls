@@ -10,12 +10,16 @@ ParserModelBuilder = new Class(ParserBaseBuilder,
   initialize: (@value) ->
     @call-super!
 
-  build: (key) ->
-    return @build-named(key) if key
-    @build-children @value, new ModelPipe(@value)
+  build: (name) ->
+    console.log 'build', name
+    @build-children @build-model(name)
 
-  build-named: (name) ->
-    @build-children @value, new ModelPipe("#{name}": @value)
+  build-model: (name) ->
+    return @build-named-model name if name
+    new ModelPipe @value
+
+  build-named-model: (name) ->
+    new ModelPipe("#{name}": @value)
 )
 
 module.exports = ParserModelBuilder

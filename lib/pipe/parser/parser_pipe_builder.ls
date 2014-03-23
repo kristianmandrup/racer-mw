@@ -14,7 +14,7 @@ ParserPipeBuilder = new Class(
   build: (type, arg) ->
     clazz = @parser-builder(type)
     console.log 'clazz', clazz
-    new clazz(@value).build arg
+    new clazz(@parser, @value).build arg
 
   parser-builder: (type) ->
     requires.pipe "parser/builder/parser_#{type}_builder"
