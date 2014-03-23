@@ -1,5 +1,9 @@
-/**
- * User: kmandrup
- * Date: 23/03/14
- * Time: 18:54
- */
+describe 'ParserBaseBuilder' ->
+  describe 'initialize(value)' ->
+
+  describe 'build(arg)' ->
+    # throw new Error "Must be implemented by sublclass"
+
+  describe 'build-children(parent)' ->
+
+  describe 'parser-builder' ->

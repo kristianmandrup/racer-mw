@@ -71,7 +71,7 @@ PipeParser = new Class(
     @debug-on = options.debug
     @
 
-  parse-obj: (obj) ->
+  parse: (obj) ->
     @debug-msg "parse-obj #{util.inspect obj}"
     switch typeof! obj
     case 'Array'

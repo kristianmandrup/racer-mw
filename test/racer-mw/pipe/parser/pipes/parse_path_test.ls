@@ -19,8 +19,11 @@ describe 'Parser' ->
   objs    = {}
   attrs   = {}
 
+  create-parser = (options) ->
+    new PipeParser options
+
   before ->
-    parser  := new Parser
+    parser  := create-parser!
 
   describe 'parse-tupel' ->
     specify '_users: path' ->
@@ -41,3 +44,34 @@ describe 'Parser' ->
 
     specify '_page: object - ok' ->
       expect(parser.parse-path '_page', {x: 1}).to.be.an.instance-of PathPipe
+
+  context 'page w 2 attributes' ->
+    before ->
+      objs.page    :=
+        _page:
+          user-count: 2
+          status: 'loading'
+
+      parser  := create-parser!
+      result := parser.parse objs.page
+
+    specify 'is parsed as Path' ->
+      expect(result).to.be.an.instance-of PathPipe
+
+  context 'model w 2 model attributes' ->
+    before ->
+      objs.page    :=
+        guest:
+          uncle:
+            name: 'mike'
+          mother:
+            name: 'ursula'
+
+      parser  := create-parser!
+      result := parser.parse objs.page
+
+    specify 'is parsed as Model' ->
+      expect(result).to.be.an.instance-of ModelPipe
+
+    specify 'is parsed' ->
+      expect(result).to.be.an.instance-of ModelPipe

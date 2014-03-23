@@ -21,12 +21,7 @@ BaseParser = new Class(
     new @builder(type)(value).build arg
 
   builder: (type) ->
-    builders[type]
-
-  builders:
-    model:      ParsedModelBuilder
-    collection: ParsedCollectionBuilder
-    attribute:  ParsedAttributeBuilder
+    requires.pipe 'parser/builder/parser_#{type}_builder'
 )
 
 module.exports = BaseParser

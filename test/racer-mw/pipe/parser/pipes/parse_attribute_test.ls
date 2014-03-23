@@ -19,8 +19,11 @@ describe 'Parser' ->
   objs    = {}
   attrs   = {}
 
+  create-parser = (options) ->
+    new PipeParser options
+
   before ->
-    parser  := new Parser
+    parser  := create-parser!
 
   describe 'parse-str' ->
     specify 'parsed into an Attribute pipe' ->

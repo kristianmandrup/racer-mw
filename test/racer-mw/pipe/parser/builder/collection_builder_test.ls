@@ -1,5 +1,9 @@
-/**
- * User: kmandrup
- * Date: 23/03/14
- * Time: 18:55
- */
+describe 'ParserCollectionBuilder' ->
+  describe 'initialize(value)' ->
+    @call-super!
+
+  # TODO: Investigate - Seems not right
+  describe 'build(key)' ->
+    # @build-children build-collection!
+
+  describe 'build-collection' ->

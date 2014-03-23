@@ -17,6 +17,6 @@ ParserModelBuilder = new Class(
     return @build-named(key) if key
     @build-children @value, new ModelPipe(@value)
 
-  build-named: ->
-    @build-children @value, new ModelPipe("#{key}": @value)
+  build-named: (name) ->
+    @build-children @value, new ModelPipe("#{name}": @value)
 )

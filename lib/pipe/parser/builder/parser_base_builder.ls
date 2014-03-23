@@ -2,7 +2,7 @@ Class       = require('jsclass/src/core').Class
 
 requires = require '../../requires'
 
-PipeValidation = requires.pipe 'validator/pipe_validation'
+ParserPipeBuilder = requires.pipe 'parser/parser_pipe_builder'
 
 ParserBaseBuilder = new Class(
   initialize: (@value)->

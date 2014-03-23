@@ -1,5 +1,4 @@
-/**
- * User: kmandrup
- * Date: 23/03/14
- * Time: 18:55
- */
+describe 'ParserChildrenBuilder' ->
+  describe 'initialize(value)' ->
+
+  describe 'build(parent-pipe)' ->

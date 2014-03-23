@@ -1,5 +1,6 @@
-/**
- * User: kmandrup
- * Date: 23/03/14
- * Time: 18:55
- */
+describe 'ParserModelBuilder' ->
+  describe 'initialize(value)' ->
+
+  describe 'build(key)' ->
+
+  describe 'build-named(name)' ->
