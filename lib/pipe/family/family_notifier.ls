@@ -14,29 +14,30 @@ FamilyNotifier = new Class(
     * PipeValidation
     ...
 
-  initialize: (@pipe, options = {}) ->
+  initialize: (@pipe, @options = {}) ->
     @is-pipe @pipe
-
     @parent = @pipe.parent
-    @not-parent = options.parent
-    @not-child  = options.child
+    @not-parent = @options.parent
     @
+
+  not-child: ->
+    @nc ||= @options.child or not @pipe.has-children or @pipe.child-count is 0
 
   child-list: ->
     @pipe.child-list!
 
-  notify-family: (@updated-value) ->
-    @notify-children @pipe unless @not-child
+  notify-family: (@updated-value, options = {}) ->
+    @notify-children @pipe unless @not-child!
     @notify-ancestors! unless @not-parent
 
   notify-children: (pipe)->
     @is-pipe pipe
-
     for child in @child-list!
-      child.on-parent-update @parent, @updated-value
+      child.on-parent-update pipe, @updated-value
 
   notify-ancestors: ->
-    @parent.on-child-update(@, @updated-value) if @parent
+    return unless @parent
+    @parent.on-child-update(@pipe, @updated-value)
 )
 
 module.exports = FamilyNotifier

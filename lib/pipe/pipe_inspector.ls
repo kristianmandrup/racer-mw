@@ -12,20 +12,21 @@ PipeInspector = new Module(
     @child-names!.map (name) ->
       self.child(name).pipe-type
 
-  describe-children: ->
+  describe-children: (recursive) ->
     return "no children" unless @child-names!.length > 0
     self = @
     @child-names!.map (name) ->
-      self.child(name).describe!
+      self.child(name).describe recursive
 
   describe: (children) ->
-    base =
-      type: @pipe-type
-      name: @name
-      id: @id! if @id
-      value: @value
-      children: @child-names!.length
-    if @child-hash and children then lo.extend(base, children: @describe-children!) else base
+    type: @pipe-type
+    name: @name
+    id: @id! if @id
+    value: util.inspect @value!
+    children: @children-display-value children
+
+  children-display-value: (children) ->
+    if children then @describe-children true else @child-names!.length
 )
 
 module.exports = PipeInspector

@@ -8,6 +8,8 @@ expect          = require('chai').expect
 
 CollectionPipe  = requires.apipe 'collection'
 
+util = require 'util'
+
 describe 'PipeValue' ->
   var pipe, obj, result, raw, raw-contained, parser, users
 
@@ -22,7 +24,14 @@ describe 'PipeValue' ->
             email: 'km@gmail.com'
           ...
 
+        console.log 'before:', pipe.describe true
         result := pipe.set-value obj
+        console.log 'after:', pipe.describe true
+
+        console.log 'Pipe value', pipe.value!
+        console.log 'Pipe Raw value', pipe.raw-value!
+        console.log 'Pipe 0', util.inspect pipe.get(0).describe(true)
+        console.log 'Pipe 0 Raw value', pipe.get(0).raw-value!
 
 
       specify 'result is value that was set' ->

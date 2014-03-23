@@ -27,6 +27,8 @@ attach-to-path-pipe = (names, col-pipe) ->
   path-pipe = new PathPipe(names)
   path-pipe.attach col-pipe
 
+ArrayValueObject = requires.lib 'value_object/array_value_object'
+
 # Must be on a model or attribute
 CollectionPipe = new Class(BasePipe,
   initialize: ->
@@ -45,17 +47,34 @@ CollectionPipe = new Class(BasePipe,
     @post-init!
     @
 
+  # override with special ValueObject for Collection that can use the at: index option
+  create-value-obj: ->
+    new ArrayValueObject @
+
   # TODO: so far only works when setting with values where children already there...
-  set-value: (value) ->
+  set-value: (value, options = {}) ->
     @call-super value
+    console.log 'DONE SET'
     # depends on whether one or more of the children the match the Array are already there
 
     # builder = @builder-for(value)
     # builder.build value
     # @raw-value!
 
-  post-set-value: (value)->
-    @build-children value
+  # set-value-at 3: [x, y, z], 6: [a, b]
+  set-value-at: (hash) ->
+    unless typeof! hash is 'Object'
+      throw new Error "Must be an Object such as 3: [x, y, z], was #{typeof! hash} - #{hash}"
+
+    if _.keys(hash).length > 1
+      for k, list of hash
+        @set-value-at k, list
+    else
+      for index, list of hash
+        @set-value list, at: index
+
+  post-notify-value: (value)->
+    # @build-children value
 
   # Array
   build-children: (value) ->

@@ -6,15 +6,15 @@ require 'sugar'
 
 ValueObject = new Class(
   initialize: (@container, options = {}) ->
-    @set-value options.value if options.value
+    @set-value(options.value, options) if options.value
     @
 
-  set-value: (value) ->
+  set-value: (value, options = {}) ->
     @valid = @validate value
     @value = value if @valid
 
   # alias
-  set: (value) ->
+  set: (value, options = {}) ->
     @set-value value
 
   valid: true
@@ -23,7 +23,7 @@ ValueObject = new Class(
   # fx, if container is an AttributePipe called email
   # - check it is a non-empty string
   # - use email validation
-  validate: (value) ->
+  validate: (value, options = {}) ->
     true
 )
 

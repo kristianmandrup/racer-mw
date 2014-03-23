@@ -35,7 +35,10 @@ FamilyNotifier = requires.pipe 'family/family_notifier'
 
 PipeValue = new Module(
   initialize: ->
-    @value-obj = new ValueObject @
+    @value-obj = @create-value-obj!
+
+  create-value-obj: ->
+    new ValueObject @
 
   raw-value: (contained) ->
     if @child-count > 0
@@ -51,30 +54,30 @@ PipeValue = new Module(
     @value-obj.value
 
   # sent to child pipe
-  on-parent-update: (parent, value) ->
+  on-parent-update: (parent, value, options = {}) ->
     return unless @auto-update
-    @set-value value
+    @set-value value, parent: true
 
   # sent to parent pipe
-  on-child-update: (child, value) ->
+  on-child-update: (child, value, options = {}) ->
     return unless @auto-update
-    @set-value value
+    @set-value value, child: true
 
   auto-update: true
 
-  # TODO: improve of FamilyNotifier
-  set-value: (value) ->
-    updated-value = @value-obj.set value
-
+  # options can be fx: at: 2 to start inserting at position 2
+  set-value: (value, options = {}) ->
+    updated-value = @value-obj.set value, options
     if updated-value
-      # only updates existing children. What if value should create additional children?
-      # We need a way to check if value contains new children to be created, then create them
-      # These newly created children should not be notified, so should be created after Family is Notified...
-      new FamilyNotifier(@).notify-family updated-value
-      @post-set-value value
+      @pre-notify-value value, options
+      new FamilyNotifier(@, options).notify-family updated-value, options
+
+      @post-notify-value value, options
     updated-value
 
-  post-set-value: (value) ->
+  pre-notify-value: (value, options = {}) ->
+
+  post-notify-value: (value, options = {}) ->
 )
 
 module.exports = PipeValue
