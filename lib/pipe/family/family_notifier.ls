@@ -18,27 +18,39 @@ FamilyNotifier = new Class(
     @is-pipe @pipe # or call-super ?
     @parent = @pipe.parent
     @config-options!
+    @reset!
     @
 
+  type: 'Notifier'
+
   config-options: ->
-    @not-child  = @options.no-child or not @pipe.has-children or @pipe.child-count is 0
-    @not-parent = @options.no-parent
+    @not-child  = @options.no-child or @pipe.no-children!
+    @not-parent = @options.no-parent or @parent is void
+    @
 
   child-list: ->
     @pipe.child-list!
 
+  reset: ->
+    @parent-notified = false
+    @children-notified = false
+
   # TODO: allow config-options here?
   notify-family: (@updated-value, options = {}) ->
-    @notify-children! unless @not-child
-    @notify-parent! unless @not-parent
+    @reset!
+    @notify-children!
+    @notify-parent!
 
   notify-children: ->
+    return if @not-child
     for child in @child-list!
       child.on-parent-update @pipe, @updated-value
+    @children-notified = true
 
   notify-parent: ->
-    return unless @parent
+    return if @not-parent
     @parent.on-child-update(@pipe, @updated-value)
+    @parent-notified = true
 )
 
 module.exports = FamilyNotifier

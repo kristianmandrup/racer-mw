@@ -16,7 +16,22 @@ PipeFamily = new Module(
   initialize: ->
     @clear!
 
-  has-children: true
+  allow-children: true
+
+  has-children: ->
+    @child-names!.length > 0
+  no-children: ->
+    not @has-children!
+
+  has-parent: ->
+    @parent isnt void
+  no-parent: ->
+    not @has-parent!
+
+  has-ancestors: ->
+    not @no-ancestors!
+  no-ancestors: ->
+    lo.is-empty @ancestors!
 
   ancestors: ->
     my-ancestors = []
