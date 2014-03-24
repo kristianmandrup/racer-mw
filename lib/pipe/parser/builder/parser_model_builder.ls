@@ -7,7 +7,7 @@ ModelPipe           = requires.apipe 'model'
 ParserBaseBuilder   = requires.pipe 'parser/builder/parser_base_builder'
 
 ParserModelBuilder = new Class(ParserBaseBuilder,
-  initialize: (@value) ->
+  initialize: (@parser, @value) ->
     @call-super!
 
   build: (name) ->

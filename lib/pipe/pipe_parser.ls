@@ -63,8 +63,17 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
+Debugging         = requires.lib 'debugging'
+
+BaseParser        = requires.pipe 'parser/base_parser'
+ListParser        = requires.pipe 'parser/list_parser'
+ObjectParser      = requires.pipe 'parser/object_parser'
+
 # more granular design, easier reuse and better encapsulation of parser state at each point
 PipeParser = new Class(
+  include:
+    * Debugging
+    ...
 
   initialize: (options = {}) ->
     @parent = options.parent
@@ -95,7 +104,10 @@ PipeParser = new Class(
     @parse-builder(value).build 'attribute', key
 
   parse-builder: (value) ->
-    new PipeParseBuilder @, value
+    new BaseParser @, value
+
+  parent-type: ->
+    @parent.pipe-type if @parent
 )
 
 module.exports = PipeParser

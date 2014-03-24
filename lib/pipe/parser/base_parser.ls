@@ -2,26 +2,39 @@ requires = require '../../../requires'
 
 Class       = require('jsclass/src/core').Class
 
-PipeValidation      = requires.pipe 'pipe_validation'
+PipeValidation    = requires.pipe 'pipe_validation'
+Debugging         = requires.lib 'debugging'
 
 BaseParser = new Class(
   include:
+    * Debugging
     * PipeValidation
     ...
 
-  initialize: (@parser) ->
+  initialize: (@parser, @value) ->
+    unless @parser and typeof! @parser.parse is 'Function'
+      throw new Error "First arg must be a PipeParser, was: #{@parser}"
     @parent = @parser.parent
     @debug-on = @parser.debug-on
     @
 
+  parse: ->
+    throw new Error "Must be implemented by subclass"
+
   parent-type: ->
     @parent.pipe-type if @parent
 
-  build: (type, value, arg) ->
-    new @builder(type)(value).build arg
+  build: (type, arg, @value) ->
+    builder = @create-builder(type)
+    unless builder
+      throw new Error "Builder #{type} could not be created"
+    builder(@, @value).build arg
 
-  builder: (type) ->
-    requires.pipe 'parser/builder/parser_#{type}_builder'
+  create-builder: (type) ->
+    new @builder-clazz(type)
+
+  builder-clazz: (type) ->
+    requires.pipe "parser/builder/parser_#{type}_builder"
 )
 
 module.exports = BaseParser
