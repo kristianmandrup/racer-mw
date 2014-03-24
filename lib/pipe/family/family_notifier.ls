@@ -15,7 +15,7 @@ FamilyNotifier = new Class(
     ...
 
   initialize: (@pipe, @options = {}) ->
-    @is-pipe @pipe
+    @is-pipe @pipe # or call-super ?
     @parent = @pipe.parent
     @config-options!
     @
@@ -29,7 +29,6 @@ FamilyNotifier = new Class(
 
   # TODO: allow config-options here?
   notify-family: (@updated-value, options = {}) ->
-    @is-pipe @pipe
     @notify-children! unless @not-child
     @notify-parent! unless @not-parent
 
