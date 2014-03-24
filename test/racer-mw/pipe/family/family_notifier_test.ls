@@ -16,15 +16,25 @@ expect = chai.expect
 chai.use sinon-chai
 
 FamilyNotifier  = requires.pipe   'family/family_notifier'
+
 ModelPipe       = requires.apipe  'model'
+CollectionPipe  = requires.apipe  'collection'
+AttributePipe   = requires.apipe  'attribute'
 
 describe 'FamilyNotifier' ->
   var notifier, pipe
+  var col-pipe, modl-pipe, attr-pipe
 
   create-pipe = (name = 'user') ->
     new ModelPipe name
 
   fun = {}
+
+  before ->
+    col-pipe    := new CollectionPipe 'users'
+    modl-pipe   := col-pipe.models!.add 'user'
+    modl-pipe.attributes!.add(name: 'kris').add(email: 'km@gmail.com')
+    attr-pipe   := modl-pipe.get 'name'
 
   describe 'initialize(@pipe, @options = {})' ->
     specify 'no args: fails' ->
@@ -44,7 +54,6 @@ describe 'FamilyNotifier' ->
     before ->
       pipe     := create-pipe 'user'
       notifier := new FamilyNotifier pipe
-      console.log notifier
 
     specify 'is a FamilyNotifier' ->
       expect(notifier).to.be.an.instance-of FamilyNotifier
@@ -78,3 +87,16 @@ describe 'FamilyNotifier' ->
 
       specify 'notify-parent: not called' ->
         expect(notifier.parent-notified).to.be.false
+
+  context 'instance parent and child pipes' ->
+    before ->
+      notifier  := new FamilyNotifier col-pipe, no-parent: true
+
+
+  context 'instance no-parent: true' ->
+    before ->
+      pipe     := create-pipe 'user'
+      notifier := new FamilyNotifier modl-pipe, no-parent: true
+
+    specify 'is a FamilyNotifier' ->
+      expect(notifier).to.be.an.instance-of FamilyNotifier
