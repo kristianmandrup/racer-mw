@@ -17,25 +17,27 @@ FamilyNotifier = new Class(
   initialize: (@pipe, @options = {}) ->
     @is-pipe @pipe
     @parent = @pipe.parent
-    @not-parent = @options.parent
+    @config-options!
     @
 
-  not-child: ->
-    @nc ||= @options.child or not @pipe.has-children or @pipe.child-count is 0
+  config-options: ->
+    @not-child  = @options.no-child or not @pipe.has-children or @pipe.child-count is 0
+    @not-parent = @options.no-parent
 
   child-list: ->
     @pipe.child-list!
 
+  # TODO: allow config-options here?
   notify-family: (@updated-value, options = {}) ->
-    @notify-children @pipe unless @not-child!
-    @notify-ancestors! unless @not-parent
+    @is-pipe @pipe
+    @notify-children! unless @not-child
+    @notify-parent! unless @not-parent
 
-  notify-children: (pipe)->
-    @is-pipe pipe
+  notify-children: ->
     for child in @child-list!
-      child.on-parent-update pipe, @updated-value
+      child.on-parent-update @pipe, @updated-value
 
-  notify-ancestors: ->
+  notify-parent: ->
     return unless @parent
     @parent.on-child-update(@pipe, @updated-value)
 )

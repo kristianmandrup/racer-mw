@@ -56,12 +56,12 @@ PipeValue = new Module(
   # sent to child pipe
   on-parent-update: (parent, value, options = {}) ->
     return unless @auto-update
-    @set-value value, parent: true
+    @set-value value, no-parent: true
 
   # sent to parent pipe
   on-child-update: (child, value, options = {}) ->
     return unless @auto-update
-    @set-value value, child: true
+    @set-value value, no-child: true
 
   auto-update: true
 
@@ -71,7 +71,6 @@ PipeValue = new Module(
     if updated-value
       @pre-notify-value value, options
       new FamilyNotifier(@, options).notify-family updated-value, options
-
       @post-notify-value value, options
     updated-value
 
