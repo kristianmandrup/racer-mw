@@ -9,6 +9,7 @@ require 'sugar'
 
 BaseParser  = requires.pipe 'parser/base_parser'
 ListParser  = requires.pipe 'parser/list_parser'
+PathPipe    = requires.apipe 'path'
 
 ObjectParser = new Class(BaseParser,
 
@@ -49,22 +50,22 @@ ObjectParser = new Class(BaseParser,
     unless _.is-type 'Array', value
       throw new Error "plural value #{key} must be an Array, was: #{typeof! value} #{util.inspect value}"
     return 'empty' if value.length is 0
-    return 'collection' if all-objects value
-    return 'array' if all-simple value
+    return 'collection' if @all-objects value
+    return 'array' if @all-simple value
     'mixed'
 
-    all-simple: ->
-      value.every (item) ->
-        _.is-type('String', item) or _.is-type('Number', item)
+  all-simple: (value) ->
+    value.every (item) ->
+      _.is-type('String', item) or _.is-type('Number', item)
 
-    all-objects: ->
-      value.every (item) ->
-        _.is-type 'Object', item
+  all-objects: (value) ->
+    value.every (item) ->
+      _.is-type 'Object', item
 
   parse-path: (key, value) ->
     @debug-msg "PathPipe: #{key}"
     path-pipe = new PathPipe key
-    @build-children value, path-pipe
+    @build 'children', path-pipe, value
 
   parse-tupel: (key, value) ->
     @debug-msg "parse-tupel #{key}, #{value}"

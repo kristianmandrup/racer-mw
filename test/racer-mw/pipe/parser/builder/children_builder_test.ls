@@ -63,14 +63,14 @@ describe 'ParserChildrenBuilder' ->
         specify 'returns parent when no value' ->
           expect(builder.build parent-pipe).to.eq parent-pipe
 
-        xcontext 'with value' ->
+        context 'with value' ->
           specify '-> {x: 2}' ->
             expect(builder.build parent-pipe, {x: 2}).to.not.eq parent-pipe
 
-          describe 'parsed-pipes' ->
+          xdescribe 'parsed-pipes' ->
             specify 'are created' ->
               expect(-> builder.parsed-pipes!).to.not.throw Error
 
-          describe 'parse-value' ->
+          xdescribe 'parse-value' ->
             specify 'is parsed and attached' ->
               expect(-> builder.parsed-value!).to.throw Error
