@@ -1,43 +1,54 @@
-requires    = require '../../../requires'
+requires    = require '../../../../requires'
 requires.test 'test_setup'
 expect      = require('chai').expect
 util        = require 'util'
 PipeParser  = requires.pipe 'pipe_parser'
 
-BaseParser  = requires.pipe   'parser/base_parser'
+ListParser  = requires.pipe   'parser/list_parser'
+
+CollectionPipe = requires.apipe 'collection'
 
 describe 'ListParser' ->
   var pipe-parser, parser
 
   describe 'initialize(parser)' ->
+    before ->
+      pipe-parser   := new PipeParser
+
     specify 'no arg' ->
       expect(-> new ListParser).to.throw Error
 
     specify 'not a parser' ->
       expect(-> new ListParser 'x').to.throw Error
 
-    specify.only 'PipeParser ok' ->
-      parser = new PipeParser
-      expect(-> new ListParser parser).to.not.throw Error
+    specify 'parser is a PipeParser' ->
+      expect(pipe-parser).to.be.an.instance-of PipeParser
 
-  xcontext 'instance' ->
+    specify 'PipeParser ok' ->
+      expect(-> new ListParser pipe-parser).to.not.throw Error
+
+  context 'instance' ->
     before ->
       pipe-parser   := new PipeParser
-      parser        := new ListParser parser
+      parser        := new ListParser pipe-parser
 
-    describe 'parse: (list)' ->
-      parser.parse
+    describe 'parse(list)' ->
+      specify 'parses ok' ->
+        expect(-> parser.parse).to.not.throw Error
+
+      specify 'returns parsed - not void' ->
+        expect(parser.parse).to.not.be.undefined
 
     # @parent-type! is 'Collection'
-    xdescribe 'inside-collection' ->
+    describe 'inside-collection' ->
       var col-pipe
 
-      specify 'parsed into a Collection pipe' ->
-        expect(parser.inside-collection!).to.be.true
+      specify 'parent not a Collection: false' ->
+        expect(parser.inside-collection!).to.be.false
 
       context 'in collection' ->
         before ->
-          parser        := new ListParser parser
+          parser        := new ListParser pipe-parser
           col-pipe      := new CollectionPipe 'users'
           parser.parent = col-pipe
 
@@ -45,7 +56,7 @@ describe 'ListParser' ->
           expect(parser.inside-collection!).to.be.true
 
     # collection or simple array
-    describe 'parse-plural(key, value)' ->
+    describe.only 'parse-plural(key, value)' ->
       specify 'empty list: fails' ->
         expect(-> parser.parse-plural('x', [])).to.throw
 

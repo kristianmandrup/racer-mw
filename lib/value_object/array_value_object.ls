@@ -44,7 +44,7 @@ ArrayValueObject = new Class(ValueObject,
         @push-item orig-list, list[i]
 
     @value = @container.raw-value!
-    console.log 'pipe', @container.describe!
+    # console.log 'pipe', @container.describe!
     console.log 'VALUE' @value
     @value
 

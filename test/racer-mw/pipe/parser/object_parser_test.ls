@@ -63,7 +63,10 @@ describe 'BaseParser' ->
       specify 'mixed list: mixed' ->
         expect(parser.list-type('x', [1,2,{x: 3}])).to.eql 'mixed'
 
-    describe.only 'parse-path(key, value)' ->
+    describe 'parse-path(key, value)' ->
+      before ->
+        parser.debug!
+
       specify 'no arg: fails' ->
         expect(-> parser.parse-path!).to.throw
 
