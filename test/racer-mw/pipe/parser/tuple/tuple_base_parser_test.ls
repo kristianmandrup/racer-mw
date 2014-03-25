@@ -56,14 +56,14 @@ describe 'TupleBaseParser' ->
           parser := create-parser 'x', ['a', 'b']
 
         specify 'is an array' ->
-          expect(parser.is-collection!).to.eql 'array'
+          expect(parser.calc-list-type!).to.eql 'array'
 
       context 'value: Mixed list' ->
         before ->
           parser := create-parser 'x', ['a', {x:2}, 'b']
 
         specify 'is mixed' ->
-          expect(parser.is-collection!).to.eql 'mixed'
+          expect(parser.calc-list-type!).to.eql 'mixed'
 
     describe 'is-empty' ->
       # 'empty' if not @value or @value.length is 0
