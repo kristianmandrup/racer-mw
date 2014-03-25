@@ -1,10 +1,22 @@
+requires = require '../../../../requires'
 
-TupleParser = new Class(
+Class       = require('jsclass/src/core').Class
+
+util  = require 'util'
+require 'sugar'
+
+Debugging = requires.lib 'debugging'
+
+TupleBaseParser = new Class(
+
+  # include Modules (mixins)
   include:
     * Debugging
-    ...
+    ... # ensures it is a list even if only one item!
 
   initialize: (@key, @value) ->
+    @validate-string-key!
+    @
 
   # test if value is list of Object or list of simple types
   # if mixed, throw error
@@ -46,3 +58,5 @@ TupleParser = new Class(
     unless typeof! @key is 'String'
       throw new Error "Key must be a String, was: #{typeof! @key}, #{util.inspect @key}"
 )
+
+module.exports = TupleBaseParser
