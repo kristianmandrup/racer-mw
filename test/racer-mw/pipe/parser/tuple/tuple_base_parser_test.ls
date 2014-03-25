@@ -30,14 +30,17 @@ describe 'TupleBaseParser' ->
     before ->
       parser := new TupleBaseParser 'x'
 
-    # test if value is list of Object or list of simple types
-    # if mixed, throw error
-    describe 'list-type' ->
+    # describe 'list-type' ->
       # @_list-type ||= @calc-list-type!
 
-    describe 'build(name, key, value)' ->
+    xdescribe 'build(name, key, value)' ->
       # value ||= @value; key ||= @key
       # @build name, key, value
+      specify 'collection: users' ->
+        expect(parser.build 'collection', 'users').to.not.throw Error
+
+      specify 'model: user' ->
+        expect(parser.build 'model', 'user').to.not.throw Error
 
     # protected
 

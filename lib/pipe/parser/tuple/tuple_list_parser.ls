@@ -9,6 +9,7 @@ TupleBaseParser = requires.pipe 'parser/tuple/tuple_base_parser'
 
 TupleListParser = new Class(TupleBaseParser,
   initialize: (@key, @value) ->
+    @call-super!
 
   # collection or simple array
   parse-plural: ->

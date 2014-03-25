@@ -15,6 +15,9 @@ TupleObjectParser = requires.pipe 'parser/tuple/tuple_object_parser'
 describe 'TupleObjectParser' ->
   var parser
 
+  create-parser = (key, value) ->
+    new TupleObjectParser key, value
+
   describe 'initialize(@key, @value)' ->
     specify 'no arg - fails' ->
       expect(-> new TupleObjectParser).to.throw Error

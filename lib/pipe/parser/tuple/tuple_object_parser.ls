@@ -9,6 +9,7 @@ TupleBaseParser = requires.pipe 'parser/tuple/tuple_base_parser'
 
 TupleObjectParser = new Class(TupleParser,
   initialize: (@key, @value) ->
+    @call-super!
 
   parse-single: ->
     @validate-string-key!
