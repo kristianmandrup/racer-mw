@@ -46,13 +46,59 @@ describe 'TupleBaseParser' ->
       # @is-empty! or @is-collection! or @is-array! or 'mixed'
 
     describe 'is-empty' ->
-      # 'empty' if @value.length is 0
+      # 'empty' if not @value or @value.length is 0
+      context 'value: void' ->
+        before ->
+          parser := create-parser 'x'
+
+        specify 'is empty' ->
+          expect(parser.is-empty!).to.be.ok
+
+      context 'value: empty list' ->
+        before ->
+          parser := create-parser 'x', []
+
+        specify 'is empty' ->
+          expect(parser.is-empty!).to.be.ok
+
+      context 'value: non-empty list' ->
+        before ->
+          parser := create-parser 'x', ['x']
+
+        specify 'is empty' ->
+          expect(parser.is-empty!).to.not.be.ok
 
     describe 'is-collection' ->
       # 'collection' if @all-are 'Object'
+      context 'value: Object list' ->
+        before ->
+          parser := create-parser 'x', [{x: 2}, {y: 5}]
+
+        specify 'is a collection of objects' ->
+          expect(parser.is-array!).to.not.be.ok
+
+      context 'value: String list' ->
+        before ->
+          parser := create-parser 'x', ['a', 'b']
+
+        specify 'is NOT a collection of objects' ->
+          expect(parser.is-collection!).to.not.be.ok
 
     describe 'is-array' ->
       # 'array' if @all-are @primitive-types!
+      context 'value: String list' ->
+        before ->
+          parser := create-parser 'x', ['a', 'b']
+
+        specify 'is a primitives array' ->
+          expect(parser.is-array!).to.be.ok
+
+      context 'value: Object list' ->
+        before ->
+          parser := create-parser 'x', [{x: 2}, {y: 5}]
+
+        specify 'is NOT a primitives array' ->
+          expect(parser.is-array!).to.not.be.ok
 
     describe 'all-are(types)' ->
       # @value.every (item) ->

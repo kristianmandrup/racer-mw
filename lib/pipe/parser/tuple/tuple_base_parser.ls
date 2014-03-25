@@ -34,13 +34,13 @@ TupleBaseParser = new Class(
     @is-empty! or @is-collection! or @is-array! or 'mixed'
 
   is-empty: ->
-    'empty' if @value.length is 0
+    'empty' if not @value or @value.length is 0
 
   is-collection: ->
     'collection' if @all-are 'Object'
 
   is-array: ->
-    'array' if @all-are @primitive-types!
+    'array' if @all-are @primitive-types
 
   all-are: (types) ->
     @value.every (item) ->
