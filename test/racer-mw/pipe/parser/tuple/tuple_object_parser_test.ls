@@ -1,9 +1,50 @@
-describe 'TupleObjectParser' ->
-  describe 'initialize(@key, @value)' ->
+requires    = require '../../../../../requires'
+requires.test 'test_setup'
+expect      = require('chai').expect
+util        = require 'util'
 
-  describe 'parse-single' ->
-    # @validate-string-key!
-    # @model! or @attribute! or @unknown! @none!
+PipeParser  = requires.pipe 'pipe_parser'
+
+ListParser  = requires.pipe   'parser/list_parser'
+
+ModelPipe   = requires.apipe 'model'
+
+
+TupleObjectParser = requires.pipe 'parser/tuple/tuple_object_parser'
+
+describe 'TupleObjectParser' ->
+  var parser
+
+  describe 'initialize(@key, @value)' ->
+    specify 'no arg - fails' ->
+      expect(-> new TupleObjectParser).to.throw Error
+
+    specify 'one arg - ok' ->
+      expect(-> new TupleObjectParser 'x').to.not.throw Error
+
+    specify 'creates TupleObjectParser' ->
+      expect(new TupleObjectParser 'x').to.be.an.instance-of TupleObjectParser
+
+  context 'instance' ->
+    describe 'parse-single' ->
+      # @validate-string-key!
+      # @model! or @attribute! or @unknown! @none!
+
+      context 'key: 0' ->
+        before ->
+          # TODO: only allow String as key
+          parser := new TupleObjectParser 0
+
+        specify 'not a string - fails' ->
+          expect(-> parser.parse-single!).to.throw Error
+
+      context 'key: x' ->
+        before ->
+          parser := new TupleObjectParser 'x'
+
+        specify 'not a string - fails' ->
+          expect(-> parser.parse-single!).to.throw Error
+
 
   describe 'model' ->
     # @build 'model' if @is-model!

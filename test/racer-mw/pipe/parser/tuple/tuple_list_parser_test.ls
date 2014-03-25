@@ -1,3 +1,16 @@
+requires    = require '../../../../../requires'
+requires.test 'test_setup'
+expect      = require('chai').expect
+util        = require 'util'
+
+PipeParser  = requires.pipe 'pipe_parser'
+
+ListParser  = requires.pipe   'parser/list_parser'
+
+CollectionPipe = requires.apipe 'collection'
+
+TupleListParser = requires.pipe 'parser/tuple/tuple_list_parser'
+
 describe 'TupleListParser' ->
   describe 'initialize(@key, @value)' ->
 

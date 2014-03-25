@@ -1,6 +1,23 @@
-describe 'TupleParser'
+requires = require '../../../../requires'
 
+Class       = require('jsclass/src/core').Class
+
+util  = require 'util'
+require 'sugar'
+
+TupleBaseParser = requires.pipe 'parser/tuple/tuple_base_parser'
+
+describe 'TupleBaseParser'
   describe 'initialize(@key, @value)' ->
+    describe 'key must be a string' ->
+      specify 'key: 0 - fails' ->
+        expect(-> new TupleBaseParser 0).to.throw Error
+
+      specify 'key: {} - fails' ->
+        expect(-> new TupleBaseParser 0).to.throw Error
+
+      specify 'key: x - ok' ->
+        expect(-> new TupleBaseParser 'x').to.not.throw Error
 
   # test if value is list of Object or list of simple types
   # if mixed, throw error
