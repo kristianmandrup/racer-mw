@@ -11,7 +11,7 @@ BaseParser    = requires.pipe 'parser/base_parser'
 ObjectParser  = requires.pipe 'parser/object_parser'
 
 ListParser = new Class(BaseParser,
-  initialize: (@parser, @value, options = {}) ->
+  initialize: (@parent-pipe, @value, options = {}) ->
     @call-super!
 
   parse: (list) ->
@@ -24,10 +24,8 @@ ListParser = new Class(BaseParser,
   inside-collection: ->
     @parent-type! is 'Collection'
 
-
-
   parse-obj: (obj) ->
-    new ObjectParser(@parser).parse obj
+    new ObjectParser(@parent-pipe).parse obj
 )
 
 module.exports = ListParser

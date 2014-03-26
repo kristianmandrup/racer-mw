@@ -12,9 +12,9 @@ ListParser  = requires.pipe 'parser/list_parser'
 PathPipe    = requires.apipe 'path'
 
 ObjectParser = new Class(BaseParser,
-  initialize: (@parser, @value, options = {}) ->
+  initialize: (@parent-pipe, @value, options = {}) ->
     @call-super!
-    @list-parser = new ListParser(@parser)
+    @list-parser = new ListParser(@parent-pipe)
     @
 
   parse: (obj) ->
@@ -26,8 +26,6 @@ ObjectParser = new Class(BaseParser,
       value = obj[key]
       self.parse-tupel key, value
     if mapped.length is 1 then mapped.first! else mapped
-
-
 )
 
 module.exports = ObjectParser

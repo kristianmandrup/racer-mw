@@ -5,58 +5,45 @@ Class       = require('jsclass/src/core').Class
 util  = require 'util'
 require 'sugar'
 
-Debugging = requires.lib 'debugging'
+Debugging           = requires.lib 'debugging'
+ParserBuilder       = requires.pipe 'parser/parser_builder'
+
+TupleKeyTyper       = requires.pipe 'parser/tuple/typer/tuple_key_typer'
+TupleValueTyper     = requires.pipe 'parser/tuple/typer/tuple_value_typer'
+TupleListTyper      = requires.pipe 'parser/tuple/typer/tuple_listtyper'
+
+TupleBuilder        = requires.pipe 'parser/tuple/tuple_builder'
+TupleValidator      = requires.pipe 'parser/tuple/tuple_validator'
 
 TupleBaseParser = new Class(
-
-  # include Modules (mixins)
   include:
     * Debugging
-    ... # ensures it is a list even if only one item!
+    * TupleValidator
 
   initialize: (@key, @value) ->
     @validate-string-key!
+    @list-typer   = new TupleListTyper @value
+    @key-typer    = new TupleKeyTyper @key
+    @value-typer  = new TupleValueTyper @value
     @
 
-  # test if value is list of Object or list of simple types
-  # if mixed, throw error
-  list-type: ->
-    @_list-type ||= @calc-list-type!
+  builder: ->
+    @_builder ||= new TupleBuilder @
 
-  build: (name, key, value) ->
-    value ||= @value; key ||= @key
-    @build name, key, value
+  tuple-type-is: ->
+    @tt-is     ||= @key-typer.tuple-type-is!
 
-  # protected
+  key-type-is: ->
+    @k-type   ||= @key-typer
 
-  calc-list-type: ->
-    @validate-array "plural value #{@key}"
-    @is-empty! or @is-collection! or @is-array! or 'mixed'
+  list-type-is: ->
+    @l-type   ||= @list-typer
 
-  is-empty: ->
-    'empty' if not @value or @value.length is 0
+  list-is: ->
+    @l-is     ||= @list-typer.list-is!
 
-  is-collection: ->
-    'collection' if @all-are 'Object'
-
-  is-array: ->
-    'array' if @all-are @primitive-types
-
-  all-are: (types) ->
-    @value.every (item) ->
-      typeof! item in [types].flatten!
-
-  primitive-types:
-    * \String
-    * \Number
-
-  validate-array: (msg = 'value')->
-    unless typeof! @value is 'Array'
-      throw new Error "#{msg} must be an Array, was: #{typeof! @value} #{util.inspect @value}"
-
-  validate-string-key: ->
-    unless typeof! @key is 'String'
-      throw new Error "Key must be a String, was: #{typeof! @key}, #{util.inspect @key}"
+  value-is: ->
+    @v-type   ||= @value-typer
 )
 
 module.exports = TupleBaseParser
