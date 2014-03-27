@@ -34,7 +34,7 @@ TupleKeyTyper = new Class(
     'Plural'  if @a-plural!
 
   none: ->
-    throw new Error "Can't determine tupel type from key: #{@key}"
+    throw new Error "Can't determine tuple type from key: #{@key}"
 
   a-plural: ->
     @key.pluralize!   is @key
