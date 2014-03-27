@@ -1,4 +1,5 @@
 Class = require('jsclass/src/core').Class
+
 require 'sugar'
 
 TupleListTyper = new Class(
@@ -16,21 +17,28 @@ TupleListTyper = new Class(
     names.flatten!.any (name) (-> self[name])
 
   empty: ->
-    'empty' if not @value or @value.length is 0
+    'empty'       if @is-empty!
+
+  is-empty: ->
+    not @value or @value.length is 0
 
   collection: ->
-    'collection' if @all-are 'Object'
+    'collection'  if @all-objects!
+
+  all-objects: ->
+    @all-are 'Object'
 
   attribute: ->
-    'attribute' if @all-are @primitive-types
+    'attribute'   if @all-primitives
+
+  all-primitives: ->
+    @all-are @primitive-types
 
   all-are: (...types) ->
     @value.every (item) ->
       typeof! item in [types].flatten!
 
-  primitive-types:
-    * \String
-    * \Number
+  primitive-types: [\String \Number]
 
   list-is: ->
     @lis-is ||= @_list-is @list-type!
@@ -46,10 +54,7 @@ TupleListTyper = new Class(
     collection: ->
       @type in @collection-types
 
-    collection-types:
-      * \collection
-      * \empty
-
+    collection-types: <[collection empty]>
 )
 
-modules.export = TupleListTyper
+module.exports = TupleListTyper

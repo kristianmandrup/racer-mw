@@ -21,7 +21,8 @@ TupleKeyTyper = new Class(
 
   any-of: (...names) ->
     self = @
-    names.flatten!.any (name) (-> self[name] )
+    names.flatten!.any (name) ->
+      self[name]
 
   path: ->
     'Path'    if @a-path!

@@ -1,8 +1,10 @@
 requires = require '../../../requires'
 
-Class       = require('jsclass/src/core').Class
+Class    = require('jsclass/src/core').Class
 
-_     = require 'prelude-ls'
+_        = require 'prelude-ls'
+
+TupleObjectParser = requires.pipe 'parser/tuple/tuple_object_parser'
 
 KeyParser = new Class(
   initialize: (@obj) ->
@@ -32,7 +34,13 @@ KeyParser = new Class(
       self.map-key key
 
   map-key: (key) ->
-    @parse-tupel key, @obj[key]
+    @tuple-parser(key).parse!
+
+  tuple-parser: (key) ->
+    new TupleObjectParser key, @value-for(key)
+
+  value-for: (key) ->
+    @obj[key]
 )
 
 module.exports = KeyParser

@@ -1,4 +1,6 @@
-Module       = require('jsclass/src/core').Module
+Class       = require('jsclass/src/core').Class
+
+require 'sugar'
 
 TupleBuilder = new Class(
   initialize: (@tuple-parser) ->

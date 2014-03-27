@@ -1,4 +1,6 @@
-Module       = require('jsclass/src/core').Module
+Class       = require('jsclass/src/core').Class
+
+require 'sugar'
 
 TupleValueTyper = new Class(
   initialize: (@value) ->
@@ -16,9 +18,7 @@ TupleValueTyper = new Class(
   attribute: ->
     typeof! @value in @primitive-types
 
-  primitive-types:
-    * \String
-    * \Number
+  primitive-types: [\String \Number]
 )
 
-module.exports = TupleTypeDetector
+module.exports = TupleValueTyper

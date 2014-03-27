@@ -10,7 +10,7 @@ ParserBuilder       = requires.pipe 'parser/parser_builder'
 
 TupleKeyTyper       = requires.pipe 'parser/tuple/typer/tuple_key_typer'
 TupleValueTyper     = requires.pipe 'parser/tuple/typer/tuple_value_typer'
-TupleListTyper      = requires.pipe 'parser/tuple/typer/tuple_listtyper'
+TupleListTyper      = requires.pipe 'parser/tuple/typer/tuple_list_typer'
 
 TupleBuilder        = requires.pipe 'parser/tuple/tuple_builder'
 TupleValidator      = requires.pipe 'parser/tuple/tuple_validator'
@@ -29,6 +29,9 @@ TupleBaseParser = new Class(
 
   builder: ->
     @_builder ||= new TupleBuilder @
+
+  tuple-type: ->
+    @key-typer.tuple-type!
 
   tuple-type-is: ->
     @tt-is     ||= @key-typer.tuple-type-is!

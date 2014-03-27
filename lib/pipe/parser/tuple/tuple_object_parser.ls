@@ -7,14 +7,16 @@ require 'sugar'
 
 TupleBaseParser = requires.pipe 'parser/tuple/tuple_base_parser'
 
-TupleObjectParser = new Class(TupleParser,
+TupleObjectParser = new Class(TupleBaseParser,
+
   initialize: (@key, @value) ->
-    @validate-string-key!; @call-super!
+    @validate-string-key!
+    @call-super!
 
   single: ->
     @can-build.any-of <[model attribute unknown no-item]>
 
-  parse-tupel: ->
+  parse: ->
     @[@tuple-type!]
 
   plural: ->
@@ -24,3 +26,5 @@ TupleObjectParser = new Class(TupleParser,
   is-plural: ->
     @tuple-type-is.is-plural!
 )
+
+module.exports = TupleObjectParser
