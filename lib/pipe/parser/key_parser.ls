@@ -6,6 +6,8 @@ _     = require 'prelude-ls'
 
 KeyParser = new Class(
   initialize: (@obj) ->
+    unless typeof! @obj is 'Object'
+      throw new TypeError "Must take an Object, was: #{typeof! @obj} #{@obj}"
     @keys = _.keys(@obj)
     @
 
@@ -16,17 +18,17 @@ KeyParser = new Class(
     [] if @keys.length is 0
 
   parse-keys: ->
-    @first-mapped! or @mapped
+    @first-mapped! or @mapped!
 
   first-mapped: ->
     @mapped.first! if @mapped.length is 1
 
   mapped: ->
-    @_mapped ||= @map keys
+    @_mapped ||= @map-keys!
 
-  map: (keys) ->
+  map-keys: ->
     self = this
-    keys.map (key) ->
+    @keys.map (key) ->
       self.map-key key
 
   map-key: (key) ->
