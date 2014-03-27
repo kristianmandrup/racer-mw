@@ -9,6 +9,7 @@ require 'sugar'
 
 BaseParser  = requires.pipe 'parser/base_parser'
 ListParser  = requires.pipe 'parser/list_parser'
+KeyParser   = requires.pipe 'parser/key_parser'
 PathPipe    = requires.apipe 'path'
 
 ObjectParser = new Class(BaseParser,
@@ -17,15 +18,15 @@ ObjectParser = new Class(BaseParser,
     @list-parser = new ListParser(@parent-pipe)
     @
 
-  parse: (obj) ->
+  parse: (@obj) ->
     @debug-msg "parse-object #{util.inspect obj}"
-    self = this
-    keys = _.keys(obj)
-    return [] if keys.length is 0
-    mapped = keys.map (key) ->
-      value = obj[key]
-      self.parse-tupel key, value
-    if mapped.length is 1 then mapped.first! else mapped
+    parse-keys!
+
+    parse-keys: ->
+      @key-parser.parse!
+
+    key-parser: ->
+      new KeyParser @obj
 )
 
 module.exports = ObjectParser

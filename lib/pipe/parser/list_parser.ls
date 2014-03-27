@@ -18,8 +18,16 @@ ListParser = new Class(BaseParser,
     @debug-msg "parse-list #{util.inspect  list}"
     self = @
     list.map (item) ->
-      return self.build 'model', value if self.inside-collection!
-      self.parse-obj item
+      self.model item
+
+  model: (item) ->
+    @collection-model or @parse-obj item
+
+  attribute-model: (item) ->
+    @parse-obj item
+
+  collection-model: ->
+    @build 'model', @value if @inside-collection!
 
   inside-collection: ->
     @parent-type! is 'Collection'

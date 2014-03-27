@@ -18,23 +18,29 @@ TupleBuilder = new Class(
     names.flatten!.any (name) (-> @[name])
 
   collection: ->
-    @build \collection if @list-is.collection!
+    @list-build \collection
 
   attributes: ->
-    @build \attributes if @list-is.attributes!
+    @list-build \attributes
+
+  list-build: (name) ->
+    @build name if @list-is[name]
 
   model: ->
-    @build \model      if @value-is.model!
+    @value-build \model
 
   attribute: ->
-    @build \attribute  if @value-is.attribute!
+    @value-build \attribute
+
+  unknown: ->
+    @value-build \model \unknown
+
+  value-build: (name, type = nil) ->
+    @build name if @value-is[type or name]
 
   # if path pipe?
   path: ->
     @build \children, @path-pipe! if @tuple-type-is \path
-
-  unknown: ->
-    @build \model if @value-is.unknown!
 
   no-list: ->
     throw new Error "Unable to determine if plural: #{@key} is a collection or array"

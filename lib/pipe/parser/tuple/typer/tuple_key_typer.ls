@@ -4,11 +4,6 @@ require 'sugar'
 TupleKeyTyper = new Class(
   initialize: (@key) ->
 
-  tuple-type: ->
-    # @validate-string-key!
-    # @is-path! or @is-single! or @is-plural! or @is-none!
-    @any-of \path \single \plural \none
-
   tuple-type-is: ->
     @ttype-is ||= @_tuple-type-is(@tuple-type!)
 
@@ -18,6 +13,11 @@ TupleKeyTyper = new Class(
     [\plural \single \path \none].each (name) ->
       self[name] = ->
         @type is name.capitalize!
+
+  tuple-type: ->
+    # @validate-string-key!
+    # @is-path! or @is-single! or @is-plural! or @is-none!
+    @any-of \path \single \plural \none
 
   any-of: (...names) ->
     self = @

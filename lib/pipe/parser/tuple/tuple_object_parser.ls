@@ -12,7 +12,7 @@ TupleObjectParser = new Class(TupleParser,
     @validate-string-key!; @call-super!
 
   single: ->
-    @can-build.any-of \model \attribute \unknown \no-item
+    @can-build.any-of <[model attribute unknown no-item]>
 
   parse-tupel: ->
     @[@tuple-type!]

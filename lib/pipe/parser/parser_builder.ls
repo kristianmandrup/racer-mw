@@ -11,14 +11,12 @@ ParserBuilder = new Class(
   initialize: (@type, @value) ->
 
   build: (arg, @value) ->
-    builder = @create-builder!
-    unless builder
+    unless @create-builder!
       throw new Error "Builder #{@type} could not be created"
-    builder.build arg
+    @create-builder.build arg
 
   create-builder: ->
-    clazz = @builder-clazz @type
-    new clazz @, @value
+    @c-builder ||= new @builder-clazz(@type) @ @value
 
   builder-clazz: ->
     requires.pipe "parser/builder/parser_#{@type}_builder"

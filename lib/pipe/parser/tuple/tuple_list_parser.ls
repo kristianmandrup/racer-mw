@@ -13,10 +13,11 @@ TupleListParser = new Class(TupleBaseParser,
 
   # collection or simple array
   plural: ->
-    @can-build.any-of \attributes \collection \no-list
+    @can-build.any-of <[attributes collection no-list]>
 
   build: (name) ->
-    @validate-array-value! ; @call-super!
+    @validate-array-value!
+    @call-super!
 )
 
 module.exports = TupleListParser

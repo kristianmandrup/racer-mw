@@ -13,13 +13,11 @@ BaseParser = new Class(
 
   initialize: (@parent-pipe, @value) ->
     @is-pipe @parent-pipe
+    @pipe-type = @parent-pipe.pipe-type
     @
 
   parse: ->
     throw new Error "Must be implemented by subclass"
-
-  parent-type: ->
-    @parent-pipe.pipe-type if @parent-pipe
 )
 
 module.exports = BaseParser
