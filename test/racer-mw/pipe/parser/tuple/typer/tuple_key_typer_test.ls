@@ -12,26 +12,28 @@ TupleKeyTyper = requires.pipe 'parser/tuple/typer/typer/tuple_key_typer'
 describe 'TupleKeyTyper' ->
   var key-typer
 
-  describe 'calc-list-type' ->
-    # @validate-array "plural value #{@key}"
-    # @is-empty! or @is-collection! or @is-array! or 'mixed'
-    context 'value: Object list' ->
-      before ->
-        key-typer := create-key-typer 'x', [{x: 2}, {y: 5}]
+  describe 'tuple-type' ->
+    # @any-of \path \single \plural \none
 
-      specify 'is a collection' ->
-        expect(key-typer.calc-list-type!).to.eql 'collection'
+  describe 'any-of(...names)' ->
 
-    context 'value: String list' ->
-      before ->
-        key-typer := create-key-typer 'x', ['a', 'b']
+  describe 'path' ->
+    # 'Path'    if @a-path!
 
-      specify 'is an array' ->
-        expect(key-typer.calc-list-type!).to.eql 'array'
+  describe 'single' ->
+    # 'Single'  if @a-single!
 
-    context 'value: Mixed list' ->
-      before ->
-        key-typer := create-key-typer 'x', ['a', {x:2}, 'b']
+  describe 'plural' ->
+    'Plural'  if @a-plural!
 
-      specify 'is mixed' ->
-        expect(key-typer.calc-list-type!).to.eql 'mixed'
+  describe 'none' ->
+    # throw new Error "Can't determine tupel type from key: #{@key}"
+
+  describe 'a-plural' ->
+    # @key.pluralize!   is @key
+
+  describe 'a-single' ->
+    # @key.singularize! is @key
+
+  describe 'a-path' ->
+    # @key[0] in ['_', '$']
