@@ -14,7 +14,7 @@ TupleListTyper = new Class(
 
   any-of: -> (names) ->
     self = @
-    names.flatten!.any (name) (-> self[name])
+    names.flatten!.find (name) (-> self[name])
 
   empty: ->
     'empty'       if @is-empty!
@@ -46,7 +46,7 @@ TupleListTyper = new Class(
   _list-is: (@type) ->
     any-of: -> (names) ->
       self = @
-      names.flatten!.any (name) (-> self[name])
+      names.flatten!.find (name) (-> self[name])
 
     attributes: ->
       @type is 'attributes'

@@ -10,21 +10,10 @@ TupleKeyTyper = new Class(
     @
 
   tuple-type-is: ->
-    @ttype-is ||= @_tuple-type-is(@tuple-type!)
+    @tuple-key-type-detector.tuple-type-is!
 
-  _tuple-type-is: (type) ->
-    self = @
-    type-detectors.find () ->
-      @["is#{detector.capitalize!}"]! is type
-
-  build-type-detectors: ->
-    # creates functions
-    self = @
-    @type-detectors!.each (name) ->
-      self[name] = (name) ->
-        @type is name.capitalize!
-
-  type-detectors: <[plural single path none]>
+  tuple-key-type-detector: ->
+    @detector ||= new TupleKeyTypeDetector @tuple-type!
 
   tuple-type: ->
     # @validate-string-key!
@@ -32,9 +21,7 @@ TupleKeyTyper = new Class(
     @any-of \path \single \plural \none
 
   any-of: (...names) ->
-    self = @
-    names.flatten!.any (name) ->
-      self[name]
+    _.find @[name], names.flatten!
 
   # path: ->
   #  'Path'    if @a-path!

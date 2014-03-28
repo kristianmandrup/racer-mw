@@ -29,9 +29,7 @@ KeyParser = new Class(
     @_mapped ||= @map-keys!
 
   map-keys: ->
-    self = this
-    @keys.map (key) ->
-      self.map-key key
+    _.map @map-key @keys # Awesome!!!
 
   map-key: (key) ->
     @tuple-parser(key).parse!
