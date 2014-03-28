@@ -33,10 +33,3 @@ describe 'TupleBaseParser' ->
 
     # describe 'list-type' ->
       # @_list-type ||= @calc-list-type!
-
-
-
-
-
-
-

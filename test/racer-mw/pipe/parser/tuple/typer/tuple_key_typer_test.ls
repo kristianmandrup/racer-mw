@@ -7,23 +7,23 @@ expect      = require('chai').expect
 util        = require 'util'
 require 'sugar'
 
-TupleKeyTyper = requires.pipe 'parser/tuple/typer/typer/tuple_key_typer'
+TupleKeyTyper = requires.pipe 'parser/tuple/typer/tuple_key_typer'
 
 describe 'TupleKeyTyper' ->
   var key-typer
 
   create-key-typer = (key) ->
-    new TupleKeyTyper 'x'
+    new TupleKeyTyper key
 
   describe 'initialize(key)' ->
     specify 'no args - fails' ->
-      expect(-> new TupleKeyTyper).to.throw Error
+      expect(-> new TupleKeyTyper).to.throw TypeError
 
     specify 'object arg - fails' ->
-      expect(-> new TupleKeyTyper {}).to.throw Error
+      expect(-> new TupleKeyTyper {}).to.throw TypeError
 
     specify 'string arg - ok' ->
-      expect(-> new TupleKeyTyper 'x').to.not.throw Error
+      expect(-> new TupleKeyTyper 'x').to.not.throw TypeError
 
   context 'instance for x' ->
     before ->

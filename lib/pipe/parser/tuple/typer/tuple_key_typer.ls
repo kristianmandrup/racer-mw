@@ -3,16 +3,28 @@ require 'sugar'
 
 TupleKeyTyper = new Class(
   initialize: (@key) ->
+    unless typeof! @key is 'String'
+      throw new TypeError "Key must be a String, was: #{typeof! @key} -  #{@key}"
+    @build-type-detectors!
+    @build-type-finders!
+    @
 
   tuple-type-is: ->
     @ttype-is ||= @_tuple-type-is(@tuple-type!)
 
-  _tuple-type-is: (@type) ->
+  _tuple-type-is: (type) ->
     self = @
+    type-detectors.find () ->
+      @["is#{detector.capitalize!}"]! is type
+
+  build-type-detectors: ->
     # creates functions
-    [\plural \single \path \none].each (name) ->
-      self[name] = ->
+    self = @
+    @type-detectors!.each (name) ->
+      self[name] = (name) ->
         @type is name.capitalize!
+
+  type-detectors: <[plural single path none]>
 
   tuple-type: ->
     # @validate-string-key!
@@ -24,14 +36,15 @@ TupleKeyTyper = new Class(
     names.flatten!.any (name) ->
       self[name]
 
-  path: ->
-    'Path'    if @a-path!
+  # path: ->
+  #  'Path'    if @a-path!
+  build-type-finders: ->
+    self = @
+    type-finders.each (finder) ->
+      fun = finder.capitalize!
+      self[finder] = ->
+        fun if @["a#{fun}"]
 
-  single: ->
-    'Single'  if @a-single!
-
-  plural: ->
-    'Plural'  if @a-plural!
 
   none: ->
     throw new Error "Can't determine tuple type from key: #{@key}"
