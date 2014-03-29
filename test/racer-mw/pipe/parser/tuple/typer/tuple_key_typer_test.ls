@@ -1,6 +1,6 @@
 requires = require '../../../../../../requires'
 
-Class       = require('jsclass/src/core').Class
+# Class       = require('jsclass/src/core').Class
 
 requires.test 'test_setup'
 expect      = require('chai').expect

@@ -1,27 +1,26 @@
 Class = require('jsclass/src/core').Class
+
+lo = require 'lodash'
+
 require 'sugar'
 
 TupleKeyTypeDetector = new Class(
-  initialize: (@type) ->
-    @build-type-detectors!
+  initialize: (type) ->
+    unless typeof! type is 'String'
+      throw new TypeError "Type must be a String, was: #{type}"
+    @type = type.capitalize!
+    @
 
-  tuple-type-is: ->
-    @ttype-is ||= @_tuple-type-is!
+  find-tuple-type: ->
+    @ttype-is ||= @_find-tuple-type! or 'none'
 
-  _tuple-type-is: ->
-    _.find @type-is, @key-types
+  _find-tuple-type: ->
+    lo.find @key-types, @matches-type, @ # called with context :)
 
-  type-is: (key-type)->
-    @["is#{key-type.capitalize!}"]! is @type
+  matches-type: (key-type) ->
+    key-type.capitalize! is @type
 
-  build-type-detectors: ->
-    # creates functions
-    _.each @create-type-detector, @type-detectors!
-
-  create-type-detector: (name) ->
-    @[name] = (name) (-> @type is name.capitalize!)
-
-  key-types: <[plural single path none]>
+  key-types: <[single plural path]>
 )
 
 module.exports = TupleKeyTypeDetector
