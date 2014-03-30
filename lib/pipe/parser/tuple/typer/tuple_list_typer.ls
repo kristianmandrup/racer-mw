@@ -35,15 +35,16 @@ TupleListTyper = new Class(
     @all-are @primitive-types
 
   all-are: (...types) ->
-    @value.every (item) ->
-      typeof! item in [types].flatten!
+    lo.every @value, @is-type(types)
+
+  is-type (...types) ->
+    types = [types].flatten!
+    (item )->
+      typeof! item in types
 
   primitive-types: [\String \Number]
 
-  list-is: ->
-    @lis-is ||= @_list-is @list-type!
-
-  _list-is: (@type) ->
+  list-is: (@type) ->
     any-of: -> (names) ->
       self = @
       names.flatten!.find (name) (-> self[name])

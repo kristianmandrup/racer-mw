@@ -17,8 +17,6 @@ ParentValidator = new Class(
     ...
 
   initialize: (@parent) ->
-    unless @parent
-      throw new Error "Missing parent pipe argument"
     @is-pipe @parent
     @
 
@@ -27,9 +25,14 @@ ParentValidator = new Class(
     @
 
   validate-pipe-relations: ->
+    @validate-parent!
+    @validate-ancestor!
+
+  validate-parent: ->
     if @pipe is @parent
       throw new Error "Circular error: you can't attach to yourself, #{@pipe.describe!}"
 
+  validate-ancestor: ->
     if @is-ancestor @pipe
       throw new Error "Circular error: you can't attach an ancestor pipe, #{@parent.describe!}"
 
@@ -42,17 +45,8 @@ ParentValidator = new Class(
   validate: (@pipe) ->
     @is-pipe @pipe
     @validate-pipe-relations!
+    @validate-type!
 
-    unless @valid-type!
-      console.log @pipe.describe!
-      throw new Error "#{@parent.pipe-type} is an invalid parent pipe for #{@pipe.pipe-type}, must be one of: #{@valid-parent-types}"
-
-  valid-type: ->
-    return true if @no-valid-parent-types!
-    @parent.pipe-type.to-lower-case! in @valid-parent-types
-
-  no-valid-parent-types: ->
-    lo.is-empty @valid-parent-types
 )
 
 

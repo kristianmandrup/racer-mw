@@ -4,9 +4,16 @@ require 'sugar'
 
 TupleBuilder = new Class(
   initialize: (@tuple-parser) ->
-    [\list-is \value-is \tuple-type-is \key \value].each (name) ->
-      @[name] = @tuple-parser[name]
+    @proxy!
     @
+
+  proxy: ->
+    lo.each @proxy-methods, @create-proxy, @
+
+  create-proxy: (name) ->
+    @[name] = @tuple-parser[name]
+
+  proxy-methods: -> [\list-is \value-is \tuple-type-is \key \value]
 
   build: (name, key, value) ->
     value ||= @value; key ||= @key
@@ -16,8 +23,7 @@ TupleBuilder = new Class(
     new ParserBuilder name
 
   any-of: -> (names) ->
-    self = @
-    names.flatten!.any (name) (-> @[name])
+    lo.find names.flatten!, ((name) -> @[name]), @
 
   collection: ->
     @list-build \collection

@@ -1,13 +1,12 @@
 Class       = require('jsclass/src/core').Class
 
-require 'sugar'
+require 'lodash'
 
 TupleValueTyper = new Class(
   initialize: (@value) ->
 
   any-of: -> (names) ->
-    self = @
-    names.flatten!.find (name) (-> self[name])
+    lo.find names.flatten!, ((name) -> @[name]), @
 
   unknown: ->
     typeof! @value is 'Undefined'

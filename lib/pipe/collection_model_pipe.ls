@@ -1,3 +1,6 @@
+# TODO
+# Refactor ModelPipe into CollectionModelPipe and AttributeModelPipe!!!
+
 Class       = require('jsclass/src/core').Class
 
 requires = require '../../requires'
@@ -6,11 +9,11 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-BasePipe                = requires.apipe 'base'
+ModelPipe               = requires.apipe 'base'
 
 # Must be on a model or attribute
-ModelPipe = new Class(BasePipe,
-  initialize: ->
+CollectionModelPipe = new Class(ModelPipe,
+  initialize: (item) ->
     try
       @call-super!
       @set @first-arg
@@ -21,11 +24,10 @@ ModelPipe = new Class(BasePipe,
   pipe-type: 'Model'
 
   id: ->
-    throw new Error "Must be implemented by subclass"
+    String(@object-id) unless @object-id is void
 
   set: (obj) ->
     @set-class obj
-    @set-name extract.name(obj, @clazz)
     @set-value extract.value(obj)
 
   set-class: (obj) ->
@@ -37,10 +39,19 @@ ModelPipe = new Class(BasePipe,
 
   pre-attach-to: (parent) ->
     @call-super!
+    @attacher!.attach-to parent
 
-  valid-parents: []
+  attacher: ->
+    new ParentAttacher @
 
-  valid-children: []
+  valid-parents:
+    * \path
+    * \collection
+
+  valid-children:
+    * \attribute
+    * \model-attribute
+    * \collection
 )
 
 module.exports = ModelPipe

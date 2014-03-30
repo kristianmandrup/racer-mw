@@ -15,7 +15,8 @@ TupleKeyTypeDetector = new Class(
     @ttype-is ||= @_find-tuple-type! or 'none'
 
   _find-tuple-type: ->
-    lo.find @key-types, @matches-type, @ # called with context :)
+    # matches-type is applied within current context for each iteration :)
+    lo.find @key-types, @matches-type, @
 
   matches-type: (key-type) ->
     key-type.capitalize! is @type

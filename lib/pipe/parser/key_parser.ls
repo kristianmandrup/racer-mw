@@ -8,10 +8,13 @@ TupleObjectParser = requires.pipe 'parser/tuple/tuple_object_parser'
 
 KeyParser = new Class(
   initialize: (@obj) ->
-    unless typeof! @obj is 'Object'
-      throw new TypeError "Must take an Object, was: #{typeof! @obj} #{@obj}"
-    @keys = _.keys(@obj)
+    @validate-obj!
+    @keys = _.keys @obj
     @
+
+  validate-obj: ->
+    unless typeof! @obj is 'Object'
+      throw new TypeError "Must take an Object, was: #{typeof! @obj} - #{@obj}"
 
   parse: ->
     @no-keys! or @parse-keys!
@@ -20,16 +23,13 @@ KeyParser = new Class(
     [] if @keys.length is 0
 
   parse-keys: ->
-    @first-mapped! or @mapped!
+    @first-mapped-key! or @mapped-keys!
 
-  first-mapped: ->
-    @mapped.first! if @mapped.length is 1
+  first-mapped-key: ->
+    @mapped-keys.first! if @mapped-keys.length is 1
 
-  mapped: ->
-    @_mapped ||= @map-keys!
-
-  map-keys: ->
-    _.map @map-key @keys # Awesome!!!
+  mapped-keys: ->
+    @_mapped ||= lo.map @keys, @map-key, @
 
   map-key: (key) ->
     @tuple-parser(key).parse!

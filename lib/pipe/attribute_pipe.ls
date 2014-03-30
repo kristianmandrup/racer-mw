@@ -7,32 +7,15 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-BasePipe          = requires.apipe 'base'
-ModelPipe         = requires.apipe 'model'
+BasePipe                  = requires.apipe  'base'
+ModelPipe                 = requires.apipe  'model'
+AttributeObjectUnpacker   = requires.pipe   'attribute/attribute_object_unpacker'
 
-unpack = (arg) ->
-  switch typeof! arg
-  case 'String'
-    [arg, void]
-  # allow object, setting name by _clazz and then value
-  case 'Object'
-     unpack-obj arg
-  case 'Array'
-     unpack-obj (arg.first!): arg.last!
-  default
-    throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"
+unpack = (args) ->
+  unpacker(args).unpack!
 
-unpack-obj = (obj) ->
-  if obj._clazz
-    throw new Error "Unable to create Attribute from, #{util.inspect obj} with class: #{obj._clazz}"
-  else
-    key = _.keys(obj).first!
-    # detect if arguments hash
-    if key is '0'
-      throw new Error "Bad arguments: #{util.inspect obj}"
-    # allow customizing attribute name
-    # admin: user-obj
-    [key, _.values(obj).first!]
+unpacker = (args) ->
+  new AttributeObjectUnpacker args
 
 # Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,
@@ -54,7 +37,7 @@ AttributePipe = new Class(BasePipe,
   # attach: void
 
   valid-children: void
-  has-children: false
+  has-children:   false
 
   valid-parents:
     * \model

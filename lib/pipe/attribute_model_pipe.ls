@@ -1,3 +1,6 @@
+# TODO
+# Refactor ModelPipe into CollectionModelPipe and AttributeModelPipe!!!
+
 Class       = require('jsclass/src/core').Class
 
 requires = require '../../requires'
@@ -6,10 +9,11 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-BasePipe                = requires.apipe 'base'
+ModelPipe               = requires.apipe 'model'
+
 
 # Must be on a model or attribute
-ModelPipe = new Class(BasePipe,
+AttributeModelPipe = new Class(ModelPipe,
   initialize: ->
     try
       @call-super!
@@ -21,7 +25,9 @@ ModelPipe = new Class(BasePipe,
   pipe-type: 'Model'
 
   id: ->
-    throw new Error "Must be implemented by subclass"
+    return @name unless @name is void
+    return @clazz unless @clazz is void
+    throw new Error "Unable to determine id, please set either object-id or name"
 
   set: (obj) ->
     @set-class obj
@@ -38,9 +44,14 @@ ModelPipe = new Class(BasePipe,
   pre-attach-to: (parent) ->
     @call-super!
 
-  valid-parents: []
+  valid-parents:
+    * \path
+    * \model
 
-  valid-children: []
+  valid-children:
+    * \attribute
+    * \model-attribute
+    * \collection
 )
 
 module.exports = ModelPipe

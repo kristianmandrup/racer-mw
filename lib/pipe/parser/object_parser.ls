@@ -19,14 +19,10 @@ ObjectParser = new Class(BaseParser,
     @
 
   parse: (@obj) ->
-    @debug-msg "parse-object #{util.inspect obj}"
-    parse-keys!
+    @key-parser.parse!
 
-    parse-keys: ->
-      @key-parser.parse!
-
-    key-parser: ->
-      new KeyParser @obj
+  key-parser: ->
+    new KeyParser @obj
 )
 
 module.exports = ObjectParser

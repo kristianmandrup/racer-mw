@@ -15,10 +15,7 @@ ListParser = new Class(BaseParser,
     @call-super!
 
   parse: (list) ->
-    @debug-msg "parse-list #{util.inspect  list}"
-    self = @
-    list.map (item) ->
-      self.model item
+    lo.map list, ((item) -> @model item), @
 
   model: (item) ->
     @collection-model or @parse-obj item
