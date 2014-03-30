@@ -11,22 +11,16 @@ ConfigBuilder    = requires.apipe-builder 'config'
 
 PipeBuilders = new Module(
   initialize: ->
+    @builders = {}
+    @
 
   # TODO: Needs refactoring!!! Single Responsibility pleeeease...
   config-builders: ->
     return void unless @attach
-    @builders = {}
-
-    # TODO: refactor - put in initialize...
-    if @valid-children
-      @valid-children = [@valid-children].flatten!
-    if @valid-parents
-      @valid-parents = [@valid-parents].flatten!
-
-    @config-builder 'collection'
-    @config-builder 'model'
-    @config-builder 'attribute'
+    lo.each @builder-list, @config-builder, @
     @
+
+  builder-list: <[collection model attribute]>
 
   config-builder: (name, clazz, multi-clazz) ->
     return unless @valid-child name

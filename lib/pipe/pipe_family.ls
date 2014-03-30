@@ -53,6 +53,12 @@ PipeFamily = new Module(
     removed
 
   add-child: (name, pipe) ->
+    @validate-child name pipe
+    pipe.parent = @
+    @child-hash[name] = pipe
+    @update-child-count!
+
+  validate-child: (name, pipe) ->
     unless _.is-type 'String', name
       throw new Error "Name of pipe added must be a String, was: #{name}"
 
@@ -62,10 +68,6 @@ PipeFamily = new Module(
     unless @has-children
       throw new Error "This pipe does not allow child pipes"
 
-    pipe.parent = @
-    @child-hash[name] = pipe
-    @update-child-count!
-
   update-child-count: ->
     @child-count = @child-names!.length
 
@@ -74,6 +76,7 @@ PipeFamily = new Module(
   child-list: ->
     _.values(@child-hash).compact!
 
+  # TODO: Avoid switch use or
   get: (index) ->
     switch typeof! index
     case 'Number'
@@ -99,16 +102,25 @@ PipeFamily = new Module(
 
   attr: (name) ->
     p = @child name
+    @validate-attribute p, name
+
+  validate-attribute: (p, name) ->
     unless p.pipe-type is 'Attribute'
       throw new Error "The child pipe #{name} is not an Attribute"
 
   modl: (name) ->
     p = @child name
+    @validate-model name
+
+  validate-model: (p, name) ->
     unless p.pipe-type is 'Model'
       throw new Error "The child pipe #{name} is not a Model"
 
   col: (name) ->
     p = @child name
+    @validate-collection p, name
+
+  validate-collection: (p, name) ->
     unless p.pipe-type is 'Collection'
       throw new Error "The child pipe #{name} is not a Collection"
 

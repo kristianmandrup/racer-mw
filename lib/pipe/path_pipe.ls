@@ -19,23 +19,32 @@ unpack = (args) ->
     default
       throw new Error "Invalid name argument(s) for PathPipe: #{@args}"
 
+PipeBuilders = new Module(
+  initialize: ->
+    lo.each @valid-children, @create-builder
+
+  build: (pipe-type, ...args) ->
+    @builder(pipe-type).build ...args
+
+  create-builder: (name) ->
+    @[name] = (...args) ->
+      @build name ...args
+
+)
+
+
 # Must be on a model or attribute
 # Useful to set initial model path containers such as '_session' or '_page' etc.
 PathPipe = new Class(BasePipe,
+  include:
+    * PipeBuilders
+    ...
+
   initialize: ->
     @call-super!
     @name = unpack @args
     @post-init!
     @
-
-  attribute: (...args) ->
-    @builder('attribute').build ...args
-
-  model: (...args) ->
-    @builder('model').build ...args
-
-  collection: (...args) ->
-    @builder('collection').build ...args
 
   pipe-type: 'Path'
 
