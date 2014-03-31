@@ -28,17 +28,6 @@ CollectionModelPipe = new Class(ModelPipe,
   id: ->
     String(@object-id) unless @object-id is void
 
-  set: (obj) ->
-    @set-class obj
-    @set-value extract.value(obj)
-
-  set-class: (obj) ->
-    @clazz = extract.clazz(obj)
-
-  # don't use extract.value here!!
-  set-value: (obj) ->
-    @call-super obj
-
   pre-attach-to: (parent) ->
     @call-super!
     @attacher!.attach-to parent

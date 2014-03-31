@@ -26,12 +26,13 @@ ContainerPipe = new Class(BasePipe,
     @parse ...args
 
   parse: (...args) ->
-    try
-      @attach @pipes(args)
-      @
-    finally
-      @
+    @attach @pipes(args)
 
+  pipes: (args) ->
+    @parser(args).parse!
+
+  parser: (args) ->
+    new Parser(args)
 )
 
 module.exports = ContainerPipe

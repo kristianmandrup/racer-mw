@@ -12,13 +12,13 @@ AttributeObjectUnpacker = new Class(
   obj-types: <[string object array none]>
 
   is-obj-type: (type) ->
-    @[type] if is-type type
+    @[type] if @is-type type
 
   is-type: (type) ->
-    typeof! arg is type.capitalize!
+    typeof! @arg is type.capitalize!
 
   string: ->
-    [arg, void]
+    [@arg, void]
 
   object: ->
     @unpack-obj @arg

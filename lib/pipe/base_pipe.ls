@@ -35,12 +35,13 @@ BasePipe = new Class(
     * PipeIdentifier
     * PipeResource
     * PipeValidation
+    * PipeArgValidation
 
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->
     # TODO: Refactor - improve this way! use slice or similar instead!!
     [@first-arg, @args] = argumentor.extract _.values(arguments)
-    @validate-args!
+    @validate-args! # See PipeArgValidation
     @call-super!
     @clear!
     @
@@ -49,27 +50,11 @@ BasePipe = new Class(
   allows-child: (type) ->
     false
 
-  # TODO: Move arguments validation to Extract Arg (and put in module)
-  validate-args: ->
-    @validate-first-arg!
-    unless argumentor.validate @args, @valid-args
-      throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
-
-  validate-first-arg: ->
-    switch typeof! @first-arg
-    case 'Number'
-      throw new Error "First arg can not be a Number, was: #{@first-arg}"
-    case 'Function'
-      throw new Error "First arg can not be a Function"
+  pipes: (args) ->
+    throw new Error "Only a Container pipe has parsed pipes, I am a #{@pipe.type} pipe"
 
   parse: (...args) ->
-    throw new Error "Only Container pipes can parse, I am a #{@pipe.type} pipe"
-
-  pipes: (args) ->
-    @parser(args).parse!
-
-  parser: (args) ->
-    new Parser(args)
+    throw new Error "Only a Container pipe can parse pipes, I am a #{@pipe.type} pipe"
 
   add: (...args) ->
     throw new Error "Only Container pipes can add pipes, I am a #{@pipe.type} pipe"
@@ -79,7 +64,9 @@ BasePipe = new Class(
     type:       'Base'
     base-type:  'Base'
 
-  valid-args: []
+  valid-args:     []
+  valid-children: []
+  valid-parents:  []
 
   set-all: ->
 

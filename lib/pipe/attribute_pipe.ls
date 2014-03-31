@@ -11,21 +11,16 @@ BasePipe                  = requires.apipe  'base'
 ModelPipe                 = requires.apipe  'model'
 AttributeObjectUnpacker   = requires.pipe   'attribute/attribute_object_unpacker'
 
-unpack = (args) ->
-  unpacker(args).unpack!
-
-unpacker = (args) ->
-  new AttributeObjectUnpacker args
-
 # Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,
   initialize: ->
     @call-super!
-    [name, value] = unpack @args
-    @set-name name
-    @set-value value
+    @set-all!
     @post-init!
     @
+
+  unpacked: ->
+    @_unpacked ||= new AttributeObjectUnpacker(@args).unpack!
 
   pipe:
     type:       'Attribute'
@@ -34,16 +29,7 @@ AttributePipe = new Class(BasePipe,
   id: ->
     @name
 
-  # should be the end of the line!!!
-  # only simple values can go here, no models or collections!
-  # attach: void
-
-  valid-children: void
-  has-children:   false
-
-  valid-parents:
-    * \model
-    * \path
+  valid-parents: <[attribute-model collection-model path]>
 
 )
 
