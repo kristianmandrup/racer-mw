@@ -28,18 +28,35 @@ All core Resource files reside in the `resources` folder. The following are the 
 - model
 - attribute
 
-A PathResource is usually used to create a container object which is not a collection and not a model either, such as `_page`.
-A CollectionResource can maintain a list of ModelResource objects (through its pipe).
-A ModelResource can have AttributeResource resources (through its pipe).
+### PathResource
 
-The BaseResource contains base functionality for a Resource, such as access to the pipe and infrastructure services such as
-the gateway to Racer store execution.
+Used to create a container object which is not a collection and not a model either, such as `_page`.
 
-Filter and Query are special objects, returned by filter and query functions from Racer. Each provide a subset of functions available
+
+### CollectionResource
+
+Can maintain a list of ModelResource objects (through its pipe).
+
+
+### ModelResource
+
+Can have *AttributeResource* resources (through its pipe).
+
+### BaseResource
+
+Contains base functionality for any *Resource*, such as access to the pipe and infrastructure services such as
+the gateway (*RacerSync*)to Racer store execution.
+
+### Filter and Query
+
+*Filter* and *Query* are special objects, returned by filter and query functions from Racer. Each provide a subset of functions available
 for further chaining, such as `get` and `ref` that act on the result.
 
-Queries contain a set of scoped queries for reuse (much like Rails "named scopes"). The ResourceCommand wraps a command ready for execution
-on Racer (via sync).
+*Queries* contain a set of scoped queries for reuse (much like *Rails* "named scopes").
+
+### ResourceCommand
+
+Wraps a command ready for execution on Racer via *RacerSync*.
 
 ### Crud
 
@@ -99,40 +116,22 @@ The main Pipes are the following:
 
 - Path
 - Collection
-- Model
+- Model (AttributeModel, CollectionModel)
 - Attribute
 
 A graph of pipes can be built to encapsulate the hierarchical model structure.
-The Pipe graph is thus makes up a more "intelligent" description of the model and carries much more information.
+The pipe graph (similar to a DOM) makes up a more "intelligent" description of the model and carries much more information.
+
 The pipes make up the main abstraction layer on top of the Racer model API.
-Pipes can be attached and detached from any other pipe that allows it as a child pipe.
+Pipes can be *attached* and *detached* from any other pipe that allows it as a child pipe.
 
 The `dsl.ls` file, contains the main DSL that is made available with this library (external API).
 
 The PipeFactory is used to build a Pipe (might be deprecated?). The `PathResolver` is used to resolve the
 full path of a pipe. Note: The path should be cached until the structure of the local pipe graph changes...
+
 The `BasePipe` simply contains base functionality for any pipe.
 
-The `pipe/validator` folder contains a `ParentValidator` base class for now. Each specific type of pipe can subclass it.
-There is also a need for a child pipe to be validated perhaps? More thought on this.
-Surely this is an anti-pattern!
-
-```
-# TODO: refactor!?
-ModelParentValidator = new Class(ParentValidator,
-  valid-parent-types: ['collection', 'attribute']
-)
-
-# TODO: refactor!?
-ModelChildValidator = new Class(ChildValidator,
-  valid-child-types: ['attribute', 'path']
-)
-```
-
-Note: The `validate_args.ls` in the `lib` folder is simply a reusable little utility for validating arguments in general.
-It might be extracted and factored out into its own npm package, along with `requires` and `debugger`.
-
-That's it! Cheers :)
 
 
 

@@ -8,9 +8,10 @@ Pipes are the main building blocks. It is simply a more intelligent, more functi
 more data carrying information layer that abstracts your hierarchical JSON data model into logical OOP entities such as:
 
 - Path
-- Model
-- Attribute
 - Collection
+- CollectionModel
+- AttributeModel
+- Attribute
 
 ### Path
 
@@ -35,8 +36,8 @@ A Model is a wrapper for a `Document`. A model should have a class such as `User
 A `Model` can have one or more attributes, which can be any of:
 
 * `Attribute` (simple values)
+* `AttributeModel`
 * `Collection` (of models)
-* `Model`
 
 ### Attribute
 
@@ -50,8 +51,10 @@ It can also contain a list of simple values using: `Array`
 
 ### Collection
 
-A `Collection` contains of Models (Documents), usually of the same kind).
+A `Collection` contains of `CollectionModels` (Documents), usually of the same kind).
 Typically, a `Users` collection would contain `User` objects.
+
+* `CollectionModel`
 
 ## Piping
 
@@ -157,7 +160,7 @@ page = model('_page')
 page.attribute(hits: 'number')
 ```
 
-Adding a `current-user` property which is a `Model`
+Adding a `current-user` property which is an `AttributeModel`
 
 ```livescript
 page.model(current-user: user)
