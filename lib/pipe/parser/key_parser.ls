@@ -17,16 +17,22 @@ KeyParser = new Class(
       throw new TypeError "Must take an Object, was: #{typeof! @obj} - #{@obj}"
 
   parse: ->
-    @no-keys! or @parse-keys!
+    @parse-no-keys! or @parse-keys!
+
+  parse-no-keys: ->
+    [] if no-keys
 
   no-keys: ->
-    [] if @keys.length is 0
+    @keys.length is 0
 
   parse-keys: ->
     @first-mapped-key! or @mapped-keys!
 
   first-mapped-key: ->
-    @mapped-keys.first! if @mapped-keys.length is 1
+    @mapped-keys.first! if @one-mapped-key!
+
+  one-mapped-key: ->
+    @mapped-keys.length is 1
 
   mapped-keys: ->
     @_mapped ||= lo.map @keys, @map-key, @

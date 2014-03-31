@@ -20,6 +20,7 @@ PipeValue       = requires.pipe 'pipe_value'
 PipeIdentifier  = requires.pipe 'pipe_identifier'
 PipeResource    = requires.pipe 'pipe_resource'
 PipeValidation  = requires.pipe 'pipe_validation'
+Parser          = requires.pipe 'pipe_parser'
 
 argumentor      = requires.pipe 'pipe_argumentor'
 
@@ -37,14 +38,22 @@ BasePipe = new Class(
 
   # if not initialized with a value it has nothing to calculate path from
   initialize: ->
+    # TODO: Refactor - improve this way! use slice or similar instead!!
     [@first-arg, @args] = argumentor.extract _.values(arguments)
-
-    @validate-first-arg!
-    unless argumentor.validate @args, @valid-args
-      throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
+    @validate-args!
     @call-super!
     @clear!
     @
+
+  # since not a container pipe!
+  allows-child: (type) ->
+    false
+
+  # TODO: Move arguments validation to Extract Arg (and put in module)
+  validate-args: ->
+    @validate-first-arg!
+    unless argumentor.validate @args, @valid-args
+      throw new Error "Pipe init argument #{@args} [#{typeof @args}] is not valid, must be one of: #{@valid-args}"
 
   validate-first-arg: ->
     switch typeof! @first-arg
@@ -53,24 +62,26 @@ BasePipe = new Class(
     case 'Function'
       throw new Error "First arg can not be a Function"
 
-
   parse: (...args) ->
-    try
-      Parser  = requires.pipe 'pipe_parser'
-      parser = new Parser(...args)
-      pipes   = parser.parse!
-      @attach pipes
-      @
-    finally
-      @
+    throw new Error "Only Container pipes can parse, I am a #{@pipe.type} pipe"
+
+  pipes: (args) ->
+    @parser(args).parse!
+
+  parser: (args) ->
+    new Parser(args)
 
   add: (...args) ->
-    @parse ...args
+    throw new Error "Only Container pipes can add pipes, I am a #{@pipe.type} pipe"
 
   type:       'Pipe'
-  pipe-type:  'Base'
+  pipe:
+    type:       'Base'
+    base-type:  'Base'
 
   valid-args: []
+
+  set-all: ->
 
   # last step when pipe is initialized
   post-init: ->

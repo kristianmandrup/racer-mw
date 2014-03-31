@@ -17,7 +17,10 @@ AttributesPipeBuilder = new Class(BasePipeBuilder,
 
   validate: ->
     @call-super!
-    unless 'attribute' in @container.valid-children
+    @validate-container!
+
+  validate-container: ->
+    unless @container.allows-child 'attribute'
       throw new Error "Parent Pipe #{@container.pipe-type} may not contain any Attribute pipe, only: #{@container.valid-children}"
 
   type: 'Builder'

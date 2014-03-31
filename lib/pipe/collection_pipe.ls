@@ -7,124 +7,67 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-BasePipe          = requires.apipe 'base'
+ContainerPipe     = requires.apipe 'container'
 PathPipe          = requires.apipe 'path'
 
 ModelsPipeBuilder = requires.apipe-builder 'models'
 
-col-name = (arg) ->
-  switch typeof arg
-  case 'string'
-    arg
-  case 'object'
-    unless arg._clazz
-      throw new Error "Object passed must have a _clazz attribute, was: #{util.inspect arg} [#{typeof arg}]"
-    arg._clazz
-  default
-    throw new Error "CollectionPipe constructor must take a String or Object as argument, was: #{arg} [#{typeof arg}]"
-
-attach-to-path-pipe = (names, col-pipe) ->
-  path-pipe = new PathPipe(names)
-  path-pipe.attach col-pipe
+NameExtractor     = requires.pipe 'collection/name_extractor'
 
 ArrayValueObject = requires.lib 'value_object/array_value_object'
 
 # Must be on a model or attribute
-CollectionPipe = new Class(BasePipe,
+CollectionPipe = new Class(ContainerPipe,
+  # TODO: refactor!
   initialize: ->
     @call-super!
-
-    name = @args
-    if _.is-type('Array', @args) and @args.length > 1
-      name = @config-via-array!
-
-    if _.is-type('Object', @args)
-      name = _.keys(@args).first!
-      value = _.values(@args).first!
-
     # set name of collection :)
-    @set-name col-name(name).pluralize!
+    @set-name @collection-name(@name)
     @post-init!
     @
 
-  # override with special ValueObject for Collection that can use the at: index option
-  create-value-obj: ->
-    new ArrayValueObject @
-
-  # TODO: so far only works when setting with values where children already there...
-  set-value: (value, options = {}) ->
-    @call-super value
-    console.log 'DONE SET'
-    # depends on whether one or more of the children the match the Array are already there
-
-    # builder = @builder-for(value)
-    # builder.build value
-    # @raw-value!
-
-  # set-value-at 3: [x, y, z], 6: [a, b]
-  set-value-at: (hash) ->
-    unless typeof! hash is 'Object'
-      throw new Error "Must be an Object such as 3: [x, y, z], was #{typeof! hash} - #{hash}"
-
-    if _.keys(hash).length > 1
-      for k, list of hash
-        @set-value-at k, list
-    else
-      for index, list of hash
-        @set-value list, at: index
-
-  post-notify-value: (value)->
-    # @build-children value
-
-  # Array
-  build-children: (value) ->
-    console.log 'build-children - NOT yet implemented'
-    # for each item compare with current value
-    # if different, create new ModelPipe and overwrite
-    # else skip
-
-    # if more items than original array, create and insert new children by parsing
-    # if less items than original, either: remove remaining children or return? take extra options param?
-    # to contract value if this array smaller than current
-
-    # set-value [x, y, z], contract: true
-    # to only overwrite 3 first but ignore the rest
-    # set-value [x, y, z]
-
-    # insert lists at specific positions
-    # set-value-at 3: [x, y, z], 6: [a, b]
+  collection-name: ->
+    @extract-name!
+    new CollectionNameExtractor(@name).plural!
 
 
-  builder-for: (value) ->
-    @builder(@builder-name value)
+  # TODO: Clean up, extract, refactor!!
+  # What about NameExtractor class!?
+  /*
+  extract-name: ->
+    @name = @args
+    @name-from-array! or @name-from-object!
 
-  builder-name: (value) ->
-    return 'models' if _.is-type('Array', value)
-    'model'
+  name-from-array: ->
+    @name = @config-via-array! if @array-args!
 
-  get-value: ->
-    _.values(@children).map (child) ->
-      child.value!
+  array-args: ->
+    typeof! @args is 'Array' and @args.length > 1
 
-  config-via-array: ->
-    attach-to-path-pipe @args[0 to -2], @
-    @args.last!
+  name-from-object: ->
+    @name = _.keys(@args).first! if @object-args!
+
+  value-from-object: ->
+    @value = _.values(@args).first! if @object-args!
+
+  object-args: ->
+    typeof! @args is 'Object'
+  */
+
+  pipe:
+    type:       'Collection'
+    base-type:  'Collection'
 
   pipe-type: 'Collection'
 
   next-child-id: ->
-    keys = _.keys(@children)
-    keys.length
+    @child-count + 1
 
   id: ->
     @name
 
-  valid-parents:
-    * \path
-    * \model # collection then becomes as an attribute on the model
-
-  valid-children:
-    * \model
+  valid-parents:  <[path attribute-model]>
+  valid-children: <[collection-model]>
 )
 
 module.exports = CollectionPipe

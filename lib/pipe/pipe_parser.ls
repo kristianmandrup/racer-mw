@@ -1,59 +1,3 @@
-/**
- * User: kmandrup
- * Date: 15/03/14
- * Time: 21:02
-
-Parsing and building complex models
-
-In order to simplify building up a complex model, it would be convenient if we could simply parse
-a model and make basic assumptions for how to build it using Collection-, Model- and AttributePipes.
-
-Imagine we have a model like this:
-
-```
-_path:
-  users:
-    *
-      name: 'Kris'
-      email: 'kris@gmail.com'
-    *
-      name: 'Amy'
-      email: 'amy@gmail.com'
-  projects:
-    *
-      name: 'my project'
-      user: '_path.users.1'
-    *
-      name: 'your project'
-      user: '_path.users.2'
-```
-
-The parser should understand that the top most node `_path` since it has an underscore, is a `PathPipe`.
-Then it should understand that users and projects are both collections, since they have plural names,
-and each has an array of objects.
-
-`path-pipe('_path').collections.add(users: users).add(projects: projects)`
-
-Internally, as each user or project is added, it should create an attribute pipe for each own property key that does
-not start with a special character such as `_` or `$`.
-
-`collection('users').models().add(name: 'Kris', email: 'kris@gmail.com')`
-
-Which would internally handle each model something like:
-
-`.model(name: 'Kris', email: 'kris@gmail.com')`
-
-It should internally add attributes like so, where 'user' is an (optional) "class" indicator.
-
-`.model('user').attributes().add(name: 'Kris', email: 'kris@gmail.com')`
-
-Could even allow without class, if collection is "class-less"
-
-`.model().attributes()`
-
-Calling `collection.model(...)` should always ensure that the model gets an appropriate id according to its position in the parent collection.
- */
-
 requires = require '../../requires'
 
 Class       = require('jsclass/src/core').Class
@@ -80,34 +24,38 @@ PipeParser = new Class(
     @debug-on = options.debug
     @
 
-  parse: (obj) ->
+  # TODO: Avoid Switch on Type - anti-pattern!
+  parse: (@obj) ->
     @debug-msg "parse-obj #{util.inspect obj}"
-    switch typeof! obj
-    case 'Array'
-      @parse-list obj
-    case 'Object'
-      @parse-object obj
-    case 'String'
-      @parse-str obj
-    case 'Number'
-      throw new Error "Can't parse number: #{obj}"
-    default
-      throw new Error "Can't parse this object: #{obj}, type: #{typeof! obj}"
+    lo.find @types, @parse-type
 
-  parse-list: (list) ->
-    new ListParser(@).parse list
+  types: <[list object string number error]>
 
-  parse-object: (obj) ->
-    new ObjectParser(@).parse obj
+  parse-type: (type) ->
+    @["parse#{type.capitalize!}"] if @is 'number'
 
-  parse-str: (key) ->
-    @parse-builder(value).build 'attribute', key
+  # TODO: generate these methods (types[0 to 2])
+  parse-list: (value) ->
+    new ListParser(@).parse value
 
-  parse-builder: (value) ->
-    new BaseParser @, value
+  parse-object: (value) ->
+    new ObjectParser(@).parse value
 
+  parse-string: (value) ->
+    new StringParser(@).parse value
+
+  parse-number: ->
+    throw new Error "Can't parse number: #{@obj}"
+
+  parse-error:
+    throw new Error "Can't parse this value: #{typeof! @obj} - #{@obj}"
+
+  # for use by Parser
   parent-type: ->
     @parent.pipe-type if @parent
+
+  is: (type) ->
+    typeof! @obj is type.capitalize!
 )
 
 module.exports = PipeParser

@@ -19,7 +19,7 @@ PipeFamily = new Module(
   allow-children: true
 
   has-children: ->
-    @child-names!.length > 0
+    @child-count > 0
   no-children: ->
     not @has-children!
 

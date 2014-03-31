@@ -46,7 +46,9 @@ PathPipe = new Class(BasePipe,
     @post-init!
     @
 
-  pipe-type: 'Path'
+  pipe:
+    type:       'Path'
+    base-type:  'Path'
 
   has-resource: false
 

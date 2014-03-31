@@ -21,7 +21,9 @@ CollectionModelPipe = new Class(ModelPipe,
     finally
       @
 
-  pipe-type: 'Model'
+  pipe:
+    type:       \CollectionModel
+    base-type:  \Model
 
   id: ->
     String(@object-id) unless @object-id is void
@@ -44,14 +46,8 @@ CollectionModelPipe = new Class(ModelPipe,
   attacher: ->
     new ParentAttacher @
 
-  valid-parents:
-    * \path
-    * \collection
-
-  valid-children:
-    * \attribute
-    * \model-attribute
-    * \collection
+  valid-parents:  <[path collection]>
+  valid-children: <[attribute model-attribute collection]>
 )
 
 module.exports = ModelPipe

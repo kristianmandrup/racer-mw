@@ -22,7 +22,9 @@ AttributeModelPipe = new Class(ModelPipe,
     finally
       @
 
-  pipe-type: 'Model'
+  pipe:
+    type:       'AttributeModel'
+    base-type:  'Model'
 
   id: ->
     return @name unless @name is void

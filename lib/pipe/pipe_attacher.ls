@@ -12,12 +12,8 @@ ParentValidator   = requires.pipe 'validator/parent_validator'
 PipeAttacher = new Module(
   # when attached, a pipe should update its cached full-name
   attach: (pipe) ->
-    if typeof! pipe is 'Array'
-      return @attach-list pipe
-
+    return @attach-list pipe if typeof! pipe is 'Array'
     @is-pipe pipe
-    # check if ancestor is done via: @parent-validator(parent).validate @
-
     pipe.attach-to @
     @
 
@@ -26,8 +22,7 @@ PipeAttacher = new Module(
       throw new Error "Can only attach to a list of Pipes, was: #{typeof! pipes}"
 
     self = @
-    pipes.each (pipe) ->
-      self.attach pipe
+    lo.each pipes @attach
     @
 
   detach: ->
@@ -37,9 +32,7 @@ PipeAttacher = new Module(
 
   attach-to: (parent) ->
     @parent-validator(parent).validate @
-
-    unless @id!
-      throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
+    @validate-id!
 
     @pre-attach-to parent
 
@@ -49,18 +42,23 @@ PipeAttacher = new Module(
     @post-attach-to parent
     @
 
+  validate-id: ->
+    unless @id!
+      throw new Error "id function of #{@pipe-type} Pipe returns invalid id: #{@id!}"
+
   pre-attach-to: (parent) ->
     @validate-attach parent
 
   attached-to: (parent) ->
     # update full-name
     @update-name!
-    # and each of its children also need to be updated!
+    @update-child-names!
+    parent.added = @ if parent
+    @
+
+  update-child-names: ->
     for k, v of @child-hash
       @child-hash[k].update-name!
-    if parent
-      parent.added = @
-    @
 
   parent-validator: (parent) ->
     new ParentValidator(parent).set-valid @valid-parents

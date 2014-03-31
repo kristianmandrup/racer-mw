@@ -16,6 +16,9 @@ BaseParser = new Class(
     @pipe-type = @parent-pipe.pipe-type
     @
 
+  parent-type: ->
+    @parent-pipe.pipe-type
+
   parse: ->
     throw new Error "Must be implemented by subclass"
 )

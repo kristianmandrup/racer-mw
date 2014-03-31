@@ -27,7 +27,9 @@ AttributePipe = new Class(BasePipe,
     @post-init!
     @
 
-  pipe-type: 'Attribute'
+  pipe:
+    type:       'Attribute'
+    base-type:  'Attribute'
 
   id: ->
     @name
