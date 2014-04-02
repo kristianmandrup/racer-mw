@@ -6,13 +6,12 @@ require 'sugar'
 
 requires = require '../../requires'
 
-ValueObject = requires.lib 'ValueObject'
-Parser      = requires.pipe 'pipe_parser'
-
+BaseValueObject   = requires.value-object!.named 'base'
+Parser            = requires.pipe!.base 'pipe_parser'
 
 # Also enable contract: true option, to contract original array or false: ignore remaining elements
 
-ArrayValueObject = new Class(ValueObject,
+ArrayValueObject = new Class(BaseValueObject,
   initialize: (@container, options = {}) ->
     @call-super!
     @parser = new Parser(void, parent: @container, debug: true)

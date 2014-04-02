@@ -6,6 +6,8 @@ Class       = require('jsclass/src/core').Class
 
 CollectionNamer = new Class(
   initialize: (@obj, @collection) ->
+
+  # TODO: refactor switch!
   get: ->
     switch typeof @collection
     case 'string'
@@ -14,11 +16,15 @@ CollectionNamer = new Class(
       @get-from-obj!
 
   get-from-obj: ->
+    @validate-obj!
+    name = obj._clazz.pluralize!
+
+  validate-obj: ->
     unless typeof @obj is 'object'
       throw new Error "Invalid value object argument. Must be an object, was: #{@obj}"
     unless @obj._clazz
       throw new Error "value object missing a _clazz key, was: #{@obj}"
-    name = obj._clazz.pluralize!
+
 )
 
 CollectionPipe = requires.pipe('collection')

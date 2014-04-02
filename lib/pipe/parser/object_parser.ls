@@ -7,10 +7,17 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-BaseParser  = requires.pipe 'parser/base_parser'
-ListParser  = requires.pipe 'parser/list_parser'
-KeyParser   = requires.pipe 'parser/key_parser'
-PathPipe    = requires.apipe 'path'
+pipe = ->
+  requires.pipe!.apipe
+
+parser = ->
+  requires.pipe!.parser!
+
+BaseParser  = parser!.named 'base'
+ListParser  = parser!.named 'list'
+KeyParser   = parser!.named 'key'
+
+PathPipe    = pipe 'path'
 
 ObjectParser = new Class(BaseParser,
   initialize: (@parent-pipe, @value, options = {}) ->

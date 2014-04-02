@@ -1,4 +1,4 @@
-requires = require '../../requires'
+requires = require '../../../requires'
 
 Class       = require('jsclass/src/core').Class
 
@@ -9,9 +9,12 @@ require 'sugar'
 
 Debugging         = requires.lib 'debugging'
 
-BaseParser        = requires.pipe 'parser/base_parser'
-ListParser        = requires.pipe 'parser/list_parser'
-ObjectParser      = requires.pipe 'parser/object_parser'
+parser = ->
+  requires.pipe!.parser!
+
+BaseParser        = parser!.named 'base'
+ListParser        = parser!.named 'list'
+ObjectParser      = parser!.named 'object'
 
 # more granular design, easier reuse and better encapsulation of parser state at each point
 PipeParser = new Class(

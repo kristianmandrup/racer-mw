@@ -52,6 +52,10 @@ PathMaker = new Class(
     single = last.singularize!
     single
 
+  file: (name) ->
+    @paths.push name
+    @resolve!
+
   named: (name, ...args) ->
     unless name is void
       @paths.push [name, @last-single-path!].join '_'
