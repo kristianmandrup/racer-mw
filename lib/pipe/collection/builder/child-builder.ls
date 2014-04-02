@@ -1,3 +1,5 @@
+Class = require('jsclass/src/core').Class
+
 CollectionChildBuilder = new Class(
   initialize: (@pipe)
     @

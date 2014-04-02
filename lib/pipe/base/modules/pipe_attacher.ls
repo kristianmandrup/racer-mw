@@ -5,7 +5,7 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-requires = require '../../requires'
+requires  = require '../../../../requires'
 
 ParentValidator   = requires.pipe 'validator/parent_validator'
 

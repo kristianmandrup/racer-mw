@@ -5,7 +5,7 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 describe = (obj) ->
   return obj.describe! if _.is-type 'Function', obj.describe

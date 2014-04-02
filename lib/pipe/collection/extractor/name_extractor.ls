@@ -1,4 +1,13 @@
-NameExtractor = new Class(
+Class       = require('jsclass/src/core').Class
+
+requires    = require '../../../../requires'
+
+_     = require 'prelude-ls'
+lo    = require 'lodash'
+util  = require 'util'
+require 'sugar'
+
+CollectionNameExtractor = new Class(
   initialize: (@arg) ->
     @
 

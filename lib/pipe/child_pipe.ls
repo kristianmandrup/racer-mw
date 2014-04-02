@@ -2,6 +2,8 @@ Class       = require('jsclass/src/core').Class
 
 requires  = require '../../requires'
 
+BasePipe  = requires.lib.pipe.apipe 'base'
+
 ChildPipe = new Class(BasePipe,
   initialize: ->
     @call-super!

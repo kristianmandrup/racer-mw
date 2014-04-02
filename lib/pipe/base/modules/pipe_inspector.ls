@@ -1,5 +1,7 @@
 Module       = require('jsclass/src/core').Module
 
+# requires  = require '../../../../requires'
+
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'

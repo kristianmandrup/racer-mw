@@ -1,11 +1,6 @@
-/**
- * User: kmandrup
- * Date: 08/03/14
- * Time: 16:46
- */
 Module       = require('jsclass/src/core').Module
 
-requires  = require '../../requires'
+requires  = require '../../../../requires'
 
 _         = require 'prelude-ls'
 lo        = require 'lodash'

@@ -3,7 +3,9 @@ Class       = require('jsclass/src/core').Class
 lo = require 'lodash'
 require 'sugar'
 
-AttributeValueExtractor = new Class(
+BaseValueExtractor = requires.pipe 'base/extractor/value_extractor'
+
+AttributeValueExtractor = new Class(BaseValueExtractor,
   initialize: (@obj) ->
     @
 
@@ -20,7 +22,10 @@ AttributeValueExtractor = new Class(
     _.values @obj
 
   hash-extractor: ->
-    new AttributeValueExtractor (@obj[0]): @obj[1]
+    new AttributeValueExtractor @hash!
+
+  hash: ->
+    (@obj[0]): @obj[1]
 
 )
 

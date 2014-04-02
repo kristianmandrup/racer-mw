@@ -1,12 +1,11 @@
 Class       = require('jsclass/src/core').Class
 
-requires    = require '../../../requires'
+requires    = require '../../../../requires'
 
 _     = require 'prelude-ls'
 lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
-
 
 CollectionPipe    = requires.apipe 'collection'
 BasePipeBuilder   = requires.apipe-builder 'base'

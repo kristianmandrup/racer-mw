@@ -1,6 +1,6 @@
 Module       = require('jsclass/src/core').Module
 
-requires = require '../../requires'
+requires  = require '../../../../requires'
 
 PipeValidator     = requires.pipe 'validator/pipe_validator'
 

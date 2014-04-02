@@ -5,7 +5,7 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-requires = require '../../../requires'
+# requires = require '../../../requires'
 
 BuilderConfigurator = new Class(
   initialize: (@name, @config) ->

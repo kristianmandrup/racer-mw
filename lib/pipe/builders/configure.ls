@@ -1,3 +1,5 @@
+Class       = require('jsclass/src/core').Class
+
 BuilderConfig = new Class(
   initialize: (@name) ->
     throw new Error "#{@name} is not a valid child" unless @valid-child name

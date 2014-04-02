@@ -1,6 +1,6 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../../requires'
+requires    = require '../../../../requires'
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'

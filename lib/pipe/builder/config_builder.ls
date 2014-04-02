@@ -5,7 +5,7 @@ requires = require '../../../requires'
 require 'sugar'
 
 BuilderConfigurator = requires.pipe 'builder/builder_configurator'
-PipeValidation      = requires.pipe 'pipe_validation'
+PipeValidation      = requires.pipe 'base/modules/pipe_validation'
 
 ConfigBuilder = new Class(
   include:

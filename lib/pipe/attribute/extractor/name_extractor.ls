@@ -1,8 +1,8 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../../requires'
+requires    = require '../../../../requires'
 
-AttributeBaseExtractor = requires.pipe 'attribute/base_extractor'
+AttributeBaseExtractor = requires.pipe 'attribute/extractor/base_extractor'
 
 lo = require 'lodash'
 require 'sugar'
@@ -24,7 +24,10 @@ AttributeNameExtractor = new Class(AttributeBaseExtractor,
     _.keys @obj
 
   hash-extractor: ->
-    new AttributeNameExtractor (@obj[0]): @obj[1]
+    new AttributeNameExtractor @hash
+
+  hash: ->
+    (@obj[0]): @obj[1]
 
 )
 

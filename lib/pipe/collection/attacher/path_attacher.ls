@@ -1,3 +1,9 @@
+Module = require('jsclass/src/core').Module
+
+requires = require '../../../requires'
+
+PathPipe = requires.apipe 'path'
+
 CollectionPathAttacher = new Module(
   # See TestCase!
   attach-to-path-pipe: (names) ->

@@ -1,58 +1,42 @@
-require 'sugar'
-_   = require 'prelude-ls'
+PathMaker = require './path_maker'
 
-underscore = (...items) ->
-  items = items.flatten!
-  strings = items.map (item) ->
-    String(item)
-  _.map (.underscore!), strings
+PathMaker.prototype.folders =
+  * \pipe
+  * \attribute
+  * \base
+  * \builder
+  * \builders
+  * \collection
+  * \dsl
+  * \extractor
+  * \family
+  * \model
+  * \modules
+  * \parser
+  * \path
+  * \setter
+  * \tuple
+  * \typer
+  * \validator
+  * \value
 
-full-path = (base, ...paths) ->
-  upaths = underscore(...paths)
-  ['.', base, upaths].flatten!.join '/'
+lo = require 'lodash'
 
+main-folders = <[pipe recource racer]>
 
-# TODO: Clean Up!!!
+Folders = (name) ->
+  lo.each main-folders, ((folder) -> Folders.prototype[folder] = new PathMaker name, folder), @
+  @
 
-test-path = (...paths) ->
-  full-path 'test', ...paths
+Api =
+  lib: ->
+    new Folders \lib
+  test: ->
+    new Folders \test
 
-lib-path = (...paths) ->
-  full-path 'lib', ...paths
+shortcut = (name) ->
+  Api[name] = @lib![name]
 
-module.exports =
-  test: (...paths) ->
-    require test-path(...paths)
+lo.each main-folders, shortcut, @
 
-  lib: (...paths) ->
-    require lib-path(...paths)
-
-  mw: (...paths) ->
-    @lib('mw', ...paths)
-
-  racer: (...paths) ->
-    @lib('racer', ...paths)
-
-  error: (...paths) ->
-    @lib('errors', ...paths)
-
-  apipe-builder: (name) ->
-    @pipe('builder', "#{name}_builder")
-
-  apipe-extractor: (name) ->
-    @pipe('extractor', "#{name}_extractor")
-
-  apipe: (name) ->
-    @lib('pipe', "#{name}_pipe")
-
-  pipe: (...paths) ->
-    @lib('pipe', ...paths)
-
-  aresource: (name) ->
-    @lib('resource', "#{name}_resource")
-
-  resource: (...paths) ->
-    @lib('resource', ...paths)
-
-  file: (path) ->
-    require full-path('.', path)
+module.exports = Api

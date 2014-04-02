@@ -1,6 +1,6 @@
 Class       = require('jsclass/src/core').Class
 
-requires    = require '../../../requires'
+requires    = require '../../../../requires'
 
 lo    = require 'lodash'
 require 'sugar'

@@ -3,33 +3,15 @@ Class       = require('jsclass/src/core').Class
 lo = require 'lodash'
 require 'sugar'
 
-AttributeBaseExtractor = new Class(
+BaseExtractor = requires.pipe 'base/extractor/base_extractor'
+
+AttributeBaseExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->
     @validate-clazz!
     @
 
-  extract: ->
-    lo.find @obj-types! @is-obj-type, @
-
-  obj-types: <[string object array none]>
-
-  is-obj-type: (type) ->
-    @[type] if @is-type type
-
-  is-type: (type) ->
-    typeof! @arg is type.capitalize!
-
   none:
     throw new Error "Attribute must be named by a String or Object (with _clazz), was: #{arg} [#{typeof arg}]"
-
-  array: ->
-    @extract-hash! if @is-two-array!
-
-  extract-hash: ->
-    @hash-extractor!.extract!
-
-  is-two-array: ->
-    @obj.length is 2
 
   validate-clazz: ->
     if typeof! @obj is 'Object' and @obj._clazz
