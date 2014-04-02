@@ -47,8 +47,14 @@ PathMaker = new Class(
       @paths.push args unless lo.is-empty args
       @resolve!
 
+  last-single-path: ->
+    last = @paths.flatten!last!
+    single = last.singularize!
+    single
+
   named: (name, ...args) ->
-    @paths.push name unless name is void
+    unless name is void
+      @paths.push [name, @last-single-path!].join '_'
     @resolve args
 )
 

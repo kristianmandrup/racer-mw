@@ -1,5 +1,5 @@
 requires      = require '../../requires'
-ArgumentError = requires.error 'argument_error'
+ArgumentError = requires.error!.named 'argument'
 
 InvalidArgumentError = (message) ->
   this.name = "InvalidArgumentError"

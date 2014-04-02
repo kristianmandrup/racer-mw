@@ -1,9 +1,9 @@
 requires      = require '../requires'
 
-ArgumentError = requires.error 'argument_error'
+ArgumentError = requires.error!.named 'argument'
 
 module.exports =
   ArgumentError         : ArgumentError
-  InvalidArgumentError  : requires.error 'invalid_argument_error'
-  InvalidTypeError      : requires.error 'invalid_type_error'
-  RequiredArgumentError : requires.error 'required_argument_error'
+  InvalidArgumentError  : requires.error!.named 'invalid_argument'
+  InvalidTypeError      : requires.error!.named 'invalid_type'
+  RequiredArgumentError : requires.error!.named 'required_argument'

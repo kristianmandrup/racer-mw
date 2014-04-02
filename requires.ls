@@ -28,15 +28,26 @@ Folders = (name) ->
   lo.each main-folders, ((folder) -> Folders.prototype[folder] = new PathMaker name, folder), @
   @
 
-Api =
-  lib: ->
-    new Folders \lib
-  test: ->
-    new Folders \test
+Folders.prototype.error = ->
+  new PathMaker 'lib', 'errors'
+
+
+api = {}
+
+api-method = (name) ->
+  api[name] = (...args) ->
+    return new Folders name if lo.is-empty args
+    require ['.', name, args].join '/'
+  @
+
+lo.each [\lib \test], api-method
 
 shortcut = (name) ->
-  Api[name] = @lib![name]
+  api[name] = ->
+    api.lib![name]
+
+api.error = api.lib!.error
 
 lo.each main-folders, shortcut, @
 
-module.exports = Api
+module.exports = api
