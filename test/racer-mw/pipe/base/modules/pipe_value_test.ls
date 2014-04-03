@@ -1,13 +1,10 @@
 Class  = require('jsclass/src/core').Class
+get = require '../../../../../requires' .get!
+get.test 'test_setup'
+expect = require('chai').expect
 
-requires = require '../../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-PipeValue       = requires.pipe   'pipe_value'
-ValueObject     = requires.lib 'value_object'
+PipeValue       = get.base-module  'value'
+ValueObject     = get.value-object 'base'
 
 PipeWithValue = new Class(
   include: PipeValue

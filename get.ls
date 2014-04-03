@@ -25,6 +25,9 @@ get = {
   pipe-parser: (name) ->
     api.pipe!parser!named name
 
+  pipe-validator: (name) ->
+    api.pipe!validator!named name
+
   pipe-value: (name) ->
     api.pipe!value!file name
 
@@ -35,7 +38,7 @@ get = {
     api.pipe!base!extractor!named name
 
   base-module: (name) ->
-    api.pipe!base!modules!file name
+    api.pipe!base!modules!file "pipe_#{name}"
 
   base-builder: (name) ->
     api.pipe!base!builder!file name
