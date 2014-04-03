@@ -1,10 +1,9 @@
-Class       = require('jsclass/src/core').Class
+Class   = require('jsclass/src/core').Class
+get     = require '../../../requires' .get!
 
-requires = require '../../../requires'
-
-ClazzExtractor  = requires.pipe 'extractor/clazz_extractor'
-NameExtractor   = requires.pipe 'extractor/name_extractor'
-ValueExtractor  = requires.pipe 'extractor/value_extractor'
+ClazzExtractor  = get.base-extractor 'clazz'
+NameExtractor   = get.base-extractor 'name'
+ValueExtractor  = get.base-extractor 'value'
 
 ModelSetter = new Module(
   set-all: ->

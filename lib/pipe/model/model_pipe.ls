@@ -1,14 +1,11 @@
 Class       = require('jsclass/src/core').Class
-
-requires = require '../../requires'
-
+get = require '../....//requires' .get!
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-ContainerPipe  = requires.d.pipe 'container'
-
-ModelSetter    = requires.pipe!model!setter!named 'model'
+ContainerPipe  = get.pipe 'container'
+ModelSetter    = get.model-setter 'model'
 
 # Must be on a model or attribute
 ModelPipe = new Class(ContainerPipe,

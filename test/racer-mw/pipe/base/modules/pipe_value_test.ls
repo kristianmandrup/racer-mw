@@ -2,6 +2,7 @@ Class  = require('jsclass/src/core').Class
 get = require '../../../../../requires' .get!
 get.test 'test_setup'
 expect = require('chai').expect
+require 'sugar'
 
 PipeValue       = get.base-module  'value'
 ValueObject     = get.value-object 'base'
@@ -14,12 +15,13 @@ PipeWithValue = new Class(
     @
 )
 
-Parser          = requires.pipe   'pipe_parser'
+clazz-name = (name) ->
+  "Pipe#{name.camelize!}"
 
-ModelPipe       = requires.apipe   'model'
-CollectionPipe  = requires.apipe   'collection'
-AttributePipe   = requires.apipe   'attribute'
-PathPipe        = requires.apipe   'path'
+# Parser          = get.pipe-parser   'pipe_parser'
+pipes = {}
+<[model collection attribute path]>.each (name) ->
+  pipes[clazz-name name] = get.apipe name
 
 describe 'PipeValue' ->
   var pipe, obj, result, raw, raw-contained, parser, users

@@ -1,21 +1,19 @@
-Class  = require('jsclass/src/core').Class
+Class   = require('jsclass/src/core').Class
+get     = require '../../../requires' .get!
+lo  = require 'lodash'
+require 'sugar'
 
-requires = require '../../../../../requires'
+ValueExtractor = get.base-extractor 'value'
 
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-# AttributeModelPipe       = requires.pipe!model!file 'attribute_model_pipe'
-
-# ModelValueExtractor      = requires.pipe!model!extractor!named 'model'
-
-describe 'ModelValueExtractor' ->
-  var pipe
-
-  describe 'initialize' ->
-
+describe 'ValueExtractor' ->
+  describe 'initialize(@obj)' ->
 
   context 'instance' ->
-    before ->
-      # pipe := new AttributeModelPipe 'admin'
+    describe 'value' ->
+      # @string-value or @obj-value!
+
+    describe 'string-value' ->
+      # return {} if @is-string!
+
+    describe 'obj-value' ->
+      # @inner-obj!

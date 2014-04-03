@@ -1,15 +1,10 @@
-# TODO
-# Refactor ModelPipe into CollectionModelPipe and AttributeModelPipe!!!
-
 Class       = require('jsclass/src/core').Class
-
-requires = require '../../requires'
-
+get = require '../../../requires' .get!
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-ModelPipe               = requires.apipe 'model'
+ModelPipe               = get.apipe 'model'
 
 # Must be on a model or attribute
 AttributeModelPipe = new Class(ModelPipe,

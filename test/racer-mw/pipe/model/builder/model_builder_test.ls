@@ -1,12 +1,11 @@
-requires = require '../../../../requires'
-
-requires.test 'test_setup'
-
+get   = require '../../../../requires' .get!
+get.test 'test_setup'
 expect              = require('chai').expect
 
-PathPipe            = requires.apipe 'path'
-ModelPipe           = requires.apipe 'model'
-ModelPipeBuilder    = requires.apipe-builder 'model'
+PathPipe            = get.apipe 'path'
+ModelPipe           = get.apipe 'model'
+
+ModelPipeBuilder    = get.model-builder 'model'
 
 describe 'ModelPipeBuilder' ->
   var pipe, obj

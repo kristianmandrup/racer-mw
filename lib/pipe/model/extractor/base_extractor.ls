@@ -1,10 +1,5 @@
 Class       = require('jsclass/src/core').Class
-
-requires = require '../../../requires'
-
-_   = require 'prelude-ls'
 lo  = require 'lodash'
-require 'sugar'
 
 BaseExtractor = new Class(
   initialize: (@obj) ->
