@@ -15,7 +15,10 @@ AttributeModelPipe = new Class(ModelPipe,
 
   pipe:
     type:       'AttributeModel'
-    base-type:  'Model'
+    container:  true
+    child:      true
+    named:      true
+    kind:       'Model'
 
   id: ->
     @name or @no-id!
@@ -26,8 +29,11 @@ AttributeModelPipe = new Class(ModelPipe,
   pre-attach-to: (parent) ->
     @call-super!
 
-  valid-parents:  <[path attribute-model]>
-  valid-children: <[attribute attribute-model collection]>
+  valid-parents:
+    kind: \model
+
+  valid-children:
+    kind: \named
 )
 
 module.exports = ModelPipe

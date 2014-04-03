@@ -12,6 +12,11 @@ ModelPipe                 = get.apipe  'model'
 
 # Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,
+  include:
+    * NamedPipe
+    * ChildPipe
+    ...
+
   initialize: ->
     @call-super!
     @set-all!
@@ -20,7 +25,10 @@ AttributePipe = new Class(BasePipe,
 
   pipe:
     type:       'Attribute'
-    base-type:  'Attribute'
+    container:  false
+    child:      true
+    named:      true
+    kind:  'Attribute'
 
   id: ->
     @name

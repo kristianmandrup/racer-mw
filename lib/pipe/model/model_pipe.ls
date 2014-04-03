@@ -4,13 +4,16 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-ContainerPipe  = get.pipe 'container'
+BasePipe       = get.apipe        'base'
+ContainerPipe  = get.pipe         'container'
 ModelSetter    = get.model-setter 'model'
 
 # Must be on a model or attribute
-ModelPipe = new Class(ContainerPipe,
+ModelPipe = new Class(BasePipe,
   include:
     * ModelSetter
+    * NamedPipe
+    * ChildPipe
     ...
 
   initialize: ->
@@ -18,6 +21,9 @@ ModelPipe = new Class(ContainerPipe,
 
   pipe:
     type:       'Model'
+    container:  true
+    child:      true
+    named:      void
     base-type:  'Model'
 
   id: ->
@@ -26,8 +32,9 @@ ModelPipe = new Class(ContainerPipe,
   pre-attach-to: (parent) ->
     @call-super!
 
-  valid-parents: []
-  valid-children: []
+
+  valid-children:
+    kind: \named
 )
 
 module.exports = ModelPipe

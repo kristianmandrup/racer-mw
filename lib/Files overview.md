@@ -1,5 +1,7 @@
 # Files overview
 
+**Important: Deprecated! Needs rewrite to sync with existing structure!!**
+
 A brief overview of the file structure of this project...
 
 ## DSL

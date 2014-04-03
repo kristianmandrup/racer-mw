@@ -4,6 +4,7 @@ get.test 'test_setup'
 
 ChildPipe = get.pipe 'child'
 
+# Should be a Module!
 describe 'ChildPipe' ->
   var pipe
 

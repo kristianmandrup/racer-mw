@@ -4,6 +4,7 @@ get.test 'test_setup'
 
 ContainerPipe = get.pipe 'container'
 
+# Should be a Module!
 describe 'ContainerPipe' ->
   var pipe
 

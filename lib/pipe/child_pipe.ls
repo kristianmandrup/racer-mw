@@ -2,18 +2,31 @@ Class       = require('jsclass/src/core').Class
 get         = require '../../requires' .get!
 BasePipe    = get.apipe 'base'
 
-ChildPipe = new Class(BasePipe,
+# TODO: Since a Pipe can be both a Container and a Child, perhaps these should be Modules instead!
+
+ChildPipe = new Module(
   initialize: (...args) ->
     @call-super!
     @
 
+  # TODO: Should be set dynamically, only overwrite value if void!
   pipe:
     type:       'Child'
-    base-type:  'Child'
+    container:  false
+    child:      true
+    named:      void
+    kind:       'Child'
 
   # since not a container pipe!
   allows-child: (type) ->
     false
+
+  pre-attach-to: (parent) ->
+    @call-super!
+    @attacher!.attach-to parent
+
+  attacher: ->
+    new ParentAttacher @
 
   pipes:  ->
     @api-error 'has parsed pipes'

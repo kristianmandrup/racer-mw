@@ -15,26 +15,35 @@ more data carrying information layer that abstracts your hierarchical JSON data 
 
 The pipes can be grouped into:
 - Container pipes
-- non-Container pipes
+- Child pipes
+- Named pipes
 
+### Container pipes
 
-Container pipes can be parents and have child pipes, they are:
+Container pipes can be parents of other pipes (can have child pipes).
+The following container pipes are available:
+
 - Path
 - Collection
-- CollectionModel
-- AttributeModel
+- CollectionModel (Model)
+- AttributeModel (Model)
 
-The pipes all inherit from `ContainerPipe`.
+These pipes all include the `ContainerPipe` module.
+Every container can also be a Child pipe, and so also include the Child pipe module.
 
-Child pipes that cannot be parents and cannot have children but are always children of some other pipe:
+### Child pipes
+
+Child pipes can be children of other pipes. The Attribute pipe is a special child pipe since it cannot be a Container.
 - Attribute
 
-These pipes inherit from `ChildPipe`.
+Child pipes include the `ChildPipe` module.
 
-Both `ContainerPipe` and `ChildPipe` inherit from `BasePipe` which has the most basic pipe functionality common to all pipes.
+Every Pipe inherits from `BasePipe` for basic pipe functionality.
 
-Attribute pipes are any pipes that can be a named child of a parent pipe that is not a collection.
-The following pipes can act as Attribute pipes:
+### Named pipes
+
+Named pipes are any pipes that can be a named child of a parent pipe that is not a collection.
+The following pipes are Named pipes and include the NamedPipe module:
 
 * Attribute (simple values)
 * AttributeModel

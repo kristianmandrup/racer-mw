@@ -5,6 +5,7 @@ lo  = require 'lodash'
 require 'sugar'
 
 ModelPipe               = get.apipe 'model'
+ParentAttacher          = void
 
 # Must be on a model or attribute
 CollectionModelPipe = new Class(ModelPipe,
@@ -17,21 +18,23 @@ CollectionModelPipe = new Class(ModelPipe,
       @
 
   pipe:
-    type:       \CollectionModel
-    base-type:  \Model
+    type: \CollectionModel
+    container:  true
+    child:      true
+    named:      false
+    kind: \Model
 
   id: ->
     String(@object-id) unless @object-id is void
 
-  pre-attach-to: (parent) ->
-    @call-super!
-    @attacher!.attach-to parent
-
   attacher: ->
     new ParentAttacher @
 
-  valid-parents:  <[path collection]>
-  valid-children: <[attribute model-attribute collection]>
+  valid-parents:
+    type: \collection
+
+  valid-children:
+    kind: \named
 )
 
 module.exports = ModelPipe

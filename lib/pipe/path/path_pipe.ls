@@ -8,9 +8,12 @@ require 'sugar'
 
 BasePipe          = get.apipe 'base'
 
-# Must be on a model or attribute
-# Useful to set initial model path containers such as '_session' or '_page' etc.
+# Is a kind of model
 PathPipe = new Class(BasePipe,
+  include:
+    * ModelPipe
+    ...
+
   initialize: ->
     @call-super!
     @
@@ -25,9 +28,7 @@ PathPipe = new Class(BasePipe,
     * \path
 
   valid-children:
-    * \attribute
-    * \attribute-model
-    * \collection
+    kind: \named
 )
 
 module.exports = PathPipe

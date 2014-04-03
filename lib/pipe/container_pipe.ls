@@ -1,15 +1,19 @@
-Class       = require('jsclass/src/core').Class
+Module      = require('jsclass/src/core').Module
 get         = require '../../requires' .get!
 BasePipe    = get.apipe 'base'
 
-ContainerPipe = new Class(BasePipe,
+ContainerPipe = new Module(
   initialize: (...args) ->
     @call-super!
     @
 
+  # TODO: Should be set dynamically, only overwrite value if void!
   pipe:
     type:       'Container'
-    base-type:  'Container'
+    container:  true
+    child:      void
+    named:      void
+    kind:       'Container'
 
   allows-child: (type) ->
     type in @valid-children
