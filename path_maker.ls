@@ -22,8 +22,6 @@ PathMaker = new Class(
     @[prop-name] = value unless @[prop-name] is void or typeof! prop-name is 'Function'
     @
 
-  configure: ->
-    lo.each @folders, @create-fun, @
 
   resolve: (paths) ->
     req-path = @full-path paths
@@ -31,7 +29,28 @@ PathMaker = new Class(
     require req-path
 
   full-path: (xpaths) ->
-    ['.', @paths, xpaths].compact!.flatten!.join '/'
+    ['.', @flat-paths!, xpaths].compact!.flatten!.join '/'
+
+  flat-paths: ->
+    @paths.compact!.flatten!
+
+  last-single-path: ->
+    last = @paths.flatten!last!
+    last.singularize!
+
+  file: (name) ->
+    @paths.push name
+    @resolve!
+
+  named: (name, ...args) ->
+    unless name is void
+      @paths.push [name, @last-single-path!].join '_'
+    @resolve args
+)
+
+protos =
+  configure: ->
+    lo.each @folders, @create-fun, @
 
   create-fun: (fun-name) ->
     @[fun-name] = (name, ...args) ->
@@ -47,19 +66,27 @@ PathMaker = new Class(
       @paths.push args unless lo.is-empty args
       @resolve!
 
-  last-single-path: ->
-    last = @paths.flatten!last!
-    single = last.singularize!
-    single
+  folders:
+    * \pipe
+    * \attribute
+    * \base
+    * \builder
+    * \builders
+    * \collection
+    * \dsl
+    * \extractor
+    * \family
+    * \model
+    * \modules
+    * \parser
+    * \path
+    * \setter
+    * \tuple
+    * \typer
+    * \validator
+    * \value
 
-  file: (name) ->
-    @paths.push name
-    @resolve!
-
-  named: (name, ...args) ->
-    unless name is void
-      @paths.push [name, @last-single-path!].join '_'
-    @resolve args
-)
+PathMaker.prototype <<< protos
+PathMaker.prototype.configure!
 
 module.exports = PathMaker

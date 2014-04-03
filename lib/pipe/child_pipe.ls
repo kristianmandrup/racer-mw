@@ -1,21 +1,11 @@
 Class       = require('jsclass/src/core').Class
-
-requires  = require '../../requires'
-
-BasePipe  = requires.lib.pipe.apipe 'base'
+get         = require '../../requires' .get!
+BasePipe    = get.apipe 'base'
 
 ChildPipe = new Class(BasePipe,
-  initialize: ->
+  initialize: (...args) ->
     @call-super!
-    @set-all!
-    @post-init!
     @
-
-  set-all: ->
-    @call-super!
-
-  post-init: ->
-    @call-super!
 
   pipe:
     type:       'Child'
@@ -42,4 +32,4 @@ ChildPipe = new Class(BasePipe,
 
 )
 
-module.exports = ContainerPipe
+module.exports = ChildPipe

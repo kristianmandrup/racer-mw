@@ -1,6 +1,8 @@
 Class       = require('jsclass/src/core').Class
 
-RawExtractor = requires.pipe 'value/raw_extractor'
+get = require '../../../../requires' .get!
+
+RawExtractor = get.pipe-value 'raw_extractor'
 
 RawValueCalculator = new Class(
   initialize: (@pipe, @contained) ->

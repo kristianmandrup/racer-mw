@@ -1,3 +1,5 @@
+Class       = require('jsclass/src/core').Class
+
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
@@ -6,8 +8,8 @@ require 'sugar'
 # used by BasePipe to extract and validate args
 PipeArgumentor = new Class(
   initialize: (...@args) ->
+    @
 
-  # [@first-arg, @args] = argumentor.extract arguments
   extract: ->
     @empty(@args) or [@args.pop!, @args].compact!
 
@@ -15,9 +17,7 @@ PipeArgumentor = new Class(
     if lo.is-emty @args
       throw new Error "Pipe constructor must always take at least one argument"
 
-  # For any pipe you can use valid-args to declare which arguments are valid for init
-  # unless argumentor.validate @args, @valid-args
-  #  ...
+  # For any pipe you can use valid-args to declare which arguments are valid for initializing pipe
   validate: (@valid-args)->
     @validate-args!
     return true if @valid-args.length is 0
@@ -37,4 +37,6 @@ PipeArgumentor = new Class(
     typeof arg in @valid-args
 
 )
+
+module.exports = PipeArgumentor
 

@@ -1,12 +1,12 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../../requires'
+get = require '../../../requires' .get!
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-BasePipe          = requires.d.pipe 'base'
+BasePipe          = get.apipe 'base'
 
 # Must be on a model or attribute
 # Useful to set initial model path containers such as '_session' or '_page' etc.

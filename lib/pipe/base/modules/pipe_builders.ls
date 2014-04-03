@@ -1,13 +1,14 @@
 Module       = require('jsclass/src/core').Module
 
 requires  = require '../../../../requires'
+get       = requires.get!
 
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-ConfigBuilder    = requires.apipe-builder 'config'
+ConfigBuilder    = get.pipe-builder 'config'
 
 PipeBuilders = new Module(
   initialize: ->

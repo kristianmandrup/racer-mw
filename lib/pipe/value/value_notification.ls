@@ -1,4 +1,4 @@
-Class       = require('jsclass/src/core').Class
+Module       = require('jsclass/src/core').Module
 
 PipeValueNotification = new Module(
   # sent to child pipe

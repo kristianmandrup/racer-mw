@@ -1,25 +1,5 @@
 PathMaker = require './path_maker'
 
-PathMaker.prototype.folders =
-  * \pipe
-  * \attribute
-  * \base
-  * \builder
-  * \builders
-  * \collection
-  * \dsl
-  * \extractor
-  * \family
-  * \model
-  * \modules
-  * \parser
-  * \path
-  * \setter
-  * \tuple
-  * \typer
-  * \validator
-  * \value
-
 lo = require 'lodash'
 
 main-folders = <[pipe resource racer value-object]>
@@ -37,71 +17,7 @@ Folders = (name) ->
 Folders.prototype.error = ->
   new PathMaker 'lib', 'errors'
 
-api = {
-  d:
-    resource: ->
-      api.resource!.named
-
-    pipe: ->
-      api.pipe!named
-
-    base: ->
-      api.pipe!base!file
-
-    base-extractor: ->
-      api.pipe!base!extractor!named
-
-    base-module: ->
-      api.pipe!base!modules!file
-
-    base-builder: ->
-      api.pipe!base!builder!file
-
-    attribute: ->
-      api.pipe!attribute!file
-
-    attribute-extractor: ->
-      api.pipe!attribute!extractor!named
-
-    attribute-builder: ->
-      api.pipe!attribute!extractor!named
-
-    model: ->
-      api.pipe!model!file
-
-    model-extractor: ->
-      api.pipe!model!extractor!named
-
-    model-builder: ->
-      api.pipe!model!builder!named
-
-    model-setter: ->
-      api.pipe!model!setter!named
-
-    collection: ->
-      api.pipe!collection!file
-
-    collection-attacher: ->
-      api.pipe!collection!attacher!named
-
-    collection-extractor: ->
-      api.pipe!collection!extractor!named
-
-    collection-builder: ->
-      api.pipe!collection!builder!named
-
-    collection-setter: ->
-      api.pipe!collection!setter!named
-
-    collection-value: ->
-      api.pipe!collection!value!named
-
-    path: ->
-      api.pipe!path!file
-
-    path-extractor: ->
-      api.pipe!path!extractor!named
-}
+api = {}
 
 api-method = (name) ->
   fun-name = name.camelize false
@@ -109,7 +25,6 @@ api-method = (name) ->
   api[fun-name] = (...args) ->
     return new Folders path-name if lo.is-empty args
     require ['.', path-name, args].join '/'
-  @
 
 lo.each [\lib \test], api-method
 
@@ -119,6 +34,11 @@ shortcut = (name) ->
     api.lib![fun-name]
 
 api.error = api.lib!.error
+api.get = ->
+  api.file 'get'
+
+api.file = (name) ->
+  require ['.', name].join '/'
 
 lo.each main-folders, shortcut, @
 

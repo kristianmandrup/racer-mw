@@ -1,19 +1,11 @@
 Class       = require('jsclass/src/core').Class
-
-requires  = require '../../requires'
+get         = require '../../requires' .get!
+BasePipe    = get.apipe 'base'
 
 ContainerPipe = new Class(BasePipe,
-  initialize: ->
+  initialize: (...args) ->
     @call-super!
-    @set-all!
-    @post-init!
     @
-
-  set-all: ->
-    @call-super!
-
-  post-init: ->
-    @call-super!
 
   pipe:
     type:       'Container'

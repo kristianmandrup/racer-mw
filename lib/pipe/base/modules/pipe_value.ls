@@ -7,13 +7,14 @@ Module       = require('jsclass/src/core').Module
 Class        = require('jsclass/src/core').Class
 
 requires  = require '../../../../requires'
+get       = requires.get!
 
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-ValueObject       = requires.lib 'value_object'
+ValueObject       = get.value-object 'base'
 
 FamilyNotifier = requires.pipe 'family/family_notifier'
 

@@ -1,4 +1,4 @@
-requires = require '../../../requires'
+get = require '../../../requires' .get!
 
 Class       = require('jsclass/src/core').Class
 
@@ -7,14 +7,14 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-Debugging         = requires.lib 'debugging'
+Debugging         = get.lib 'debugging'
 
-parser = ->
-  requires.pipe!.parser!
+parser = (name) ->
+  get.pipe-parser name
 
-BaseParser        = parser!.named 'base'
-ListParser        = parser!.named 'list'
-ObjectParser      = parser!.named 'object'
+BaseParser        = parser 'base'
+ListParser        = parser 'list'
+ObjectParser      = parser 'object'
 
 # more granular design, easier reuse and better encapsulation of parser state at each point
 PipeParser = new Class(
@@ -50,7 +50,7 @@ PipeParser = new Class(
   parse-number: ->
     throw new Error "Can't parse number: #{@obj}"
 
-  parse-error:
+  parse-error: ->
     throw new Error "Can't parse this value: #{typeof! @obj} - #{@obj}"
 
   # for use by Parser
