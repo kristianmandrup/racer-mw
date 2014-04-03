@@ -1,14 +1,14 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-CollectionPipe  = requires.apipe 'collection'
-ModelPipe       = requires.apipe 'model'
-PathPipe        = requires.apipe 'path'
+CollectionPipe  = requires.d.pipe 'collection'
+ModelPipe       = requires.d.pipe 'model'
+PathPipe        = requires.d.pipe 'path'
 
-ModelsPipeBuilder  = requires.apipe-builder     'models'
+ModelsPipeBuilder  = requires.d.pipe-builder     'models'
 
 describe 'CollectionPipe' ->
   var pipe, obj, collection

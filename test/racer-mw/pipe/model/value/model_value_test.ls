@@ -1,12 +1,12 @@
 Class  = require('jsclass/src/core').Class
 
-requires = require '../../../../requires'
+requires = require '../../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-ModelPipe       = requires.apipe   'model'
+ModelPipe       = requires.d.pipe   'model'
 
 describe 'PipeValue' ->
   var pipe, obj, result, raw, raw-contained, parser, users

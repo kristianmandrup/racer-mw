@@ -2,62 +2,65 @@ requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Pipe              = requires.apipe 'base'
-ModelPipe         = requires.apipe 'model'
-CollectionPipe    = requires.apipe 'collection'
+pipe = ->
+  requires.pipe!.named
 
-ParentValidator   = requires.pipe  'validator/parent_validator'
+BaseBasePipe          = pipe 'base'
+ModelBasePipe         = pipe 'model'
+CollectionBasePipe    = pipe 'collection'
+
+ParentValidator   = requires.pipe!validator!named  'parent'
 
 expect      = require('chai').expect
 
-describe 'Pipe' ->
+describe 'BaseBasePipe' ->
   var pipe, obj, parent-pipe, model-pipe
 
   describe 'init' ->
     context 'no args' ->
       specify 'fails - must take value for path' ->
-        expect(-> new Pipe).to.throw
+        expect(-> new BaseBasePipe).to.throw
 
     context 'arg: object' ->
       specify 'creates it' ->
-        expect(-> new Pipe {}).to.not.throw
+        expect(-> new BaseBasePipe {}).to.not.throw
 
       specify 'creates it' ->
-        expect(new Pipe {}).to.be.an.instance-of Pipe
+        expect(new BaseBasePipe {}).to.be.an.instance-of BaseBasePipe
 
       describe 'pipe' ->
         before ->
-          pipe := new Pipe {}
+          pipe := new BaseBasePipe {}
 
         specify 'has-resource is true by default' ->
           expect(pipe.has-resource).to.be.true
 
     context 'arg: string' ->
       specify 'creates it' ->
-        expect(-> new Pipe 'users').to.not.throw
+        expect(-> new BaseBasePipe 'users').to.not.throw
 
     context 'arg: function' ->
       specify 'creates it' ->
-        expect(-> new Pipe (-> 'users')).to.not.throw
+        expect(-> new BasePipe (-> 'users')).to.not.throw
 
       specify 'creates it' ->
-        expect(new Pipe 'users').to.be.an.instance-of Pipe
+        expect(new BasePipe 'users').to.be.an.instance-of BasePipe
 
     context 'arg: array' ->
       specify 'creates it' ->
-        expect(-> new Pipe '_page', 'admins').to.not.throw
+        expect(-> new BasePipe '_page', 'admins').to.not.throw
 
       specify 'creates it' ->
-        expect(new Pipe '_page', 'admins').to.be.an.instance-of Pipe
+        expect(new BasePipe '_page', 'admins').to.be.an.instance-of BasePipe
 
     context 'arg: number' ->
       specify 'always fails' ->
-        expect(-> new Pipe 1).to.throw Error
+        expect(-> new BasePipe 1).to.throw Error
 
-  context 'Pipe: parentless users' ->
+  context 'BasePipe: parentless users' ->
     before ->
-      pipe        := new Pipe 'users'
-      parent-pipe := new Pipe 'parent'
+      pipe        := new BasePipe 'users'
+      parent-pipe := new BasePipe 'parent'
 
     describe 'children' ->
       specify 'none' ->

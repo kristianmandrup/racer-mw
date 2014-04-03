@@ -4,7 +4,10 @@ Class    = require('jsclass/src/core').Class
 
 _        = require 'prelude-ls'
 
-TupleObjectParser = requires.pipe 'parser/tuple/tuple_object_parser'
+parser = ->
+  requires.pipe!.parser!
+
+TupleObjectParser = parser!.named 'tuple/tuple_object'
 
 KeyParser = new Class(
   initialize: (@obj) ->

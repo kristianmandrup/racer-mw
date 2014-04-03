@@ -7,14 +7,14 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-ContainerPipe     = requires.apipe 'container'
-PathPipe          = requires.apipe 'path'
+ContainerPipe     = requires.pipe 'container'
+PathPipe          = requires.d.pipe 'path'
 
-ModelsPipeBuilder = requires.apipe-builder 'models'
+ModelsPipeBuilder = requires.d.pipe-builder 'models'
 
-NameExtractor     = requires.pipe 'collection/name_extractor'
+NameExtractor     = requires.pipe!collection!extractor!named 'name'
 
-ArrayValueObject = requires.lib 'value_object/array_value_object'
+ArrayValueObject = requires.lib!value_object!named 'array'
 
 # Must be on a model or attribute
 CollectionPipe = new Class(ContainerPipe,

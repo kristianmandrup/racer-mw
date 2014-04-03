@@ -1,15 +1,18 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-PipeParser      = requires.pipe   'pipe_parser'
+PipeParser      = requires.pipe!base!file   'pipe_parser'
 
-ModelPipe       = requires.apipe   'model'
-CollectionPipe  = requires.apipe   'collection'
-AttributePipe   = requires.apipe   'attribute'
-PathPipe        = requires.apipe   'path'
+pipe = ->
+  requires.pipe!.named
+
+ModelPipe       = pipe 'model'
+CollectionPipe  = pipe 'collection'
+AttributePipe   = pipe 'attribute'
+PathPipe        = pipe 'path'
 
 util = require 'util'
 

@@ -6,9 +6,9 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-ContainerPipe  = requires.apipe 'container'
+ContainerPipe  = requires.d.pipe 'container'
 
-ModelSetter    = requires.pipe 'model/setter'
+ModelSetter    = requires.pipe!model!setter!named 'model'
 
 # Must be on a model or attribute
 ModelPipe = new Class(ContainerPipe,

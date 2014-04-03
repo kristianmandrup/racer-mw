@@ -22,7 +22,7 @@ PathMaker.prototype.folders =
 
 lo = require 'lodash'
 
-main-folders = <[pipe recource racer value-object]>
+main-folders = <[pipe resource racer value-object]>
 
 Folders = (name) ->
   path-name = name.underscore!
@@ -37,7 +37,71 @@ Folders = (name) ->
 Folders.prototype.error = ->
   new PathMaker 'lib', 'errors'
 
-api = {}
+api = {
+  d:
+    resource: ->
+      api.resource!.named
+
+    pipe: ->
+      api.pipe!named
+
+    base: ->
+      api.pipe!base!file
+
+    base-extractor: ->
+      api.pipe!base!extractor!named
+
+    base-module: ->
+      api.pipe!base!modules!file
+
+    base-builder: ->
+      api.pipe!base!builder!file
+
+    attribute: ->
+      api.pipe!attribute!file
+
+    attribute-extractor: ->
+      api.pipe!attribute!extractor!named
+
+    attribute-builder: ->
+      api.pipe!attribute!extractor!named
+
+    model: ->
+      api.pipe!model!file
+
+    model-extractor: ->
+      api.pipe!model!extractor!named
+
+    model-builder: ->
+      api.pipe!model!builder!named
+
+    model-setter: ->
+      api.pipe!model!setter!named
+
+    collection: ->
+      api.pipe!collection!file
+
+    collection-attacher: ->
+      api.pipe!collection!attacher!named
+
+    collection-extractor: ->
+      api.pipe!collection!extractor!named
+
+    collection-builder: ->
+      api.pipe!collection!builder!named
+
+    collection-setter: ->
+      api.pipe!collection!setter!named
+
+    collection-value: ->
+      api.pipe!collection!value!named
+
+    path: ->
+      api.pipe!path!file
+
+    path-extractor: ->
+      api.pipe!path!extractor!named
+}
 
 api-method = (name) ->
   fun-name = name.camelize false

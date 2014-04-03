@@ -11,18 +11,15 @@ require 'sugar'
 # Each pipe reflect the type of object at that particular position in the model, thus
 # it can act as a complete abstraction layer over the model.
 
-
-
 self = @
 require-module = (name) ->
-  self["Pipe#{name.camelize!}"] = requires.pipe "base/modules/pipe_#{name.underscore!}"
+  self["Pipe#{name.camelize!}"] = requires.pipe!base!modules!file "pipe_#{name.underscore!}"
 
 require-helper = (name) ->
-  self["Pipe#{name.camelize!}"] = requires.pipe "base/pipe_#{name.underscore!}"
+  self["Pipe#{name.camelize!}"] = requires.pipe!base!file "pipe_#{name.underscore!}"
 
-
-base-modules = <[builders attacher inspector family value identifier resource validation]
-base-helpers = <[navigator parser argumentor]>
+base-modules = <[builders attacher inspector family value identifier resource validation]>
+base-helpers = <[navigator parser argumentor]]>
 
 lo.each base-modules, require-module
 lo.each base-helpers, require-helper

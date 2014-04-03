@@ -1,14 +1,24 @@
+Class       = require('jsclass/src/core').Class
+
 requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-BasePipe          = requires.apipe 'base'
-PipeValidator     = requires.pipe 'validator/pipe_validator'
+pipe = ->
+  requires.pipe!.named
 
-CollectionPipe    = requires.apipe 'collection'
-ModelPipe         = requires.apipe 'model'
-AttributePipe     = requires.apipe 'attribute'
-PathPipe          = requires.apipe 'path'
+validator = ->
+  requires.pipe!.validator!.named
+
+expect      = require('chai').expect
+
+PipeValidator     = validator 'pipe'
+
+BasePipe          = pipe 'base'
+CollectionPipe    = pipe 'collection'
+ModelPipe         = pipe 'model'
+AttributePipe     = pipe 'attribute'
+PathPipe          = pipe 'path'
 
 expect      = require('chai').expect
 

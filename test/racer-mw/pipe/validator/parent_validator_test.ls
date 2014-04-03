@@ -4,8 +4,14 @@ requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
-BasePipe          = requires.apipe 'base'
-ParentValidator   = requires.pipe 'validator/parent_validator'
+pipe = ->
+  requires.pipe!.named
+
+validator = ->
+  requires.pipe!.validator!.named
+
+BasePipe          = pipe 'base'
+ParentValidator   = validator 'parent'
 
 expect      = require('chai').expect
 

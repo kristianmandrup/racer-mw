@@ -7,9 +7,12 @@ lo    = require 'lodash'
 
 requires = require '../../../requires'
 
-Pipe = requires.apipe 'base'
+pipe = ->
+  requires.pipe!.named
 
-PipeValidation = requires.pipe 'pipe_validation'
+Pipe = pipe 'base'
+
+PipeValidation = requires.pipe!base!modules!file 'pipe_validation'
 
 ParentValidator = new Class(
   include:

@@ -3,13 +3,13 @@
 
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+requires = require '../../../requires'
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-ModelPipe               = requires.apipe 'base'
+ModelPipe               = requires.d.pipe 'model'
 
 # Must be on a model or attribute
 CollectionModelPipe = new Class(ModelPipe,

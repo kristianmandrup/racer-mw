@@ -1,81 +1,88 @@
 Class  = require('jsclass/src/core').Class
 
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-argumentor  = requires.pipe 'pipe_argumentor'
+PipeArgumentor  = requires.pipe!base!file 'pipe_argumentor'
 _           = require 'prelude-ls'
 
 describe 'Argumentor' ->
-  var first, all, valid
+  var argumentor, first, all, valid
 
-  describe 'extract' ->
-    context 'void' ->
-      specify 'throws' ->
-        expect(-> argumentor.extract!).to.throw
+  describe 'initialize' ->
+    expect( -> new PipeArgumentor).to.be.an.instance-of PipeArgumentor
 
-  describe 'extract' ->
-    context 'no args' ->
-      specify 'throws' ->
-        expect(-> argumentor.extract []).to.throw
+  context 'instance' ->
+    before ->
+      argumentor := new PipeArgumentor
 
-  describe 'extract' ->
-    context 'one string: a' ->
-      before ->
-        [first, all] := argumentor.extract ['a']
+    describe 'extract' ->
+      context 'void' ->
+        specify 'throws' ->
+          expect(-> argumentor.extract!).to.throw
 
-      specify 'first: a' ->
-        expect(first).to.eql 'a'
+    describe 'extract' ->
+      context 'no args' ->
+        specify 'throws' ->
+          expect(-> argumentor.extract []).to.throw
 
-      specify 'all: a,b' ->
-        expect(all).to.eql 'a'
+    describe 'extract' ->
+      context 'one string: a' ->
+        before ->
+          [first, all] := argumentor.extract ['a']
 
-  describe 'extract' ->
-    context 'object' ->
-      before ->
-        [first, all] := argumentor.extract [a: 1]
+        specify 'first: a' ->
+          expect(first).to.eql 'a'
 
-      specify 'first: a' ->
-        expect(first).to.eql a: 1
+        specify 'all: a,b' ->
+          expect(all).to.eql 'a'
 
-      specify 'all: a,b' ->
-        expect(all).to.eql a: 1
+    describe 'extract' ->
+      context 'object' ->
+        before ->
+          [first, all] := argumentor.extract [a: 1]
 
-  describe 'extract' ->
-    context 'list of strings: a, b' ->
-      before ->
-        [first, all] := argumentor.extract ['a', 'b']
+        specify 'first: a' ->
+          expect(first).to.eql a: 1
 
-      specify 'first: a' ->
-        expect(first).to.eql 'a'
+        specify 'all: a,b' ->
+          expect(all).to.eql a: 1
 
-      specify 'all: a,b' ->
-        expect(all).to.eql ['a', 'b']
+    describe 'extract' ->
+      context 'list of strings: a, b' ->
+        before ->
+          [first, all] := argumentor.extract ['a', 'b']
 
-  describe 'extract' ->
-    context 'named object' ->
-      before ->
-        [first, all] := argumentor.extract x: [a: 1]
+        specify 'first: a' ->
+          expect(first).to.eql 'a'
 
-      specify 'first: a' ->
-        expect(first).to.eql x: [a: 1]
+        specify 'all: a,b' ->
+          expect(all).to.eql ['a', 'b']
 
-      specify 'all: a,b' ->
-        expect(all).to.eql x: [a: 1]
+    describe 'extract' ->
+      context 'named object' ->
+        before ->
+          [first, all] := argumentor.extract x: [a: 1]
 
-  describe 'extract' ->
-    context 'arguments of strings > 0: a, 1: b' ->
-      call-me = ->
-        argumentor.extract _.values(arguments)
+        specify 'first: a' ->
+          expect(first).to.eql x: [a: 1]
 
-      before ->
-        [first, all] := call-me 'a', 'b'
+        specify 'all: a,b' ->
+          expect(all).to.eql x: [a: 1]
 
-      specify 'first: a' ->
-        expect(first).to.eql 'a'
+    describe 'extract' ->
+      context 'arguments of strings > 0: a, 1: b' ->
+        call-me = ->
+          argumentor.extract _.values(arguments)
 
-      specify 'all: a,b' ->
-        expect(all).to.eql ['a', 'b']
+        before ->
+          [first, all] := call-me 'a', 'b'
+
+        specify 'first: a' ->
+          expect(first).to.eql 'a'
+
+        specify 'all: a,b' ->
+          expect(all).to.eql ['a', 'b']

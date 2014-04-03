@@ -1,10 +1,10 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-PathPipe  = requires.apipe 'path'
+PathPipe  = requires.d.pipe 'path'
 
 describe 'PathPipe' ->
   var pipe, obj

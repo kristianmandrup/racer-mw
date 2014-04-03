@@ -7,7 +7,10 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-BaseParser  = requires.pipe 'parser/base_parser'
+parser = ->
+  requires.pipe!.parser!
+
+BaseParser  = parser!.named 'base'
 
 StringParser = new Class(BaseParser,
   initialize: (@parser)->

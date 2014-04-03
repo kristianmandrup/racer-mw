@@ -7,6 +7,9 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
+parser = ->
+  requires.pipe!.parser!
+
 ParserBuilder = new Class(
   initialize: (@type, @value) ->
     @validate-type!
@@ -28,7 +31,7 @@ ParserBuilder = new Class(
     @c-builder ||= new @builder-clazz(@type) @, @value
 
   builder-clazz: ->
-    requires.pipe "parser/builder/parser_#{@type}_builder"
+    parser!.builder!.named "parser_#{@type}"
 )
 
 module.exports = ParserBuilder

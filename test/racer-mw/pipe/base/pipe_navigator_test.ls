@@ -1,12 +1,13 @@
-requires = require '../../../requires'
+requires = require '../../../../requires'
 
 requires.test 'test_setup'
 
 expect          = require('chai').expect
 
-PipeNavigator   = requires.pipe   'pipe_navigator'
-ModelPipe       = requires.apipe  'model'
-CollectionPipe  = requires.apipe  'collection'
+PipeNavigator   = requires.d.base 'pipe_navigator'
+
+ModelPipe       = requires.d.pipe  'model'
+CollectionPipe  = requires.d.pipe  'collection'
 
 describe 'PipeNavigator' ->
   var pipe, obj, nav

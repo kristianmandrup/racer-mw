@@ -2,7 +2,10 @@ Module       = require('jsclass/src/core').Module
 
 requires  = require '../../../../requires'
 
-PipeValidator     = requires.pipe 'validator/pipe_validator'
+validator = ->
+  requires.pipe!.validator!.named
+
+PipeValidator     = validator 'pipe'
 
 PipeValidation = new Module(
   is-pipe: (pipe) ->

@@ -1,5 +1,19 @@
-/**
- * User: kmandrup
- * Date: 02/04/14
- * Time: 19:19
- */
+Class  = require('jsclass/src/core').Class
+
+requires = require '../../../../../requires'
+
+requires.test 'test_setup'
+
+expect          = require('chai').expect
+
+# ModelPipe       = requires.d.pipe   'model'
+
+describe 'ModelSetter' ->
+  var pipe
+
+  describe 'initialize' ->
+
+
+  context 'instance' ->
+    before ->
+      # pipe := new ModelPipe 'admin'
