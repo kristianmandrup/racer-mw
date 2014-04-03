@@ -1,8 +1,5 @@
-Module       = require('jsclass/src/core').Module
-
-requires  = require '../../../../requires'
-get       = requires.get!
-
+Module    = require('jsclass/src/core').Module
+get       = require '../../../../requires' .get!
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
@@ -18,7 +15,7 @@ PipeBuilders = new Module(
   config-builders: ->
     lo.each @builder-list, @config-builder, @
 
-  builder-list: <[collection model attribute]>
+  builder-list: <[ collection model attribute ]>
 
   # used by generated builder functions (see ConfigBuilder)
   builder: (name) ->

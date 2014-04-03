@@ -22,11 +22,19 @@ PipeIdentifier = new Module(
     throw new Error "A subclass of Pipe must implement id function"
 
   update-name: ->
-    return unless @parent-name and _.is-type 'Function', @parent-name
+    @set-full-name!
 
-    names = [@parent-name!, @name].exclude (name) ->
-      name is void or _.empty(name)
-    @full-name = names.join '.'
+  set-full-name: ->
+    @full-name = @names.join '.'
+
+  names: ->
+    [@valid-parent-name!, @name].compact!
+
+  valid-parent-name: ->
+    @parent-name! if @has-parent-name!
+
+  has-parent-name: ->
+    typeof! @parent-name is 'Function'
 )
 
 module.exports = PipeIdentifier

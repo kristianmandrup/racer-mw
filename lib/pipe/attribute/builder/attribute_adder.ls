@@ -1,12 +1,10 @@
-Class       = require('jsclass/src/core').Class
-
-requires    = require '../../../../requires'
-
-lo    = require 'lodash'
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires'
+lo      = require 'lodash'
 require 'sugar'
 
-ModelPipe         = requires.apipe 'model'
-CollectionPipe    = requires.apipe 'collection'
+ModelPipe       = get.apipe 'model'
+CollectionPipe  = get.apipe 'collection'
 
 AttributeAdder = new Class(
   initialize: (@builder) ->
@@ -44,6 +42,7 @@ AttributeAdder = new Class(
   collection: ->
     new CollectionPipe(@value)
 
+  # TODO: what kind of Model? Collection or Attribute or parse to determine?
   model: ->
     new ModelPipe(_clazz: @value)
 

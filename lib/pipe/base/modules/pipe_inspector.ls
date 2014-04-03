@@ -9,16 +9,25 @@ require 'sugar'
 
 PipeInspector = new Module(
   child-types: ->
-    return "no children" unless @child-names!.length > 0
-    self = @
-    @child-names!.map (name) ->
-      self.child(name).pipe-type
+    @no-children! or @children!
+
+  no-children: ->
+    "no children" unless @has-children!
+
+  children: ->
+    lo.map @child-names, @child-type, @
+
+  child-type: (name) ->
+    @child(name).pipe-type
 
   describe-children: (recursive) ->
-    return "no children" unless @child-names!.length > 0
-    self = @
-    @child-names!.map (name) ->
-      self.child(name).describe recursive
+    @no-children! or @describe-child-list!
+
+  describe-child-list: ->
+    lo.map @child-names, @describe-child, @
+
+  describe-child: (name) ->
+    @child(name).describe recursive
 
   describe: (children) ->
     type: @pipe-type

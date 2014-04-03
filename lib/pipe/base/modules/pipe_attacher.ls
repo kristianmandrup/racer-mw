@@ -1,13 +1,11 @@
-Module       = require('jsclass/src/core').Module
-
+Module    = require('jsclass/src/core').Module
+get       = require '../../../../requires' .get!
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-requires  = require '../../../../requires'
-
-ParentValidator   = requires.pipe 'validator/parent_validator'
+ParentValidator   = get.pipe-validator 'parent'
 
 PipeAttacher = new Module(
   # when attached, a pipe should update its cached full-name
@@ -18,12 +16,14 @@ PipeAttacher = new Module(
     @
 
   attach-list: (pipes) ->
-    unless typeof! pipes is 'Array'
-      throw new Error "Can only attach to a list of Pipes, was: #{typeof! pipes}"
-
+    @validate-pipes pipes
     self = @
     lo.each pipes @attach
     @
+
+  validate-pipes: (pipes) ->
+    unless typeof! pipes is 'Array'
+      throw new Error "Can only attach to a list of Pipes, was: #{typeof! pipes}"
 
   detach: ->
     @parent = void

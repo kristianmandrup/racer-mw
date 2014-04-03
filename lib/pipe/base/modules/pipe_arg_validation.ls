@@ -1,11 +1,8 @@
-Module       = require('jsclass/src/core').Module
-
+Module    = require('jsclass/src/core').Module
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
-
-# requires  = require '../../../../requires'
 
 PipeArgValidation = new Module(
   validate-args: ->

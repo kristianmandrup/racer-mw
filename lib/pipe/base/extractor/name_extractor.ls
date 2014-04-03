@@ -1,10 +1,9 @@
-Class  = require('jsclass/src/core').Class
-get    = require '../../../../requires' .get!
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+lo      = require 'lodash'
+require 'sugar'
 
 BaseExtractor = get.base-extractor 'base'
-
-lo = require 'lodash'
-require 'sugar'
 
 BaseNameExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->

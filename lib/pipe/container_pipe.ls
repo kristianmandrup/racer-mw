@@ -2,6 +2,7 @@ Module      = require('jsclass/src/core').Module
 get         = require '../../requires' .get!
 BasePipe    = get.apipe 'base'
 
+# TODO: Perhaps rename to ParentPipe ??
 ContainerPipe = new Module(
   initialize: (...args) ->
     @call-super!

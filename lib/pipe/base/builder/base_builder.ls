@@ -5,11 +5,7 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-requires = require '../../../../requires'
-
-describe = (obj) ->
-  return obj.describe! if _.is-type 'Function', obj.describe
-  util.inspect obj, depth: 1
+get = require '../../../../requires' .get!
 
 PipeValidation      = requires.pipe 'pipe_validation'
 
@@ -26,7 +22,7 @@ BasePipeBuilder = new Class(
     @is-pipe @container
 
     unless _.is-type 'Function', @container.attach
-      throw new Error "Must have an attach function, was: #{describe @container}"
+      throw new Error "Must have an attach function, was: #{@describe @container}"
 
   attach: (pipe) ->
     @container.attach pipe
@@ -76,6 +72,11 @@ BasePipeBuilder = new Class(
 
   clear: ->
     @added = []
+
+  describe: (obj) ->
+    return obj.describe! if _.is-type 'Function', obj.describe
+    util.inspect obj, depth: 1
+
 )
 
 module.exports = BasePipeBuilder
