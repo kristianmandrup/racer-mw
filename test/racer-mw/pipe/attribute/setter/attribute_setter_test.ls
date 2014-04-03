@@ -2,9 +2,9 @@ get     = require '../../../../../requires' .get!
 expect  = require('chai').expect
 get.test 'test_setup'
 
-NameExtractor = get.attribute-extractor 'name'
+AttributePipe  = get.apipe 'attribute'
 
-describe 'AttributeNameExtractor' ->
+describe 'AttributeSetter' ->
   var pipe
 
   describe 'module' ->

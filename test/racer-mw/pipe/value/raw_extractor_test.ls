@@ -1,8 +1,7 @@
-Class       = require('jsclass/src/core').Class
-
-get = require '../../../../requires' .get!
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
 get.test 'test_setup'
-expect = require('chai').expect
 
 BasePipe        = get.apipe 'base'
 RawExtractor    = get.pipe-value 'raw_extractor'

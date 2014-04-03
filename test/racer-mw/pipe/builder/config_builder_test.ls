@@ -1,14 +1,12 @@
-requires = require '../../../../requires'
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires.test 'test_setup'
+ModelPipe         = get.apipe         'model'
+ConfigBuilder     = get.pipe-builder 'config'
 
-expect            = require('chai').expect
-
-ModelPipe         = requires.apipe         'model'
-ConfigBuilder     = requires.apipe-builder 'config'
-
-ModelsPipeBuilder = requires.apipe-builder 'models'
-ModelPipeBuilder  = requires.apipe-builder 'model'
+ModelsPipeBuilder = get.model-builder 'models'
+ModelPipeBuilder  = get.model-builder 'model'
 
 describe 'ConfigBuilder' ->
   var cb, pipe

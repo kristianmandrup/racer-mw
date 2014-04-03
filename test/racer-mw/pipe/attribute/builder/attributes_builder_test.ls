@@ -1,16 +1,13 @@
-requires = require '../../../../requires'
+get     = require '../../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires.test 'test_setup'
+AttributesPipeBuilder    = get.attribute-builder 'attributes'
 
-expect          = require('chai').expect
-
-AttributesPipeBuilder    = requires.apipe-builder 'attributes'
-
-ModelPipe         = requires.apipe 'model'
-AttributePipe     = requires.apipe 'attribute'
-PathPipe          = requires.apipe 'path'
-CollectionPipe    = requires.apipe 'collection'
-
+ModelPipe         = get.apipe 'model'
+AttributePipe     = get.apipe 'attribute'
+PathPipe          = get.apipe 'path'
+CollectionPipe    = get.apipe 'collection'
 
 describe 'AttributesPipeBuilder' ->
   var pipe, obj

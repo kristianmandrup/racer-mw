@@ -1,13 +1,10 @@
-Class       = require('jsclass/src/core').Class
-
-requires    = require '../../../../requires'
-
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+Class  = require('jsclass/src/core').Class
+get    = require '../../../../requires' .get!
+lo     = require 'lodash'
 require 'sugar'
 
-AttributePipe       = requires.apipe 'attribute'
-BasePipeBuilder     = requires.apipe-builder 'base'
+AttributePipe       = get.apipe 'attribute'
+BasePipeBuilder     = get.base-builder 'base'
 
 # Must be on a model or attribute
 AttributesPipeBuilder = new Class(BasePipeBuilder,

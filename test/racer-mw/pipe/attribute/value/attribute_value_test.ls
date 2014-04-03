@@ -1,12 +1,9 @@
 Class  = require('jsclass/src/core').Class
+get    = require '../../../../../requires' .get!
+expect = require('chai').expect
+get.test 'test_setup'
 
-requires = require '../../../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-AttributePipe   = requires.apipe   'attribute'
+AttributePipe  = get.apipe 'attribute'
 
 describe 'PipeValue' ->
   var pipe, obj, result, raw, raw-contained, parser, users

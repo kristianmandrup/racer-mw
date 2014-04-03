@@ -1,8 +1,6 @@
-get = require '../../../requires' .get!
-
+get     = require '../../../requires' .get!
+expect  = require('chai').expect
 get.test 'test_setup'
-
-expect = require('chai').expect
 
 ChildPipe = get.pipe 'child'
 

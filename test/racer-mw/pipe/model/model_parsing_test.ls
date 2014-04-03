@@ -1,3 +1,10 @@
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
+
+ModelPipe       = get.apipe 'model'
+AttributePipe   = get.apipe 'attribute'
+
 describe 'ModelPipe' ->
   describe 'parse' ->
     context 'user Model - one object' ->

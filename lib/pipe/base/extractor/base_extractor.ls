@@ -1,6 +1,5 @@
-Class       = require('jsclass/src/core').Class
-
-lo = require 'lodash'
+Class  = require('jsclass/src/core').Class
+lo     = require 'lodash'
 require 'sugar'
 
 BaseExtractor = new Class(

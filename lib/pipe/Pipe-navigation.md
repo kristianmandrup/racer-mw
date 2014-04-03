@@ -3,6 +3,9 @@
 Each pipe builder returns the pipe just built so that we can easily build the full pipe path via chaining.
 A pipe can be "attached" to one parent. A pipe can have one or more children (unless it's an attribute pipe).
 
+The `PipeNavigator` is a helper class that can be found in the `pipe/base` folder.
+You can override it (if need be) for specific pipes.
+
 You can get the *parent* pipe of a pipe using the `parent` property. Naturally `children` contains all the children
  of the pipe:
 

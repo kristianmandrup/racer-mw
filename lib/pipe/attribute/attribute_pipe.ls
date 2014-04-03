@@ -1,15 +1,14 @@
 Class       = require('jsclass/src/core').Class
 
-requires = require '../../requires'
+get   = require '../../../requires' .get!
 
 _     = require 'prelude-ls'
 lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-BasePipe                  = requires.apipe  'base'
-ModelPipe                 = requires.apipe  'model'
-AttributeObjectUnpacker   = requires.pipe   'attribute/attribute_object_unpacker'
+BasePipe                  = get.apipe  'base'
+ModelPipe                 = get.apipe  'model'
 
 # Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,
@@ -18,9 +17,6 @@ AttributePipe = new Class(BasePipe,
     @set-all!
     @post-init!
     @
-
-  unpacked: ->
-    @_unpacked ||= new AttributeObjectUnpacker(@args).unpack!
 
   pipe:
     type:       'Attribute'

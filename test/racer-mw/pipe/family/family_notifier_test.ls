@@ -1,14 +1,12 @@
-Class  = require('jsclass/src/core').Class
-
-requires = require '../../../../requires'
-
-requires.test 'test_setup'
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
 lo = require 'lodash'
 
-expect          = require('chai').expect
+/*
 sinon           = require 'sinon'
-
 chai = require "chai"
 sinon = require "sinon"
 sinon-chai = require "sinon-chai"
@@ -16,15 +14,16 @@ sinon-chai = require "sinon-chai"
 chai.use sinon-chai
 expect = chai.expect
 chai.use sinon-chai
+*/
 
-FamilyNotifier  = requires.pipe   'family/family_notifier'
+FamilyNotifier  = get.pipe-family 'family_notifier'
 
-PipeValue       = requires.pipe   'pipe_value'
-PipeFamily      = requires.pipe   'pipe_family'
+PipeValue       = get.base-module 'value'
+PipeFamily      = get.base-module 'family'
 
-ModelPipe       = requires.apipe  'model'
-CollectionPipe  = requires.apipe  'collection'
-AttributePipe   = requires.apipe  'attribute'
+ModelPipe       = get.apipe  'model'
+CollectionPipe  = get.apipe  'collection'
+AttributePipe   = get.apipe  'attribute'
 
 Pipe = new Class(
   include:

@@ -1,13 +1,10 @@
-requires = require '../../../../requires'
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-ModelPipe       = requires.d.pipe     'model'
-ResourceModel   = requires.d.resource 'model'
-
-AttributesPipeBuilder  = requires.d.pipe-builder 'attributes'
+ModelPipe               = get.apipe 'model'
+ResourceModel           = get.resource 'model'
+AttributesPipeBuilder   = get.attribute-builder 'attributes'
 
 describe 'ModelPipe' ->
   var pipe, obj

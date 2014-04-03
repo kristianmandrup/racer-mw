@@ -18,7 +18,7 @@ clazz-name = (name) ->
   "Pipe#{name.camelize!}"
 
 require-module = (name) ->
-  modules[clazz-name name] = get.base-module "pipe_#{name.underscore!}"
+  modules[clazz-name name] = get.base-module name.underscore!
 
 require-helper = (name) ->
   helpers[clazz-name name] = get.base "pipe_#{name.underscore!}"

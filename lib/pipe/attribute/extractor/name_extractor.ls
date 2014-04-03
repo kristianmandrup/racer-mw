@@ -1,8 +1,7 @@
-Class       = require('jsclass/src/core').Class
+Class  = require('jsclass/src/core').Class
+get    = require '../../../../requires' .get!
 
-requires    = require '../../../../requires'
-
-AttributeBaseExtractor = requires.pipe 'attribute/extractor/base_extractor'
+AttributeBaseExtractor = get.attribute-extractor 'base'
 
 lo = require 'lodash'
 require 'sugar'

@@ -1,15 +1,15 @@
 Class   = require('jsclass/src/core').Class
-get     = require '../../../requires' .get!
+get     = require '../../../../requires' .get!
 lo  = require 'lodash'
 require 'sugar'
 
-BaseExtractor = get.base-extractor 'base'
+BaseExtractor = get.model-extractor 'base'
 
 ClazzExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->
     @
 
-  clazz: (obj, nested) ->
+  extract: (obj, nested) ->
     @str-obj-clazz(nested) or @normalized-obj-clazz! or @recurse-clazz!
 
   recurse-clazz: ->

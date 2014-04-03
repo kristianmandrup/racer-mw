@@ -22,6 +22,9 @@ get = {
   pipe-builder: (name) ->
     api.pipe!builder!named name
 
+  pipe-family: (name) ->
+    api.pipe!family!file name
+
   pipe-parser: (name) ->
     api.pipe!parser!named name
 
@@ -50,7 +53,7 @@ get = {
     api.pipe!attribute!extractor!named name
 
   attribute-builder: (name) ->
-    api.pipe!attribute!extractor!named name
+    api.pipe!attribute!builder!named name
 
   model: (name) ->
     api.pipe!model!file name

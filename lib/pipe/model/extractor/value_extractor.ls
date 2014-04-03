@@ -9,7 +9,7 @@ ValueExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->
     @
 
-  value: ->
+  extract: ->
     @string-value or @obj-value!
 
   string-value: ->

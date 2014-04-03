@@ -1,16 +1,19 @@
-Class       = require('jsclass/src/core').Class
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires = require '../../../../requires'
+BasePipe          = get.apipe 'base'
+PipeTypeValidator = get.pipe-validator 'pipe_type'
 
-requires.test 'test_setup'
+describe 'PipeTypeValidator' ->
+  var pipe, validator
 
-pipe = ->
-  requires.pipe!.named
+  pipes = {}
 
-validator = ->
-  requires.pipe!.validator!.named
+  describe 'init' ->
+    before ->
+      pipe := new BasePipe 'simple'
 
-BasePipe          = pipe 'base'
-PipeTypeValidator = validator 'pipe_type'
 
-expect      = require('chai').expect
+

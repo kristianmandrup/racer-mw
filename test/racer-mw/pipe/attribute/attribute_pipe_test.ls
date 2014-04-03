@@ -1,10 +1,8 @@
-requires = require '../../../requires'
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-AttributePipe  = requires.apipe 'attribute'
+AttributePipe  = get.apipe 'attribute'
 
 describe 'AttributePipe' ->
   var pipe, obj
@@ -27,7 +25,6 @@ describe 'AttributePipe' ->
 
       specify 'fails' ->
         expect(-> new AttributePipe obj).to.throw
-
 
     context 'arg: string' ->
       specify 'creates it' ->
