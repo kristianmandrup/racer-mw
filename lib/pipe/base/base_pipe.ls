@@ -76,6 +76,14 @@ BasePipe = new Class(
     delete @first-arg
 
   post-build: ->
+
+  parent-name: ->
+    if @parent then @parent.full-name else ''
+
+  clear: ->
+    @child-hash = {}
+    @update-child-count!
+    @
 )
 
 module.exports = BasePipe
