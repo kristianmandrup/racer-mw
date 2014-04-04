@@ -9,6 +9,9 @@ PipeResource = new Module(
   # by default any pipe can have a resource (except PathPipe)
   has-resource: true
 
+  post-init: ->
+    @create-res!
+
   # to create and set resource of pipe
   create-res: ->
     @set-res!

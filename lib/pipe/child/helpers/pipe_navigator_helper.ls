@@ -1,8 +1,5 @@
 Class     = require('jsclass/src/core').Class
-
-_         = require 'prelude-ls'
 lo        = require 'lodash'
-util      = require 'util'
 require 'sugar'
 
 PipeNavigator = new Class(
@@ -23,8 +20,7 @@ PipeNavigator = new Class(
     @inner-walk @pipe, steps
 
   inner-walk: (pipe, steps) ->
-    return pipe if steps is 0
-    return pipe if pipe is void
+    return pipe if steps is 0 or pipe is void
     next = pipe.parent
     if next isnt void then @inner-walk(next, --steps) else pipe
 )

@@ -1,6 +1,18 @@
-# Family method to access parent etc.
+Module          = require('jsclass/src/core').Module
+get             = require '../../../../requires' .get!
+
+PipeNavigation    = get.child-module 'navigation'
+PipeNotification  = get.child-module 'notification'
 
 PipeChild = new Module(
+  include:
+    * PipeNavigation
+    * PipeNotification
+    ...
+
+  parent-name: ->
+    @parent.full-name if @parent
+
   has-parent: ->
     @parent isnt void
   no-parent: ->

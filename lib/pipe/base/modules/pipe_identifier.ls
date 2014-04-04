@@ -22,7 +22,7 @@ PipeIdentifier = new Module(
     throw new Error "A subclass of Pipe must implement id function"
 
   update-full-name: ->
-    @full-name = @name-helper.full-name!
+    @full-name = @name-helper.full-name! if @parent
 
   name-helper: ->
     new PipeNameHelper @
