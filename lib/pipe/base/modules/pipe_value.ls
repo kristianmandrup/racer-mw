@@ -1,22 +1,7 @@
-/**
- * User: kmandrup
- * Date: 08/03/14
- * Time: 16:59
- */
-Module       = require('jsclass/src/core').Module
-Class        = require('jsclass/src/core').Class
+Module    = require('jsclass/src/core').Module
+get       = require '../../../../requires' .get!
 
-requires  = require '../../../../requires'
-get       = requires.get!
-
-_         = require 'prelude-ls'
-lo        = require 'lodash'
-util      = require 'util'
-require 'sugar'
-
-ValueObject       = get.value-object 'base'
-
-FamilyNotifier = requires.pipe 'family/family_notifier'
+PipeUpdateValueHelper = get.base-helper 'update_value'
 
 PipeValue = new Module(
   initialize: ->
@@ -28,11 +13,15 @@ PipeValue = new Module(
   value: ->
     @value-obj.value
 
-  # options can be fx: at: 2 to start inserting at position 2
+  # options can be
+  #   no-parent: true
+  #   no-child: true
+  # these options are to avoid circular notifications in the pipe graph
   set-value: (value, options = {}) ->
-    if @value-obj.set value, options
-      new FamilyNotifier(@, options).notify-family @value!, options
-    @value!
+    @update-value-helper!set value, options .update!
+
+  update-value-helper: ->
+    new PipeUpdateValueHelper @
 )
 
 module.exports = PipeValue

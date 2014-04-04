@@ -15,26 +15,17 @@ require 'sugar'
 PipeIdentifier = new Module(
   set-name: (name) ->
     @name = name
-    @update-name!
+    @update-full-name!
     @name
 
   id: ->
     throw new Error "A subclass of Pipe must implement id function"
 
-  update-name: ->
-    @set-full-name!
+  update-full-name: ->
+    @full-name = @name-helper.full-name!
 
-  set-full-name: ->
-    @full-name = @names.join '.'
-
-  names: ->
-    [@valid-parent-name!, @name].compact!
-
-  valid-parent-name: ->
-    @parent-name! if @has-parent-name!
-
-  has-parent-name: ->
-    typeof! @parent-name is 'Function'
+  name-helper: ->
+    new PipeNameHelper @
 )
 
 module.exports = PipeIdentifier

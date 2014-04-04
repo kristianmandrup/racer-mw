@@ -1,17 +1,15 @@
 Module       = require('jsclass/src/core').Module
 
 PipeValueNotification = new Module(
+  auto-update: true
+
   # sent to child pipe
   on-parent-update: (parent, value, options = {}) ->
-    return unless @auto-update
-    @set-value value, no-parent: true
+    @set-value value, no-parent: true if @auto-update
 
   # sent to parent pipe
   on-child-update: (child, value, options = {}) ->
-    return unless @auto-update
-    @set-value value, no-child: true
-
-  auto-update: true
+    @set-value value, no-child: true if @auto-update
 )
 
 module.exports = PipeValueNotification

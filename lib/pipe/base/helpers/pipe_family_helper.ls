@@ -1,4 +1,4 @@
-Module    = require('jsclass/src/core').Module
+Class     = require('jsclass/src/core').Class
 get       = require '../../../../requires' .get!
 _         = require 'prelude-ls'
 lo        = require 'lodash'

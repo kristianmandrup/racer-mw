@@ -6,7 +6,7 @@ util      = require 'util'
 require 'sugar'
 
 # used by BasePipe to extract and validate args
-PipeArgumentor = new Class(
+PipeArgumentsHelper = new Class(
   initialize: (...@args) ->
     @
 
@@ -19,16 +19,12 @@ PipeArgumentor = new Class(
 
   # For any pipe you can use valid-args to declare which arguments are valid for initializing pipe
   validate: (@valid-args)->
-    @validate-args!
-    return true if @valid-args.length is 0
-    @filtered!.length is @args.length
+    @valid-args! and @filtered!.length is @args.length
 
-  validate-args: ->
+  valid-args: ->
     unless @args
       throw new Error "Pipe must take a value to help it determine a path in the model"
-
-    unless typeof! @args is 'Array'
-      throw new Error "Pipe argument must be an Array, was: #{typeof! @args}"
+    true
 
   filtered:  ->
     lo.filter @args, @valid-type, @
@@ -38,5 +34,5 @@ PipeArgumentor = new Class(
 
 )
 
-module.exports = PipeArgumentor
+module.exports = PipeArgumentsHelper
 

@@ -5,7 +5,7 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-PipeIndexer = new Class(
+PipeIndexHelper = new Class(
   initialize: (@pipe) ->
     @
 

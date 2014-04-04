@@ -11,21 +11,13 @@ PipeResource = new Module(
 
   # to create and set resource of pipe
   create-res: ->
-    return unless @has-resource!
-    @validate-string!
-    @resource-clazz!
     @set-res!
 
   set-res: ->
-    @$res = new @clazz pipe: @
+    @$res = new @resource-clazz! pipe: @ if @has-resource!
 
   resource-clazz: ->
     @res-clazz ||= get.aresource @pipe-type.to-lower-case!
-
-  validate-string: ->
-    unless typeof! @pipe-type is 'String'
-      throw new Error "Pipe must have a pipe-type to know what resource to create"
-
 )
 
 module.exports = PipeResource

@@ -10,13 +10,13 @@ PipeRetriever = new Module(
     @pipe-indexer.get index
 
   pipe-indexer: ->
-    @_pipe-indexer ||= new PipeIndexer(@)
+    @_pipe-indexer ||= new PipeIndexHelper @
 
   first: ->
     @get 0
 
   last: ->
-    @get @child-names!.length-1
+    @get @child-count
 )
 
 module.exports = PipeRetriever

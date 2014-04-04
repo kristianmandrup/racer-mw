@@ -50,6 +50,12 @@ PipeContainer = new Module(
 
   child-list: ->
     _.values(@child-hash).compact!
+
+  child-type: (name) ->
+    @child(name).pipe.type
+
+  children-types: ->
+    lo.map @child-names, @child-type, @
 )
 
 module.exports = PipeContainer
