@@ -11,7 +11,7 @@ BuilderConfigurator = new Class(
   initialize: (@name, @config) ->
     @pipe          = @config.pipe
     @builders      = @config.builders
-    @builder-clazz = requires.apipe-builder(@name.to-lower-case!)
+    @builder-clazz = requires.apipe-builder @name.to-lower-case!
     @
 
   configure: ->
