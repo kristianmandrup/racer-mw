@@ -1,10 +1,7 @@
-Class  = require('jsclass/src/core').Class
-
-requires = require '../../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
 PipeResource    = requires.pipe   'pipe_resource'
 
@@ -33,7 +30,6 @@ PipeWithNoResource = new Class(
 
   has-resource: false
 )
-
 
 describe 'PipeResource' ->
   var pipe, result
