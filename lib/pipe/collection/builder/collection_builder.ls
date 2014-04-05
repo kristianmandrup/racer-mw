@@ -1,14 +1,9 @@
-Class       = require('jsclass/src/core').Class
-
-requires    = require '../../../../requires'
-
-_     = require 'prelude-ls'
-lo    = require 'lodash'
-util  = require 'util'
-require 'sugar'
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../requires' .get!
+_       = require 'prelude-ls'
 
 CollectionPipe    = requires.apipe 'collection'
-BasePipeBuilder   = requires.apipe-builder 'base'
+BasePipeBuilder   = requires.container-builder 'base'
 
 CollectionPipeBuilder = new Class(BasePipeBuilder,
   initialize: (@container) ->

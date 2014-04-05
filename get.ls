@@ -79,6 +79,9 @@ get = {
   model-setter: (name) ->
     api.pipe!model!setter!named name
 
+  container-builder: (name) ->
+    api.pipe!container!builder!named "pipe_#{name}"
+
   collection: (name) ->
     api.pipe!collection!file name
 

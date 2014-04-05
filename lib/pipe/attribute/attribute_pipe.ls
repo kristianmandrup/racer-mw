@@ -8,7 +8,9 @@ util  = require 'util'
 require 'sugar'
 
 BasePipe                  = get.apipe  'base'
-ModelPipe                 = get.apipe  'model'
+BasePipe          = get.apipe                 'base'
+NamedPipe         = get.apipe                 'named'
+ChildPipe         = get.apipe                 'child'
 
 # Must be on a model or path pipe
 AttributePipe = new Class(BasePipe,

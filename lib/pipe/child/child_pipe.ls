@@ -1,8 +1,7 @@
-Class       = require('jsclass/src/core').Class
-get         = require '../../requires' .get!
-BasePipe    = get.apipe 'base'
+Module    = require('jsclass/src/core').Module
+get       = require '../../../requires' .get!
 
-# TODO: Since a Pipe can be both a Container and a Child, perhaps these should be Modules instead!
+BasePipe  = get.apipe 'base'
 
 ChildPipe = new Module(
   initialize: (...args) ->

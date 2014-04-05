@@ -5,7 +5,7 @@ get   = require '../../../../requires' .get!
 lo    = require 'lodash'
 require 'sugar'
 
-BasePipeBuilder   = get.attribute-builder  'base'
+BasePipeBuilder   = get.container-builder 'base'
 AttributeAdder    = get.attribute  'builder/attribute_adder'
 
 AttributePipeBuilder = new Class(BasePipeBuilder,

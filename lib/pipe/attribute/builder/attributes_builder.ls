@@ -3,8 +3,8 @@ get    = require '../../../../requires' .get!
 lo     = require 'lodash'
 require 'sugar'
 
-AttributePipe       = get.apipe 'attribute'
-BasePipeBuilder     = get.base-builder 'base'
+AttributePipe    = get.apipe 'attribute'
+BasePipeBuilder  = get.container-builder 'base'
 
 # Must be on a model or attribute
 AttributesPipeBuilder = new Class(BasePipeBuilder,

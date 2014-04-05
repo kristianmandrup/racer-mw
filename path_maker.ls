@@ -72,6 +72,8 @@ protos =
     * \base
     * \builder
     * \builders
+    * \child
+    * \container
     * \collection
     * \dsl
     * \extractor
@@ -79,6 +81,7 @@ protos =
     * \helpers
     * \model
     * \modules
+    * \named
     * \parser
     * \path
     * \setter

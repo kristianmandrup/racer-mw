@@ -6,11 +6,15 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
+BasePipe          = get.apipe                 'base'
+NamedPipe         = get.apipe                 'named'
+ChildPipe         = get.apipe                 'child'
 ContainerPipe     = get.apipe                 'container'
 PathPipe          = get.apipe                 'path'
+
 ModelsPipeBuilder = get.model-builder         'models'
 NameExtractor     = get.collection-extractor  'name'
-ArrayValueObject  = get.value_object          'array'
+ArrayValueObject  = get.value-object          'array'
 
 CollectionPipe = new Class(BasePipe,
   include:

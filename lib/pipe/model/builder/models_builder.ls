@@ -1,10 +1,10 @@
 Class   = require('jsclass/src/core').Class
-get     = require '../../../requires' .get!
+get     = require '../../../../requires' .get!
 lo  = require 'lodash'
 require 'sugar'
 
 ModelPipe        = get.apipe 'model'
-BasePipeBuilder  = get.base-builder 'base'
+BasePipeBuilder  = get.container-builder 'base'
 
 # Must be on a model or attribute
 ModelsPipeBuilder = new Class(BasePipeBuilder,
