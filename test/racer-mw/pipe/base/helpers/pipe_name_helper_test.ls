@@ -21,7 +21,7 @@ PipeNameHelper    = get.base-helper 'name'
 describe 'PipeNameHelper' ->
   var helper, pipe
   before ->
-    pipe   := new NamedPipe 'kris'
+    pipe := new NamedPipe 'kris'
 
   describe 'initialize(@pipe)' ->
     # @name = @pipe.name

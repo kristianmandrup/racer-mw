@@ -1,23 +1,21 @@
-Class  = require('jsclass/src/core').Class
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../../requires' .get!
+expect  = require('chai').expect
+_       = require 'prelude-ls'
+get.test 'test_setup'
 
-requires = require '../../../../requires'
+PipeArgumentsHelper  = get.base-helper 'arguments'
 
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-PipeArgumentor  = requires.pipe!base!file 'pipe_argumentor'
-_           = require 'prelude-ls'
-
-describe 'Argumentor' ->
+describe 'PipeArgumentsHelper' ->
   var argumentor, first, all, valid
 
-  describe 'initialize' ->
-    expect( -> new PipeArgumentor).to.be.an.instance-of PipeArgumentor
+  describe.only 'initialize' ->
+    specify 'is an PipeArgumentsHelper' ->
+      expect(new PipeArgumentsHelper).to.be.an.instance-of PipeArgumentsHelper
 
   context 'instance' ->
     before ->
-      argumentor := new PipeArgumentor
+      argumentor := new PipeArgumentsHelper
 
     describe 'extract' ->
       context 'void' ->

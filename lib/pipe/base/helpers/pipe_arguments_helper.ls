@@ -1,5 +1,4 @@
 Class       = require('jsclass/src/core').Class
-
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 util      = require 'util'

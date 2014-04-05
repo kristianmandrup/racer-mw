@@ -1,7 +1,9 @@
 Class       = require('jsclass/src/core').Class
+lo    = require 'lodash'
+require 'sugar'
 
 BuilderConfig = new Class(
-  initialize: (@name) ->
+  initialize: (@name, @valid-children = []) ->
     throw new Error "#{@name} is not a valid child" unless @valid-child name
     @config-parser!
     @
@@ -39,5 +41,7 @@ BuilderConfig = new Class(
     models: 'modls'
 
   valid-child: (name) ->
-    name in @valid-children or []
+    name in @valid-children
 )
+
+module.exports = BuilderConfig
