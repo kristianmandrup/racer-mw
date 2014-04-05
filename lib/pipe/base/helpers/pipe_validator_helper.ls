@@ -1,21 +1,22 @@
-# Validates if object is a Pipe and optionally kind of pipe
-# Reusable in many places
-
-Class       = require('jsclass/src/core').Class
-
-require 'sugar'
+Class = require('jsclass/src/core').Class
+get   = require '../../../../requires' .get!
 util  = require 'util'
 _     = require 'prelude-ls'
 lo    = require 'lodash'
+require 'sugar'
+
+PipeTypeValidator = get.base-validator 'type'
 
 PipeValidator = new Class(
   initialize: (@obj, @valid-types = []) ->
     @validate!
+    console.log 'validated'
     @configure!
     @
 
   configure: ->
-    @pipe-type = @obj.pipe-type
+    console.log 'configured'
+    @pipe-type = @obj.pipe.type
 
   validate: ->
     @validate-many! or @validate-pipe!
@@ -47,7 +48,7 @@ PipeValidator = new Class(
 
   validate-pipe-type: ->
     unless @valid-pipe-type!
-      throw new Error "Must be kind of Pipe, missing pipe-type"
+      throw new Error "Must be kind of Pipe, missing pipe-type #{util.inspect @obj.pipe} - #{@pipe-type}"
     true
 
   valid-pipe-type: ->

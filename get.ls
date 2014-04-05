@@ -40,8 +40,20 @@ get = {
   base-extractor: (name) ->
     api.pipe!base!extractor!named name
 
+  base-validator: (name) ->
+    @base-helpers!validator!file "pipe_#{name}_validator_helper"
+
   base-module: (name) ->
-    api.pipe!base!modules!file "pipe_#{name}"
+    @base-modules!file "pipe_#{name}"
+
+  base-modules: ->
+    api.pipe!base!modules!
+
+  base-helper: (name) ->
+    @base-helpers!file "pipe_#{name}_helper"
+
+  base-helpers: ->
+    api.pipe!base!helpers!
 
   base-builder: (name) ->
     api.pipe!base!builder!file name

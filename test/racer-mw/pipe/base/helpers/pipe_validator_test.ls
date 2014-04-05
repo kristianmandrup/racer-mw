@@ -1,9 +1,9 @@
 Class   = require('jsclass/src/core').Class
-get     = require '../../../../requires' .get!
+get     = require '../../../../../requires' .get!
 expect  = require('chai').expect
 get.test 'test_setup'
 
-PipeValidator     = get.pipe-validator 'pipe'
+PipeValidator     = get.base-helper 'validator'
 
 BasePipe          = get.apipe 'base'
 CollectionPipe    = get.apipe 'collection'
@@ -92,9 +92,6 @@ describe 'PipeValidator' ->
 
     specify 'model is valid when in valid-types' ->
       expect(-> new PipeValidator(pipe, ['collection', 'model']).validate!).to.not.throw Error
-
-
-
 
   describe 'validate-many (objs)' ->
 

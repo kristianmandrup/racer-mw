@@ -1,5 +1,43 @@
-/**
- * User: kmandrup
- * Date: 04/04/14
- * Time: 20:47
- */
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
+
+_ = require 'prelude-ls'
+
+CleanSlate    = get.base-module 'clean_slate'
+PipeDescriber = get.base-module 'describer'
+
+# See pipe_child_describer_test
+
+InfoPipe = new Class(
+  include:
+    * PipeDescriber
+    * CleanSlate
+    ...
+
+  initialize: ->
+    @
+
+  child-hash: {}
+
+  child-names: ->
+    []
+
+  type: 'Pipe'
+  pipe:
+    type: 'Path'
+)
+
+
+describe 'PipeDescriber' ->
+  var pipe, obj
+
+  context 'InfoPipe' ->
+    before ->
+      pipe := new InfoPipe
+      # console.log pipe.describe!
+
+    describe 'describe' ->
+      specify 'returns pipe description' ->
+        expect(pipe.describe!).to.eql { type: 'Path', name: undefined, id: undefined, value: 'undefined'}

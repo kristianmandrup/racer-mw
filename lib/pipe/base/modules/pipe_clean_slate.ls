@@ -1,6 +1,8 @@
 Module    = require('jsclass/src/core').Module
 
 CleanSlate = new Module(
+  initialize: ->
+
   # since not a container pipe!
   allows-child: (type) ->
     false
@@ -16,6 +18,7 @@ CleanSlate = new Module(
   valid-parents:  []
 
   parent-name: ->
+  value: ->
 )
 
 module.exports = CleanSlate

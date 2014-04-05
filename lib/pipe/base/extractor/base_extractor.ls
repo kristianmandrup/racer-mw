@@ -21,7 +21,7 @@ BaseExtractor = new Class(
   is-type: (type) ->
     typeof! @arg is type.capitalize!
 
-  none:
+  none: ->
     throw new Error "Extraction error"
 
   array: ->

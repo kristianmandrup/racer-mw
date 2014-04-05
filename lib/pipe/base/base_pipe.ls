@@ -1,7 +1,5 @@
 Class     = require('jsclass/src/core').Class
-
 get       = require '../../../requires' .get!
-
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 
@@ -18,7 +16,7 @@ clazz-name = (name) ->
 require-module = (name) ->
   modules[clazz-name name] = get.base-module name.underscore!
 
-base-modules = <[clean-slate adder attacher family identifier inspector notification resource retriever setter validation value]>
+base-modules = <[clean-slate describer identifier resource setter validation value]>
 
 lo.each base-modules, require-module
 

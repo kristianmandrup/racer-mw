@@ -4,7 +4,7 @@ expect  = require('chai').expect
 get.test 'test_setup'
 
 BasePipe          = get.apipe 'base'
-PipeTypeValidator = get.pipe-validator 'pipe_type'
+PipeTypeValidator = get.base-validator 'type'
 
 describe 'PipeTypeValidator' ->
   var pipe, validator

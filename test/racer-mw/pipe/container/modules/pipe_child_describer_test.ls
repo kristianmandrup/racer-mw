@@ -1,17 +1,14 @@
-Class  = require('jsclass/src/core').Class
-
-requires = require '../../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
+Class   = require('jsclass/src/core').Class
+get     = require '../../../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
 _ = require 'prelude-ls'
 
-PipeInspector   = requires.pipe 'pipe_inspector'
+PipeChildDescriber   = get.base-module 'child_describer'
 
 NoInfoPipe = new Class(
-  include: PipeInspector
+  include: PipeChildDescriber
 
   initialize: ->
     @
@@ -23,7 +20,7 @@ NoInfoPipe = new Class(
 )
 
 InfoPipe = new Class(
-  include: PipeInspector
+  include: PipeChildDescriber
 
   initialize: ->
     @
@@ -39,7 +36,7 @@ InfoPipe = new Class(
 )
 
 ChildrenPipe = new Class(
-  include: PipeInspector
+  include: PipeChildDescriber
 
   initialize: ->
     @

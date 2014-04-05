@@ -5,15 +5,18 @@ lo  = require 'lodash'
 require 'sugar'
 
 BasePipe       = get.apipe        'base'
-ContainerPipe  = get.pipe         'container'
+ContainerPipe  = get.apipe        'container'
+ChildPipe      = get.apipe        'child'
+NamedPipe      = get.apipe        'named'
 ModelSetter    = get.model-setter 'model'
 
 # Must be on a model or attribute
 ModelPipe = new Class(BasePipe,
   include:
-    * ModelSetter
     * NamedPipe
+    * ModelSetter
     * ChildPipe
+    * ContainerPipe
     ...
 
   initialize: ->

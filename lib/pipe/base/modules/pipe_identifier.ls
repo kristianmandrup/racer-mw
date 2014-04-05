@@ -1,16 +1,7 @@
-/**
- * User: kmandrup
- * Date: 08/03/14
- * Time: 16:59
- */
-Module       = require('jsclass/src/core').Module
+Module  = require('jsclass/src/core').Module
+get     = require '../../../../requires' .get!
 
-# requires  = require '../../../../requires'
-
-_         = require 'prelude-ls'
-lo        = require 'lodash'
-util      = require 'util'
-require 'sugar'
+PipeNameHelper  = get.base-helper 'name'
 
 PipeIdentifier = new Module(
   set-name: (name) ->

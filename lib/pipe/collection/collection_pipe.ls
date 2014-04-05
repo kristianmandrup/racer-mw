@@ -6,7 +6,7 @@ lo        = require 'lodash'
 util      = require 'util'
 require 'sugar'
 
-ContainerPipe     = get.pipe                  'container'
+ContainerPipe     = get.apipe                 'container'
 PathPipe          = get.apipe                 'path'
 ModelsPipeBuilder = get.model-builder         'models'
 NameExtractor     = get.collection-extractor  'name'

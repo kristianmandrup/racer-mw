@@ -1,6 +1,6 @@
-Class        = require('jsclass/src/core').Class
-
-ValueObject  = get.value-object 'base'
+Class         = require('jsclass/src/core').Class
+get           = require '../../../../requires' .get!
+ValueObject   = get.value-object 'base'
 
 PipeUpdateValueHelper = new Class(
   initialize: (@pipe, @value, @options = {}) ->

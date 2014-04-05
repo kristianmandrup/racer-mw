@@ -1,5 +1,5 @@
 Module      = require('jsclass/src/core').Module
-get         = require '../../requires' .get!
+get         = require '../../../requires' .get!
 BasePipe    = get.apipe 'base'
 
 # TODO: Perhaps rename to ParentPipe ??

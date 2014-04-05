@@ -1,12 +1,14 @@
 Class     = require('jsclass/src/core').Class
 get       = require '../../../../requires' .get!
-_         = require 'prelude-ls'
-lo        = require 'lodash'
-util      = require 'util'
 require 'sugar'
 
+PipeValidation = get.base-module 'validation'
+
 PipeNameHelper = new Class(
+  include: PipeValidation
+
   initialize: (@pipe) ->
+    @is-pipe pipe
     @name = @pipe.name
     @
 

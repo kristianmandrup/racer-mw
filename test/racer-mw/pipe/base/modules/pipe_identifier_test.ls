@@ -1,17 +1,19 @@
 Class  = require('jsclass/src/core').Class
-
-requires = require '../../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
+get    = require '../../../../../requires' .get!
+expect = require('chai').expect
+get.test 'test_setup'
 
 _ = require 'prelude-ls'
 
-PipeIdentifier   = requires.pipe 'pipe_identifier'
+CleanSlate        = get.base-module 'clean_slate'
+PipeIdentifier    = get.base-module 'identifier'
+PipeNameHelper    = get.base-helper 'name'
 
 BasicPipe = new Class(
-  include: PipeIdentifier
+  include:
+    * PipeIdentifier
+    * CleanSlate
+    ...
 
   initialize: ->
     @
@@ -29,20 +31,31 @@ describe 'PipeIdentifier' ->
         expect(-> pipe.id!).to.throw Error
 
     describe 'set-name' ->
-      specify 'sets it' ->
+      specify 'returns new name' ->
         expect(pipe.set-name 'jake').to.eq 'jake'
 
-    context 'parent name function' ->
+      specify 'sets name' ->
+        pipe.set-name 'jake'
+        expect(pipe.name).to.eq 'jake'
+
+    describe 'name-helper' ->
+      specify 'is a PipeNameHelper' ->
+        expect(pipe.name-helper!).to.be.an.instance-of PipeNameHelper
+
+      specify 'which has acces to the pipe' ->
+        expect(pipe.name-helper!.pipe).to.eq pipe
+
+    context 'parent name: returns my-parent' ->
       before ->
         pipe.parent-name = ->
-          'parent'
+          'my-parent'
 
       describe 'update-name' ->
         specify 'only adds parent name' ->
-          pipe.update-name 'chilly'
-          expect(pipe.full-name).to.eq 'parent.jake'
+          pipe.update-full-name!
+          expect(pipe.full-name).to.eq 'my-parent.jake'
 
       describe 'set-name' ->
         specify 'sets full name' ->
           pipe.set-name 'bill'
-          expect(pipe.full-name).to.eq 'parent.bill'
+          expect(pipe.full-name).to.eq 'my-parent.bill'

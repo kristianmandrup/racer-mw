@@ -1,5 +1,5 @@
 Class   = require('jsclass/src/core').Class
-get     = require '../../../requires' .get!
+get     = require '../../../../requires' .get!
 lo  = require 'lodash'
 require 'sugar'
 

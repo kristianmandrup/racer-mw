@@ -76,6 +76,7 @@ protos =
     * \dsl
     * \extractor
     * \family
+    * \helpers
     * \model
     * \modules
     * \parser

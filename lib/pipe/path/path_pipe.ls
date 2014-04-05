@@ -6,7 +6,8 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-BasePipe          = get.apipe 'base'
+BasePipe    = get.apipe 'base'
+ModelPipe   = get.apipe 'model'
 
 # Is a kind of model
 PathPipe = new Class(BasePipe,
