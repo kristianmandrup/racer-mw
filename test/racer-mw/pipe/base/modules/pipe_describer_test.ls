@@ -29,6 +29,30 @@ InfoPipe = new Class(
     type: 'Path'
 )
 
+ValuePipe = new Class(
+  include:
+    * PipeDescriber
+    * CleanSlate
+    ...
+
+  initialize: (@name, @val) ->
+
+  value: ->
+    @val
+
+  id: ->
+    @name
+
+  child-hash: {}
+
+  child-names: ->
+    []
+
+  type: 'Pipe'
+  pipe:
+    type: 'Path'
+)
+
 
 describe 'PipeDescriber' ->
   var pipe, obj
@@ -40,4 +64,13 @@ describe 'PipeDescriber' ->
 
     describe 'describe' ->
       specify 'returns pipe description' ->
-        expect(pipe.describe!).to.eql { type: 'Path', name: undefined, id: undefined, value: 'undefined'}
+        expect(pipe.describe!).to.eql { type: 'Path', name: undefined, id: undefined, value: undefined}
+
+  context 'ValuePipe' ->
+    before ->
+      pipe := new ValuePipe 'kris', 27
+      # console.log pipe.describe!
+
+    describe 'describe' ->
+      specify 'returns pipe description' ->
+        expect(pipe.describe!).to.eql { type: 'Path', name: 'kris', id: 'kris', value: 27}

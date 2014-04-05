@@ -1,4 +1,6 @@
 Class       = require('jsclass/src/core').Class
+util  = require 'util'
+lo    = require 'lodash'
 
 PipeTypeValidator = new Class(
   initialize: (@valid-types = []) ->
@@ -6,6 +8,7 @@ PipeTypeValidator = new Class(
   validate: (@type) ->
     unless @valid-type!
       throw new Error "Invalid pipe type #{@type} must be one of: #{@valid-types}"
+    true
 
   valid-type: ->
     return true if @no-valid-types!

@@ -3,10 +3,10 @@ util   = require 'util'
 
 PipeDescriber = new Module(
   describe: (children) ->
-    type: @pipe.type
+    type: @pipe.info?.type
     name: @name
     id: @id! if @id
-    value: util.inspect @value!
+    value: @value!
 )
 
 module.exports = PipeDescriber

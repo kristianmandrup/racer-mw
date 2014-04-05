@@ -1,70 +1,70 @@
 Class = require('jsclass/src/core').Class
 get   = require '../../../../requires' .get!
 util  = require 'util'
-_     = require 'prelude-ls'
 lo    = require 'lodash'
 require 'sugar'
 
 PipeTypeValidator = get.base-validator 'type'
 
 PipeValidator = new Class(
-  initialize: (@obj, @valid-types = []) ->
+  initialize: (@pipe, @valid-types = []) ->
     @validate!
-    console.log 'validated'
-    @configure!
     @
 
   configure: ->
-    console.log 'configured'
-    @pipe-type = @obj.pipe.type
+    @pipe-type = @pipe.info?.type
 
   validate: ->
+    @validate-obj-type!
     @validate-many! or @validate-pipe!
 
   validate-pipe: ->
     @is-pipe!
     @validate-types!
-    true
+
+  is-obj: ->
+    typeof @pipe is 'object'
 
   is-array: ->
-    typeof! @obj is 'Array'
+    typeof! @pipe is 'Array'
 
   is-object: ->
-    typeof! @obj is 'Object'
+    typeof! @pipe is 'Object'
 
   validate-obj-type: ->
-    unless @is-array! or @is-object!
-      throw new Error "Must be an Object or Array, was: #{typeof! @obj}"
+    unless @is-obj!
+      throw new Error "Must be an Object or Array, was: #{typeof! @pipe}"
     true
 
   is-pipe: ->
     @validate-obj!
+    @configure!
     @validate-obj-type!
     @validate-pipe-type!
 
   validate-obj: ->
-    unless @obj.type is 'Pipe'
-      throw new Error "Must be a type: Pipe, was: #{@obj.type}"
+    unless @pipe.type is 'Pipe'
+      throw new Error "Must be a type: Pipe, was: #{@pipe.type}"
 
   validate-pipe-type: ->
     unless @valid-pipe-type!
-      throw new Error "Must be kind of Pipe, missing pipe-type #{util.inspect @obj.pipe} - #{@pipe-type}"
+      throw new Error "Must be kind of Pipe, missing pipe-type #{util.inspect @pipe.info} - #{@pipe-type}"
     true
 
   valid-pipe-type: ->
     typeof! @pipe-type is 'String'
 
-  validate-many: (objs) ->
+  validate-many: ->
     return unless @is-array!
-    for obj in objs.flatten!.compact!
-      new PipeValidator obj, @valid-types
+    for pipe in @pipe.flatten!.compact!
+      new PipeValidator pipe, @valid-types
     true
 
   validate-types: ->
     @type-validator!.validate @pipe-type
 
   type-validator: ->
-    @tvalidator ||= new PipeTypeValidator @valid-types
+    @_type-validator ||= new PipeTypeValidator @valid-types
 )
 
 module.exports = PipeValidator

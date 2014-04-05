@@ -30,7 +30,7 @@ BasePipe = new Class(
     @
 
   type:       'Pipe'
-  pipe:
+  info:
     type:       'Base'
     base-type:  'Base'
 
