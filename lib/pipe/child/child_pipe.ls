@@ -40,7 +40,7 @@ ChildPipe = new Module(
     @api-error 'has a parser'
 
   api-error-msg: (reason) ->
-    throw new Error  "Only a Container pipe #{reason}, I am a #{@pipe.type} pipe"
+    throw new Error  "Only a Container pipe #{reason}, is #{@pipe.type} pipe"
 
 )
 

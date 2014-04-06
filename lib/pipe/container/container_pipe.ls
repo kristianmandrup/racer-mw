@@ -20,16 +20,10 @@ ContainerPipe = new Module(
     type in @valid-children
 
   add: (...args) ->
-    @parse ...args
+    @adder.add args
 
-  parse: (...args) ->
-    @attach @pipes(args)
-
-  pipes: (args) ->
-    @parser(args).parse!
-
-  parser: (args) ->
-    new Parser(args)
+  adder: ->
+    @_adder ||= new PipeAddHelper @
 )
 
 module.exports = ContainerPipe
