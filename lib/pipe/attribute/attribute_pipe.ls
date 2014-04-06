@@ -7,7 +7,6 @@ lo    = require 'lodash'
 util  = require 'util'
 require 'sugar'
 
-BasePipe                  = get.apipe  'base'
 BasePipe          = get.apipe                 'base'
 NamedPipe         = get.apipe                 'named'
 ChildPipe         = get.apipe                 'child'
@@ -19,7 +18,7 @@ AttributePipe = new Class(BasePipe,
     * ChildPipe
     ...
 
-  initialize: ->
+  initialize: (...@args) ->
     @call-super!
     @set-all!
     @post-init!
@@ -30,6 +29,7 @@ AttributePipe = new Class(BasePipe,
     container:  false
     child:      true
     named:      true
+    value-type: 'simple'
     kind:  'Attribute'
 
   id: ->

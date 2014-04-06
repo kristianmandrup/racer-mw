@@ -10,10 +10,6 @@ PipeResource = new Module(
   has-resource: true
 
   post-init: ->
-    @create-res!
-
-  # to create and set resource of pipe
-  create-res: ->
     @set-res!
 
   set-res: ->

@@ -4,9 +4,9 @@ util  = require 'util'
 lo    = require 'lodash'
 require 'sugar'
 
-PipeTypeValidator = get.base-validator 'type'
+PipeTypeValidatorHelper = get.base-validator 'type'
 
-PipeValidator = new Class(
+PipeValidatorHelper = new Class(
   initialize: (@pipe, @valid-types = []) ->
     @validate!
     @
@@ -57,14 +57,14 @@ PipeValidator = new Class(
   validate-many: ->
     return unless @is-array!
     for pipe in @pipe.flatten!.compact!
-      new PipeValidator pipe, @valid-types
+      new PipeValidatorHelper pipe, @valid-types
     true
 
   validate-types: ->
     @type-validator!.validate @pipe-type
 
   type-validator: ->
-    @_type-validator ||= new PipeTypeValidator @valid-types
+    @_type-validator ||= new PipeTypeValidatorHelper @valid-types
 )
 
-module.exports = PipeValidator
+module.exports = PipeValidatorHelper
