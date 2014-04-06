@@ -25,7 +25,7 @@ AttributesPipeBuilder = new Class(BasePipeBuilder,
 
   create-pipe: (...args) ->
     @call-super!
-    new AttributePipe ...args
+    new AttributePipe args
 )
 
 module.exports = AttributesPipeBuilder

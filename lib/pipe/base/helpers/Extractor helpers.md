@@ -15,3 +15,7 @@ Perhaps we can check if the pipe in question allows an array value and if so, no
 We should also only extract the name if it is a named pipe, otherwise treat all the args as part of the Value.
 
 This conditional extractor functionality should be placed in `NamedPipe` and `Unnamed` pipe respectively.
+
+## List value extractor
+
+Used by any pipe which contains list values, such as `CollectionPipe` and `ListAttributePipe`.

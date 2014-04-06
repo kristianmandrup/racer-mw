@@ -9,3 +9,5 @@ The validation should take place outside. It should also receive the pipe for wh
 an object with the builder methods, which the pipe can then use to decorate itself (from the outside).
 
 *REFACTOR* !!
+
+Only container pipes can have builders!

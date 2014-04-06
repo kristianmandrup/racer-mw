@@ -5,7 +5,7 @@ require 'sugar'
 
 BaseExtractor = get.base-extractor 'base'
 
-BaseValueExtractor = new Class(BaseExtractor,
+ValueExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->
     @
 
@@ -21,6 +21,9 @@ BaseValueExtractor = new Class(BaseExtractor,
   values: ->
     _.values @obj
 
+  # call again with normalized args
+  hash-extractor: ->
+    new ValueExtractor @hash
 )
 
 module.exports = BaseValueExtractor

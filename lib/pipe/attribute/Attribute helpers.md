@@ -9,4 +9,4 @@ The ValueExtractor should simply check that it is a primitive value or list of p
 Functionality should already exist (somewhere in the code) that facilitates this.
 
 Attribute value extractors should validate value (only primitives allowed).
-Use ListValueExtractor and ValueExtractor. Move core functionality to Named pipe extractors!
+Use ListValueExtractor and ValueExtractor.

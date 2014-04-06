@@ -17,21 +17,23 @@ AttributePipeBuilder = new Class(BasePipeBuilder,
   builder-type: 'Attribute'
 
   # attach an attribute pipe as a child
-  build: (...args) ->
-    @args = @args.flatten!
+  build: (...@args) ->
     @attach @pipes
-    pipe
 
   pipes: ->
     @build-one! or @build-many!
 
   build-one: ->
-    @add-attribute args.first! if @args.length is 1
+    @add-attribute @first-arg!
+
+  first-arg: ->
+    @args.1 if @args.length is 1
 
   # map each arg in list
   build-many: ->
-    lo.map @args, @build
+    lo.map @args, @build-one
 
+  # value, name or both!?
   add-attribute: (value) ->
     @attribute-adder!.add value
 
