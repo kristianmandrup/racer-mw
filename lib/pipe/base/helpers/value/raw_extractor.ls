@@ -8,13 +8,18 @@ RawExtractor = new Class(
     @pipe.id!
 
   inner-raw: ->
-    return {(@id!): @obj} if @contained
-    @obj
+    @contained-value! or @obj
+
+  contained-value: ->
+    {(@id!): @obj} if @contained
 
   child-value: (child) ->
-    return child.raw-value! if @is-collection!
-    child.raw-value true
+    @collection-value(child) or child.raw-value(true)
 
+  collection-value: (child) ->
+    child.raw-value! if @is-collection!
+
+  # TODO: should check parent type, no?
   is-collection: ->
     @pipe-type is 'Collection'
 )
