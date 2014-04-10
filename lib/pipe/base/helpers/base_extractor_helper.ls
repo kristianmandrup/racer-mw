@@ -11,7 +11,7 @@ BaseExtractor = new Class(
     true
 
   extract: ->
-    lo.find @obj-types! @is-obj-type, @
+    lo.find @obj-types, @is-obj-type, @
 
   obj-types: <[string object array none]>
 

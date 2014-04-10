@@ -7,8 +7,6 @@ expect          = require('chai').expect
 
 NamedPipe       = get.apipe 'named'
 
-
-
 BasicNamedPipe = new Class(
   include: NamedPipe
 )

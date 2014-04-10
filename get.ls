@@ -50,7 +50,7 @@ get = {
     api.pipe!base!modules!
 
   base-helper: (name) ->
-    @base-helpers!file "pipe_#{name}_helper"
+    @base-helpers!file "#{name}_helper"
 
   base-helpers: ->
     api.pipe!base!helpers!
