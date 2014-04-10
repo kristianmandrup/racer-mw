@@ -79,6 +79,9 @@ get = {
   model-setter: (name) ->
     api.pipe!model!setter!named name
 
+  named-extractor: (name) ->
+    api.pipe!name!helpers!extractor!named name
+
   container-builder: (name) ->
     api.pipe!container!builder!named "pipe_#{name}"
 

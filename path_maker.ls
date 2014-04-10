@@ -81,7 +81,6 @@ protos =
     * \helpers
     * \model
     * \modules
-    * \named
     * \parser
     * \path
     * \setter
@@ -92,5 +91,9 @@ protos =
 
 PathMaker.prototype <<< protos
 PathMaker.prototype.configure!
+
+PathMaker.prototype.name = ->
+      @paths.push 'named'
+      @
 
 module.exports = PathMaker

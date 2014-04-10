@@ -1,27 +1,9 @@
 Module      = require 'jsclass/src/core' .Module
-Class       = require 'jsclass/src/core' .Class
 get         = require '../../../requires' .get!
 lo          = require 'lodash'
 
-PipeBasic   = get.base-module 'basic'
-
-PrimitiveNameExtractor = new Class(
-  initialize: (@pipe) ->
-    @args = @pipe.args
-    @
-
-  extract: ->
-    @name
-
-  extract-and-set: ->
-    @valid-args! and @pipe.set-name @extract!
-
-  valid-args: ->
-    @has-args! or throw new Error "Can't extract Pipe name without arguments, #{@args}"
-
-  has-args: ->
-    not lo.is-empty @args
-)
+PipeBasic                = get.base-module 'basic'
+PrimitiveNameExtractor   = get.named-extractor 'primitive_name'
 
 NamedPipe = new Module(
   include:
