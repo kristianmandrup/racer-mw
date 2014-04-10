@@ -10,8 +10,8 @@ PipeSetter = new Module(
     @set-name!
     @set-value!
 
+  # needs to be decorated with NamedPipe
   set-name: (name) ->
-    @name = name
 
   set-value: ->
 )

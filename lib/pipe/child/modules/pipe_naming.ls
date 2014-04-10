@@ -3,7 +3,7 @@ get     = require '../../../../requires' .get!
 
 PipeNameHelper  = get.base-helper 'name'
 
-PipeNamer = new Module(
+PipeNaming = new Module(
   set-name: (name) ->
     @call-super!
     @update-full-name! if @parent
@@ -19,4 +19,4 @@ PipeNamer = new Module(
     new PipeNameHelper @
 )
 
-module.exports = PipeNamer
+module.exports = PipeNaming

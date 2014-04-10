@@ -16,12 +16,14 @@ clazz-name = (name) ->
 require-module = (name) ->
   modules[clazz-name name] = get.base-module name.underscore!
 
-base-modules = <[clean-slate describer identifier resource setter validation value]>
+base-modules = <[basic resource validation value]>
 
 lo.each base-modules, require-module
 
+all-modules = _.values(modules)
+
 BasePipe = new Class(
-  include: _.values(modules)
+  include: all-modules
 
   # if not initialized with a value it has nothing to calculate path from
   initialize: (...args) ->
