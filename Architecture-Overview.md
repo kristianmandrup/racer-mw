@@ -49,7 +49,7 @@ A `Pipe` is an abstraction over a path with the concepts of parent and child pip
 A pipe can have a single parent but multiple children. Pipes can be used to build a single path or complete graphs.
 It is recommended to use pipes to reflect the entire underlying data model. Pipes are the main building blocks.
 
-The underlying graph model is a *JSON* structure where each object is a *Document*. It is usually convenient that certain
+The underlying *graph model* is a *JSON* structure where each object is a *Document*. It is usually convenient that certain
 Documents follow specific conventions and have a certain kind of *Schema* so that there is some control of what kind of data
 can be expected at each data point.
 
@@ -62,22 +62,24 @@ A model can be found in two different contexts.
 - as an attribute of a Model (AttributeModel)
 
 It is often the case that some nodes contain a list of multiple Documents of the same type.
-These nodes are called collections. A Collection is an abstraction over such list nodes and ensures that there are certain
+These nodes are called collections. A *Collection* is an abstraction over such list nodes and ensures that there are certain
 rules for the operations on the collection of models (Documents).
 
-A Model can have one or more properties. Each property can be either:
+A *Model* can have one or more properties. Each property can be either:
 
-- a Collection of models
-- a Model
+- a Collection (of models)
+- an AttributeModel
 - an Attribute (simple values)
+
+Each of these are *Named pipes*, which are all kinds of attributes...
 
 Each *Pipe* is connected to a *Resource* of the same type. The Resource is also connected back to the pipe.
 
-Any Resource command always knows where in the graph it should apply the command.
+Any *Resource Command* always knows where in the graph it should apply the command.
 It can either set its own path directly (if stand-alone), but more commonly it gets the path information from its pipe.
 
-Depending on the type of Resource, only a subset of operations are available that makes sense for that kind of resource.
-Attribute operations don't apply for a Collection, and Collection operations don't make sense for an attribute etc.
+Depending on the type of *Resource*, only a subset of operations are available that makes sense for that kind of resource.
+*Attribute* operations don't apply for a *Collection*, and Collection operations don't make sense for an attribute etc.
 
 See also:
 

@@ -75,6 +75,11 @@ A `Model` can have one or more Attribute pipes as children, which can be any of:
 A Model pipe can be either a `CollectionModel` (when child of a collection) or a `AttributeModel` when acting as an
 Attribute on a parent pipe.
 
+There are two kinds of Model:
+
+* AttributeModel (a NamedPipe, can be used as an attribute on another Model)
+* CollectionModel (an UnnamedPipe, can be added to a Collection)
+
 ### Attribute
 
 An `Attribute` is a wrapper for a simple value (or values), such as:
@@ -87,6 +92,5 @@ It can also contain a list of simple values in an `Array`.
 
 ### Collection
 
-A `Collection` can one or more `CollectionModel`, usually of the same kind.
-Typically, a `Users` collection would contain `User` objects.
-
+A `Collection` can have one or more `CollectionModel` as children, usually of the same kind.
+Typically, a `Users` collection would contain `User` Model pipes.
