@@ -33,7 +33,7 @@ PipeValidatorHelper = new Class(
 
   validate-obj-type: ->
     unless @is-obj!
-      throw new Error "Must be an Object or Array, was: #{typeof! @pipe}"
+      throw new Error "Pipe must be an Object or Array, was: #{typeof! @pipe}"
     true
 
   is-pipe: ->
@@ -44,11 +44,11 @@ PipeValidatorHelper = new Class(
 
   validate-obj: ->
     unless @pipe.type is 'Pipe'
-      throw new Error "Must be a type: Pipe, was: #{@pipe.type}"
+      throw new Error "Pipe must be of type: Pipe, was: #{@pipe.type}"
 
   validate-pipe-type: ->
     unless @valid-pipe-type!
-      throw new Error "Must be kind of Pipe, missing pipe-type #{util.inspect @pipe.info} - #{@pipe-type}"
+      throw new Error "Pipe must be a kind of Pipe, missing pipe-type #{util.inspect @pipe.info} - #{@pipe-type}"
     true
 
   valid-pipe-type: ->

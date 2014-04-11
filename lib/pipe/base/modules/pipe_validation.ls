@@ -5,6 +5,7 @@ PipeValidator  = get.base-helper \validator
 
 PipeValidation = new Module(
   is-pipe: (pipe) ->
+    pipe ||= @pipe
     new PipeValidator(pipe).validate!
     true
 )
