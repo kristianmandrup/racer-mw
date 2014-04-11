@@ -11,8 +11,8 @@ NamedPipe = new Module(
     ...
 
   initialize: (...@args) ->
-    @call-super! if @call-super
     @name-extractor!.extract-and-set!
+    @call-super! if @call-super
     @
 
   # override!

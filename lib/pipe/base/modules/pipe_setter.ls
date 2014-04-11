@@ -7,7 +7,7 @@ PipeSetter = new Module(
   # basic set functionality
   # if pipe has no name, just leave set-name function empty
   set-all: ->
-    @set-name!
+    @set-name! unless @name
     @set-value!
 
   # needs to be decorated with NamedPipe

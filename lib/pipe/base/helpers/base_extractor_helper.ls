@@ -1,5 +1,6 @@
 Class  = require('jsclass/src/core').Class
 lo     = require 'lodash'
+util   = require 'util'
 require 'sugar'
 
 BaseExtractor = new Class(
@@ -11,15 +12,18 @@ BaseExtractor = new Class(
     true
 
   extract: ->
-    lo.find @obj-types, @is-obj-type, @
+    @[@found!]!
+
+  found: ->
+    @_found ||= lo.find(@obj-types, @is-obj-type, @)
 
   obj-types: <[string object array none]>
 
   is-obj-type: (type) ->
-    @[type] if @is-type type
+    @[type]! if @is-type type
 
   is-type: (type) ->
-    typeof! @arg is type.capitalize!
+    typeof! @obj is type.capitalize!
 
   none: ->
     throw new Error "Extraction error"
