@@ -3,7 +3,7 @@ lo    = require 'lodash'
 get   = require '../../../../requires' .get!
 
 PipeValidation  = get.base-module 'validation'
-PipeParser      = get.base-helper 'parser'
+PipeParser      = get.container-helper 'parse'
 
 PipeAddHelper = new Class(
   include:

@@ -71,19 +71,25 @@ get = {
     api.pipe!model!file name
 
   model-extractor: (name) ->
-    api.pipe!model!extractor!named name
+    api.pipe!model!helpers!extractor!named name
 
   model-builder: (name) ->
     api.pipe!model!builder!named name
 
   model-setter: (name) ->
-    api.pipe!model!setter!named name
+    api.pipe!model!modules!setter!named name
+
+  model-value: (name) ->
+    api.pipe!model!modules!value!named name
 
   named-extractor: (name) ->
     api.pipe!name!helpers!extractor!named name
 
   container-builder: (name) ->
     api.pipe!container!builder!named "pipe_#{name}"
+
+  container-helper: (name) ->
+    api.pipe!container!helpers!named "pipe_#{name}"
 
   collection: (name) ->
     api.pipe!collection!file name

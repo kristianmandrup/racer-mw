@@ -2,10 +2,12 @@ Module      = require('jsclass/src/core').Module
 get         = require '../../../requires' .get!
 BasePipe    = get.apipe 'base'
 
+PipeAddHelper = get.container-helper 'add'
+
 # TODO: Perhaps rename to ParentPipe ??
 ContainerPipe = new Module(
   initialize: (...args) ->
-    @call-super!
+    @call-super! if @call-super?
     @
 
   # TODO: Should be set dynamically, only overwrite value if void!

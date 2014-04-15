@@ -2,6 +2,12 @@
 
 An overview of the architecture in place (and what remains to be implemented).
 
+## General Philosophy
+
+This project currently uses jsclass as a foundation, to provide Class and Module functionality very similar to
+ that found in Ruby. This is all for convenience and might not be the most performant or best option in the long run...
+However it makes it easier to structure the app/framework
+
 ## Racer Model API
 
 Racer provides a very powerful Model access API.

@@ -1,7 +1,5 @@
-get = require '../../../requires' .get!
-
-Class       = require('jsclass/src/core').Class
-
+Class = require('jsclass/src/core').Class
+get   = require '../../../../requires' .get!
 _     = require 'prelude-ls'
 lo    = require 'lodash'
 util  = require 'util'

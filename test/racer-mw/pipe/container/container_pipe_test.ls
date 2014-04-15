@@ -1,9 +1,9 @@
 Class   = require('jsclass/src/core').Class
-get     = require '../../../requires' .get!
+get     = require '../../../../requires' .get!
 expect  = require('chai').expect
 get.test 'test_setup'
 
-ContainerPipe = get.pipe 'container'
+ContainerPipe = get.apipe 'container'
 
 Container = new Class(
   include:

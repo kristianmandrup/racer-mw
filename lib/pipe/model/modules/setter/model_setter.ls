@@ -1,5 +1,5 @@
 Module  = require('jsclass/src/core').Module
-get     = require '../../../../requires' .get!
+get     = require '../../../../../requires' .get!
 
 ClazzExtractor  = get.model-extractor 'clazz'
 NameExtractor   = get.model-extractor 'name'
