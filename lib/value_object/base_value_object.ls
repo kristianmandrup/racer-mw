@@ -13,9 +13,9 @@ ValueObject = new Class(
   validate-args: ->
     throw new Error "Missing value" unless @options.value
 
-  set-value: (@value) ->
-    @valid = @validate!
-    @value = void if @is-invalid!
+  set-value: (value) ->
+    @valid = @validate value
+    @value = value if @is-valid!
     @
 
   # alias
@@ -32,7 +32,7 @@ ValueObject = new Class(
   # fx, if container is an AttributePipe called email
   # - check it is a non-empty string
   # - use email validation
-  validate: ->
+  validate: (value) ->
     true
 )
 

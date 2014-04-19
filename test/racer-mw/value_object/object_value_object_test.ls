@@ -5,11 +5,6 @@ get.test 'test_setup'
 
 ValueObject   = get.value-object 'object'
 
-container = {
-  name: 'email'
-  pipe-type: 'Attribute'
-}
-
 describe 'ObjectValueObject' ->
   var value-obj, result
 

@@ -4,16 +4,18 @@ _       = require 'prelude-ls'
 lo      = require 'lodash'
 require 'sugar'
 
-BaseValueObject   = get.value-object 'base'
+ValueObject   = get.value-object 'base'
 Parser            = get.base-module 'parser'
 
 # Also enable contract: true option, to contract original array or false: ignore remaining elements
 
-ArrayValueObject = new Class(BaseValueObject,
-  initialize: (@container, options = {}) ->
-    @call-super!
-    @parser = new Parser(void, parent: @container, debug: true)
+ArrayValueObject = new Class(ValueObject,
+  initialize: (options = {}) ->
+    @call-super! if @call-super?
     @
+
+  parser: ->
+    new Parser void, parent: @container
 
   set-value: (list, options = {}) ->
     @valid = @validate list

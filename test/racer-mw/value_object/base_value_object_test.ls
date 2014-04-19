@@ -5,11 +5,6 @@ get.test 'test_setup'
 
 ValueObject     = get.value-object 'base'
 
-container = {
-  name: 'email'
-  pipe-type: 'Attribute'
-}
-
 describe 'BaseValueObject' ->
   var value-obj, result
 
@@ -26,7 +21,7 @@ describe 'BaseValueObject' ->
     specify 'args: value: x - sets value to x' ->
       expect(new ValueObject value: 'x' .value).to.eql 'x'
 
-  context 'empty container' ->
+  context 'empty obj value' ->
     before ->
       value-obj := new ValueObject value: {}
 
@@ -52,18 +47,16 @@ describe 'BaseValueObject' ->
 
     context 'email validation' ->
       before ->
-        value-obj.validate = ->
-          return false unless typeof! @value is 'String'
-          @value.match(/@/) isnt null
+        value-obj.validate = (value) ->
+          return false unless typeof! value is 'String'
+          value.match(/@/) isnt null
 
       describe 'validate' ->
         specify 'valid: true' ->
-          value-obj.set-value 'kris@gmail.com'
-          expect(value-obj.validate!).to.be.true
+          expect(value-obj.validate 'kris@gmail.com').to.be.true
 
         specify 'invalid: false' ->
-          value-obj.set-value 'invalid email'
-          expect(value-obj.validate!).to.be.false
+          expect(value-obj.validate 'invalid email').to.be.false
 
       describe 'set' ->
         specify 'returns valid value set' ->
@@ -73,8 +66,8 @@ describe 'BaseValueObject' ->
           value-obj.set 'kris@gmail.com'
           expect(value-obj.valid).to.be.ok
 
-        specify 'returns undefined when invalid and can NOT be set' ->
-          expect(value-obj.set 'invalid email' .value).to.be.undefined
+        specify 'value remains old value is new value is invalid' ->
+          expect(value-obj.set 'invalid email' .value).to.eql 'kris@gmail.com'
 
         specify 'valid: false' ->
           value-obj.set 'kris com'

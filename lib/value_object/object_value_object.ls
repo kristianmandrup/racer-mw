@@ -7,8 +7,8 @@ require 'sugar'
 ValueObject = get.value-object 'base'
 
 ObjectValueObject = new Class(ValueObject,
-  validate: ->
-    typeof! @value is 'Object'
+  validate: (value) ->
+    typeof! value is 'Object'
 )
 
 module.exports = ObjectValueObject

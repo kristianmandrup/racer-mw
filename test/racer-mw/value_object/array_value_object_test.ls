@@ -1,19 +1,35 @@
-get    = require '../../../requires' .get!
-expect = require('chai').expect
+Class   = require 'jsclass/src/core' .Class
+get     = require '../../../requires' .get!
+expect  = require('chai').expect
 get.test 'test_setup'
 
-# Parser            = requires.pipe!.base 'pipe_parser'
-# ArrayValueObject = requires.value-object!.named 'array'
+ValueObject     = get.value-object 'array'
 
 describe 'ArrayValueObject' ->
-  var val-obj
+  var value-obj
 
-  describe 'initialize' ->
+  describe 'create' ->
     specify 'no args - fails' ->
-      expect(1).to.eql 1
-      xexpect (-> new ArrayValueObject).to.throw Error
+      expect(-> new ValueObject).to.throw Error
 
-  describe 'instance' ->
+    specify 'args: x - fails' ->
+      expect(-> new ValueObject 'x').to.throw Error
+
+    specify 'args: value: x - not an obj' ->
+      expect(new ValueObject value: 'x' .value).to.be.undefined
+
+    specify 'args: value: [] - sets value to []' ->
+      expect(new ValueObject(value: []).value).to.eql []
+
+  context 'empty value obj' ->
     before ->
-      # val-obj :=
+      value-obj := new ValueObject value: []
+
+    describe 'valid' ->
+      specify 'is true' ->
+        expect(value-obj.valid).to.be.true
+
+    describe 'validate' ->
+      specify 'always true by default' ->
+        expect(value-obj.validate!).to.be.true
 
