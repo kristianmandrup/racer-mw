@@ -42,15 +42,15 @@ describe 'BaseValueObject' ->
       specify 'validates and sets value' ->
         expect(value-obj.set-value 'x' .value).to.eq 'x'
 
-  context 'container with name and type' ->
+  context 'value x' ->
     before ->
-      value-obj := new ValueObject container: container, value: 'x'
+      value-obj := new ValueObject value: 'x'
 
     describe 'set' ->
       specify 'validates and sets value' ->
         expect(value-obj.set-value 'x' .value).to.eq 'x'
 
-    context 'validation based on container' ->
+    context 'email validation' ->
       before ->
         value-obj.validate = ->
           return false unless typeof! @value is 'String'

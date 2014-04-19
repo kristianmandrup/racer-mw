@@ -28,7 +28,6 @@ ValueObject = new Class(
   is-invalid: ->
     not @valid
 
-
   # use container to determine what validation to perform
   # fx, if container is an AttributePipe called email
   # - check it is a non-empty string
