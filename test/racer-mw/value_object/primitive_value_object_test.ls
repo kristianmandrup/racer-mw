@@ -1,12 +1,9 @@
-Class  = require('jsclass/src/core').Class
+Class   = require 'jsclass/src/core' .Class
+get     = require '../../../requires' .get!
+expect  = require('chai').expect
+get.test 'test_setup'
 
-requires = require '../../requires'
-
-requires.test 'test_setup'
-
-expect          = require('chai').expect
-
-ValueObject     = requires.lib 'value_object'
+ValueObject     = get.value-object 'primitive'
 
 container = {
   name: 'email'
@@ -16,53 +13,74 @@ container = {
 describe 'PrimitiveValueObject' ->
   var value-obj, result
 
-  context 'empty container' ->
+  describe 'create' ->
+    specify 'no args - fails' ->
+      expect(-> new ValueObject).to.throw Error
+
+    specify 'args: x - fails' ->
+      expect(-> new ValueObject 'x').to.throw Error
+
+    specify 'args: value: x - sets value to x' ->
+      expect(new ValueObject value: 'x' .value).to.eql 'x'
+
+    specify 'args: value: {} - void since not a primitive' ->
+      expect(new ValueObject(value: {}).value).to.be.undefined
+
+  context 'empty value obj' ->
     before ->
-      value-obj := new ValueObject {}
+      value-obj := new ValueObject value: 'x'
 
     describe 'valid' ->
-      specify 'is initially true' ->
+      specify 'is true' ->
         expect(value-obj.valid).to.be.true
 
     describe 'validate' ->
       specify 'always true by default' ->
         expect(value-obj.validate!).to.be.true
 
-    describe 'set' ->
-      specify 'validates and sets value' ->
-        expect(value-obj.set-value 'x').to.eq 'x'
+    describe 'set value to 2' ->
+      specify 'is valid' ->
+        expect(value-obj.set-value 2 .valid).to.be.true
 
-  context 'container with name and type' ->
+      specify 'sets value' ->
+        expect(value-obj.set-value 2 .value).to.eql 2
+
+
+
+  context 'value x: 2' ->
     before ->
-      value-obj := new ValueObject container
+      value-obj := new ValueObject value: 5
 
     describe 'set' ->
       specify 'validates and sets value' ->
-        expect(value-obj.set-value 'x').to.eq 'x'
+        expect(value-obj.set-value 7 .value).to.eql 7
 
-    context 'validation based on container' ->
+    context 'validation: is 7' ->
       before ->
-        value-obj.validate = (value) ->
-          value.match(/@/) isnt null
+        value-obj.validate = ->
+          return false unless @value and @value is 7
+          true
 
       describe 'validate' ->
-        specify 'valid: true' ->
-          expect(value-obj.validate 'kris@gmail.com').to.be.true
+        specify '7 is valid' ->
+          value-obj.set-value 7
+          expect(value-obj.validate!).to.be.true
 
-        specify 'invalid: false' ->
-          expect(value-obj.validate 'invalid email').to.be.false
+        specify '6 is invalid' ->
+          value-obj.set-value 6
+          expect(value-obj.validate!).to.be.false
 
       describe 'set' ->
         specify 'returns valid value set' ->
-          expect(value-obj.set 'kris@gmail.com').to.eql 'kris@gmail.com'
+          expect(value-obj.set 7 .value).to.eql 7
 
         specify 'valid: true' ->
-          value-obj.set 'kris@gmail.com'
+          value-obj.set 7
           expect(value-obj.valid).to.be.ok
 
-        specify 'returns undefined when invalid and can NOT be set' ->
-          expect(value-obj.set 'invalid email').to.be.undefined
-
         specify 'valid: false' ->
-          value-obj.set 'kris com'
+          value-obj.set 6
           expect(value-obj.valid).to.be.false
+
+        specify 'returns undefined when invalid and can NOT be set' ->
+          expect(value-obj.set 6 .value).to.be.undefined

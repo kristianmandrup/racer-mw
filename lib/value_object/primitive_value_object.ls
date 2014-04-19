@@ -8,13 +8,14 @@ ValueObject = get.value-object 'base'
 
 PrimitiveValueObject = new Class(ValueObject,
   validate: ->
-    lo.find @valid-types!, @is-valid-type, @
+    return true if lo.find @valid-types!, @is-valid-type, @
+    false
 
   is-valid-type: (type) ->
-    typeof! @value is 'String'
+    typeof! @value is type
 
   valid-types: ->
     <[ String Number ]>
 )
 
-module.exports = ObjectValueObject
+module.exports = PrimitiveValueObject
