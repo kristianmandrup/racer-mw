@@ -21,7 +21,7 @@ ClazzExtractor = new Class(BaseExtractor,
     new ClazzExtractor(@inner-obj!).extract! if @inner-obj!
 
   str-obj-clazz: ->
-    @obj if @valid-string! and not nested
+    @obj if @valid-string!
 
   obj-clazz: ->
     @obj._clazz if @valid-clazz!

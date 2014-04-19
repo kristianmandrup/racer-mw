@@ -6,7 +6,7 @@ require 'sugar'
 BaseExtractor = get.model-extractor 'base'
 
 ValueExtractor = new Class(BaseExtractor,
-  initialize: (@obj) ->
+  initialize: (@obj, @empty-value = {}) ->
     @call-super! if @call-super?
     @
 
@@ -17,7 +17,7 @@ ValueExtractor = new Class(BaseExtractor,
     throw new Error "Model value could not be extracted from: #{@obj}"
 
   string-value: ->
-    {} if @valid-string!
+   @empty-value if @valid-string!
 
   obj-value: ->
     @inner-obj! or @outer-obj!

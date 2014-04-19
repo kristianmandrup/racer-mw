@@ -1,9 +1,7 @@
 Module  = require('jsclass/src/core').Module
 get     = require '../../../../../requires' .get!
 
-ClazzExtractor  = get.model-extractor 'clazz'
-NameExtractor   = get.model-extractor 'name'
-ValueExtractor  = get.model-extractor 'value'
+ModelExtractor  = get.model-extractor 'model'
 
 ModelSetter = new Module(
   set-all: ->
@@ -13,7 +11,7 @@ ModelSetter = new Module(
     @set-value!
     @
 
-  clear-all: ->
+  reset-all: ->
     @_model = void
     @name = void
     @value = void
@@ -22,16 +20,18 @@ ModelSetter = new Module(
   # or call super?
   set-name: ->
     @name = @model!.name
+    @
 
   set-clazz: ->
     @clazz = @model!.clazz
+    @
 
-  # don't use extract.value here!!
   set-value: ->
-    @call-super @model!.value
+    @value = @model!.value
+    @
 
   model: ->
-    @_model ||= @model-extractor.extract!
+    @_model ||= @model-extractor!.extract!
 
   model-extractor: ->
     new ModelExtractor @obj
