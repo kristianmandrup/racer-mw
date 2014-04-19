@@ -31,7 +31,7 @@ describe 'ObjectValueObject' ->
 
     describe 'validate' ->
       specify 'always true by default' ->
-        expect(value-obj.validate!).to.be.true
+        expect(value-obj.validate!).to.be.false
 
     describe 'set' ->
       specify 'validates and sets value' ->
@@ -47,18 +47,16 @@ describe 'ObjectValueObject' ->
 
     context 'validation x is 7' ->
       before ->
-        value-obj.validate = ->
-          return false unless @value and @value.x is 7
+        value-obj.validate = (value) ->
+          return false unless value and value.x is 7
           true
 
       describe 'validate' ->
         specify 'x: 7 is true' ->
-          value-obj.set-value x : 7
-          expect(value-obj.validate!).to.be.true
+          expect(value-obj.validate x : 7).to.be.true
 
         specify 'x: 6 is false' ->
-          value-obj.set-value x : 6
-          expect(value-obj.validate!).to.be.false
+          expect(value-obj.validate x : 6).to.be.false
 
       describe 'set' ->
         specify 'returns valid value set' ->
@@ -72,6 +70,6 @@ describe 'ObjectValueObject' ->
           value-obj.set x: 6
           expect(value-obj.valid).to.be.false
 
-        specify 'returns undefined when invalid and can NOT be set' ->
-          expect(value-obj.set x: 6 .value).to.be.undefined
+        specify 'value remains old value is new value is invalid' ->
+          expect(value-obj.set x: 6 .value).to.eql x: 7
 

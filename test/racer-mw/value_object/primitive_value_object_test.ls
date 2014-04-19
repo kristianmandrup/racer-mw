@@ -30,8 +30,8 @@ describe 'PrimitiveValueObject' ->
         expect(value-obj.valid).to.be.true
 
     describe 'validate' ->
-      specify 'always true by default' ->
-        expect(value-obj.validate!).to.be.true
+      specify 'always false by default' ->
+        expect(value-obj.validate!).to.be.false
 
     describe 'set value to 2' ->
       specify 'is valid' ->
@@ -39,8 +39,6 @@ describe 'PrimitiveValueObject' ->
 
       specify 'sets value' ->
         expect(value-obj.set-value 2 .value).to.eql 2
-
-
 
   context 'value x: 2' ->
     before ->
@@ -52,18 +50,16 @@ describe 'PrimitiveValueObject' ->
 
     context 'validation: is 7' ->
       before ->
-        value-obj.validate = ->
-          return false unless @value and @value is 7
+        value-obj.validate = (value) ->
+          return false unless value and value is 7
           true
 
       describe 'validate' ->
         specify '7 is valid' ->
-          value-obj.set-value 7
-          expect(value-obj.validate!).to.be.true
+          expect(value-obj.validate 7).to.be.true
 
         specify '6 is invalid' ->
-          value-obj.set-value 6
-          expect(value-obj.validate!).to.be.false
+          expect(value-obj.validate 6).to.be.false
 
       describe 'set' ->
         specify 'returns valid value set' ->
@@ -77,5 +73,5 @@ describe 'PrimitiveValueObject' ->
           value-obj.set 6
           expect(value-obj.valid).to.be.false
 
-        specify 'returns undefined when invalid and can NOT be set' ->
-          expect(value-obj.set 6 .value).to.be.undefined
+        specify 'value remains old value is new value is invalid' ->
+          expect(value-obj.set 6 .value).to.eql 7
