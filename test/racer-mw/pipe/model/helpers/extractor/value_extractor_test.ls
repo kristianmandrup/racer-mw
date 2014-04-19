@@ -19,7 +19,7 @@ describe 'ValueExtractor' ->
     specify 'obj args - ok' ->
       expect(-> new ValueExtractor x: 2).to.not.throw Error
 
-    specify 'array args - ok' ->
+    specify 'setter args - ok' ->
       expect(-> new ValueExtractor 'x', 3).to.not.throw Error
 
   context 'instance: x' ->

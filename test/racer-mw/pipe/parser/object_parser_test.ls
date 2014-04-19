@@ -57,8 +57,8 @@ describe 'BaseParser' ->
       specify 'obj list: collection' ->
         expect(parser.list-type('x', [{x: 1}])).to.eql 'collection'
 
-      specify 'primitive list: array' ->
-        expect(parser.list-type('x', [1,2,3])).to.eql 'array'
+      specify 'primitive list: setter' ->
+        expect(parser.list-type('x', [1,2,3])).to.eql 'setter'
 
       specify 'mixed list: mixed' ->
         expect(parser.list-type('x', [1,2,{x: 3}])).to.eql 'mixed'

@@ -2,7 +2,7 @@ module.exports =
   cb:         'function'
   index:      'number'
   how-many:   'number'
-  values:     'array'
+  values:     'setter'
   value:      'simple' # number, string or date
   from:       'number'
   to:         'number'

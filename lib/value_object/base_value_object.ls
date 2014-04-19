@@ -1,6 +1,7 @@
-Class = require('jsclass/src/core').Class
-_     = require 'prelude-ls'
-lo    = require 'lodash'
+Class   = require('jsclass/src/core').Class
+_       = require 'prelude-ls'
+lo      = require 'lodash'
+util    = require 'util'
 require 'sugar'
 
 ValueObject = new Class(
@@ -11,7 +12,7 @@ ValueObject = new Class(
     @
 
   validate-args: ->
-    throw new Error "Missing value" unless @options.value
+    throw new Error "Missing value in #{util.inspect @options}" unless @options.value
 
   set-value: (value) ->
     @valid = @validate value

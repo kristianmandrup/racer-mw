@@ -46,7 +46,7 @@ describe 'BaseBasePipe' ->
       specify 'creates it' ->
         expect(new BasePipe 'users').to.be.an.instance-of BasePipe
 
-    context 'arg: array' ->
+    context 'arg: setter' ->
       specify 'creates it' ->
         expect(-> new BasePipe '_page', 'admins').to.not.throw
 

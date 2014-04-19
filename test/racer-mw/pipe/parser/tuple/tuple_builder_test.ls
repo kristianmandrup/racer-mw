@@ -33,7 +33,7 @@ describe 'TupleBaseParser' ->
       specify.only 'builds attributes' ->
         expect(parser.collection!).to.be.undefined
 
-  describe 'array' ->
+  describe 'setter' ->
     # return unless @is-array!
     # @build 'attribute'
     context 'value: objects' ->

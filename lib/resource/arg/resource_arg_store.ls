@@ -9,7 +9,7 @@ require 'sugar'
 ArgStore = new Class(
   initialize: ->
     self = @
-    ['array', 'basic', 'query', 'reference', 'scoped', 'string'].each (command) ->
+    ['setter', 'basic', 'query', 'reference', 'scoped', 'string'].each (command) ->
       lo.extend self.repo, requires.resource "arg/resource_arg_#{command}"
     @
 

@@ -39,7 +39,7 @@ describe 'PathPipe' ->
       specify 'fails' ->
         expect(-> new PathPipe(-> 'users')).to.throw
 
-    context 'arg: array' ->
+    context 'arg: setter' ->
       specify 'creates it' ->
         expect(-> new PathPipe '_page', 'admins').to.throw
 

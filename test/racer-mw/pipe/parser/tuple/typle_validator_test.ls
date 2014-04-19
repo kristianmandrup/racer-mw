@@ -3,7 +3,7 @@
 describe 'TupleTypeDetector' ->
   var tuple-parser
 
-  describe 'validate-array(msg)' ->
+  describe 'validate-setter(msg)' ->
     # unless typeof! @value is 'Array'
       # throw new Error "#{msg} must be an Array, was: #{typeof! @value} #{util.inspect @value}"
     context 'no value' ->

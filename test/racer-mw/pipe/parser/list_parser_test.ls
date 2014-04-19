@@ -70,7 +70,7 @@ describe 'ListParser' ->
       specify 'parsed into a Collection pipe' ->
         expect(parser.parse-collection 'users', [{name: 'kris'}]).to.be.an.instance-of CollectionPipe
 
-    describe 'parse-array(key, value)' ->
+    describe 'parse-setter(key, value)' ->
       specify 'string not parsed' ->
         expect(-> parser.parse-array 'name').to.throw
 

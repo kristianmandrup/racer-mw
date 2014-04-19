@@ -77,5 +77,5 @@ describe 'CommandParser' ->
         specify 'ok' ->
           expect(-> parser.extract!).to.not.throw
 
-        specify 'returns array of extracted args: 3' ->
+        specify 'returns setter of extracted args: 3' ->
           expect(parser.extract!.first!).to.equal '3'

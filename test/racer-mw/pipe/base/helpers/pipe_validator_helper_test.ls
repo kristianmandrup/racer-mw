@@ -34,7 +34,7 @@ describe 'PipeValidatorHelper' ->
     specify 'object arg: fails' ->
       expect(-> new PipeValidatorHelper {}).to.throw Error
 
-    specify 'array arg: ok' ->
+    specify 'setter arg: ok' ->
       expect(-> new PipeValidatorHelper []).to.not.throw Error
 
     specify 'pipe arg - ok' ->
@@ -75,7 +75,7 @@ describe 'PipeValidatorHelper' ->
         expect(-> new PipeValidatorHelper(new PathPipe('_page')).validate!).to.not.throw Error
 
       # @validate-many @obj if typeof! @obj is 'Array'
-      specify 'array calls validate-many' ->
+      specify 'setter calls validate-many' ->
         expect(-> new PipeValidatorHelper([]).validate!).to.not.throw Error
 
       # @validate-types!

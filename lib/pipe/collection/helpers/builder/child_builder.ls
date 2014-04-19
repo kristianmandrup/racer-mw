@@ -1,7 +1,7 @@
 Class = require('jsclass/src/core').Class
 
 CollectionChildBuilder = new Class(
-  initialize: (@pipe)
+  initialize: (@pipe) ->
     @
 
   # Array
@@ -27,7 +27,7 @@ CollectionChildBuilder = new Class(
     @builder(@builder-name!)
 
   builder-name: ->
-    if @is 'array' then 'models' else 'model'
+    if @is 'setter' then 'models' else 'model'
 
   is: (type) ->
     typeof! @value is type.capitalize!

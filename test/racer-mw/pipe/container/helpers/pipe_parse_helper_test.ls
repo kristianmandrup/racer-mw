@@ -30,7 +30,7 @@ describe 'Parser' ->
     parser  := create-parser!
 
   describe 'parse' ->
-    context 'mixed array of objects + strings ok' ->
+    context 'mixed setter of objects + strings ok' ->
       before ->
         result := parser.parse(['email', admin-user: {name: 'kris'}])
 

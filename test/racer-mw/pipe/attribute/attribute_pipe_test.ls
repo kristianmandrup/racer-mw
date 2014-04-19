@@ -41,7 +41,7 @@ describe 'AttributePipe' ->
         expect(new AttributePipe 'email').to.be.an.instance-of AttributePipe
 
     # Does this make sense ???
-    context 'arg: array' ->
+    context 'arg: setter' ->
       specify 'creates it' ->
         expect(-> new AttributePipe '_page', 'status').to.not.throw
 

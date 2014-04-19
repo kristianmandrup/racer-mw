@@ -29,12 +29,12 @@ describe 'Parser' ->
     specify 'parsed into an Attribute pipe' ->
       expect(parser.parse-str 'name').to.be.an.instance-of AttributePipe
 
-  describe 'parse-array' ->
+  describe 'parse-setter' ->
     specify 'parsed into an Attribute pipe' ->
       expect(parser.parse-array 'names', ['x', 'y']).to.be.an.instance-of AttributePipe
 
   describe 'parse-plural' ->
-    specify 'primitive list: array' ->
+    specify 'primitive list: setter' ->
       expect(parser.parse-plural('x', [1,2,3])).to.be.an.instance-of AttributePipe
 
   describe 'parse-obj' ->
@@ -47,8 +47,8 @@ describe 'Parser' ->
     specify 'userCount: 2 - ok' ->
       expect(parser.parse-obj userCount: 2).to.be.an.instance-of AttributePipe
 
-    specify 'array of strings ok' ->
+    specify 'setter of strings ok' ->
       expect(parser.parse-obj(['name', 'email']).first!).to.be.an.instance-of AttributePipe
 
-    specify 'array of objects ok' ->
+    specify 'setter of objects ok' ->
       expect(parser.parse-obj([{name: 'kris'}]).first!).to.be.an.instance-of AttributePipe

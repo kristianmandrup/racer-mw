@@ -4,13 +4,16 @@ _       = require 'prelude-ls'
 lo      = require 'lodash'
 require 'sugar'
 
-ValueObject   = get.value-object 'base'
-Parser            = get.base-module 'parser'
+ValueObject       = get.value-object 'base'
+
+ArrayValueSetter  = get.value-object 'base'
+
+# Parser        = get.base-module 'parser'
 
 # Also enable contract: true option, to contract original array or false: ignore remaining elements
 
 ArrayValueObject = new Class(ValueObject,
-  initialize: (options = {}) ->
+  initialize: (@options = {}) ->
     @call-super! if @call-super?
     @
 
@@ -19,47 +22,19 @@ ArrayValueObject = new Class(ValueObject,
 
   set-value: (list, options = {}) ->
     @valid = @validate list
-    val = @set-list list, options if @valid
-    val
+    # @set-list list, options if @valid
 
   set-list: (list, options = {}) ->
-    orig-list = @value || []
-    index = options.at or 0
-    unless typeof! index is 'Number' and index >= 0
-      throw new Error "Index to start insert must be >= 0, was: #{index}"
+    @setter!.set list, options
 
-    sliced = orig-list.slice index, list.length
-    console.log 'sliced and diced:', sliced
-
-    max-length = Math.max(sliced.length, list)
-    max-list = if sliced.length is max-length then sliced else list
-    console.log 'max-list', max-list
-    for let item, i in max-list
-      console.log 'i', i
-      if sliced[i]
-        @set-item sliced, list[i], i
-      else
-        @push-item orig-list, list[i]
-
-    @value = @container.raw-value!
+  refresh-value: ->
+    @value = @container.raw-value! if @container?
     # console.log 'pipe', @container.describe!
     console.log 'VALUE' @value
     @value
 
-  # compare, only overwrite if different value
-  set-item: (sliced, new-item, i) ->
-    console.log 'set-item'
-    return if new-item is old.item.raw-value!
-
-    item = @parser.build-model new-item
-    console.log 'item', item.describe!
-    @container.child-hash[i] = item
-
-  # compare, only overwrite if different value
-  push-item: (list, new-item) ->
-    console.log 'push-item'
-    item = @parser.build-model new-item
-    @container.attach item
+  setter: ->
+    @setter = new ArrayValueSetter @
 )
 
 module.exports = ArrayValueObject

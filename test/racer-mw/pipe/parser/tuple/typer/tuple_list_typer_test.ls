@@ -29,8 +29,8 @@ describe 'TupleListTyper' ->
       before ->
         list-typer := create-list-typer ['a', 'b']
 
-      specify 'is an array' ->
-        expect(list-typer.calc-list-type!).to.eql 'array'
+      specify 'is an setter' ->
+        expect(list-typer.calc-list-type!).to.eql 'setter'
 
     context 'value: Mixed list' ->
       before ->
@@ -39,7 +39,7 @@ describe 'TupleListTyper' ->
       specify 'is mixed' ->
         expect(list-typer.calc-list-type!).to.eql 'mixed'
 
-  describe 'is-array' ->
+  describe 'is-setter' ->
     # @list-type! is 'array'
 
   describe 'is-collection' ->
@@ -87,20 +87,20 @@ describe 'TupleListTyper' ->
       specify 'is NOT a collection of objects' ->
         expect(list-typer.is-collection!).to.not.be.ok
 
-  describe 'is-array' ->
+  describe 'is-setter' ->
     # 'array' if @all-are @primitive-types!
     context 'value: String list' ->
       before ->
         list-typer := create-list-typer 'x', ['a', 'b']
 
-      specify 'is a primitives array' ->
+      specify 'is a primitives setter' ->
         expect(list-typer.is-array!).to.be.ok
 
     context 'value: Object list' ->
       before ->
         list-typer := create-list-typer 'x', [{x: 2}, {y: 5}]
 
-      specify 'is NOT a primitives array' ->
+      specify 'is NOT a primitives setter' ->
         expect(list-typer.is-array!).to.not.be.ok
 
   describe 'all-are(types)' ->

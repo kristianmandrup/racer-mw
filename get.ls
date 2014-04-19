@@ -116,7 +116,10 @@ get = {
     api.pipe!path!extractor!named name
 
   value-object: (name) ->
-    api.lib!value-object.named name
+    api.value-object!named name
+
+  value-object-setter: (name) ->
+    api.value-object!setter!named name
 
 }
 

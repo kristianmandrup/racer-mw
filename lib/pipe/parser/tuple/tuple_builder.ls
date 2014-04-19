@@ -51,7 +51,7 @@ TupleBuilder = new Class(
     @build \children, @path-pipe! if @tuple-type-is \path
 
   no-list: ->
-    throw new Error "Unable to determine if plural: #{@key} is a collection or array"
+    throw new Error "Unable to determine if plural: #{@key} is a collection or setter"
 
   no-item: ->
     throw new Error "Single value for #{@key} should be Object, Number or String, was: #{typeof! @value}, #{@value}"

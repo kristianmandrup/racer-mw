@@ -54,7 +54,7 @@ describe 'ModelPipe' ->
       specify 'fails' ->
         expect(-> new ModelPipe (-> 'users')).to.throw
 
-    context 'arg: array' ->
+    context 'arg: setter' ->
       specify 'fails' ->
         expect(-> new ModelPipe '_page', 'admins').to.throw
 

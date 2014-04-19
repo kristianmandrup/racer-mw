@@ -34,7 +34,7 @@ describe 'Pipe ParentValidator' ->
     before ->
       pipe := new Pipe 'simple'
 
-    describe 'must take an array of valid types to validate pipes against' ->
+    describe 'must take an setter of valid types to validate pipes against' ->
       context 'no args' ->
         specify 'fails' ->
           expect(-> new ParentValidator).to.throw
