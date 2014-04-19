@@ -7,30 +7,34 @@ ValueExtractor  = get.model-extractor 'value'
 
 ModelSetter = new Module(
   set-all: ->
+    @reset-all!
     @set-clazz!
     @set-name!
     @set-value!
+    @
+
+  clear-all: ->
+    @_model = void
+    @name = void
+    @value = void
+    @clazz = void
 
   # or call super?
   set-name: ->
-    @name = @name-extractor.extract!
+    @name = @model!.name
 
   set-clazz: ->
-    @clazz = @clazz-extractor!.extract!
+    @clazz = @model!.clazz
 
   # don't use extract.value here!!
   set-value: ->
-    @call-super @value-extractor.extract!
+    @call-super @model!.value
 
-  clazz-extractor: ->
-    new ClazzExtractor @obj
+  model: ->
+    @_model ||= @model-extractor.extract!
 
-  value-extractor: ->
-    new ValueExtractor @obj
-
-  name-extractor: ->
-    new NameExtractor @obj
-
+  model-extractor: ->
+    new ModelExtractor @obj
 )
 
 module.exports = ModelSetter

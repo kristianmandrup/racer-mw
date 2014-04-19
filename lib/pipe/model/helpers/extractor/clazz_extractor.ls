@@ -1,28 +1,30 @@
 Class   = require('jsclass/src/core').Class
 get     = require '../../../../../requires' .get!
-lo  = require 'lodash'
+lo      = require 'lodash'
+util    = require 'util'
 require 'sugar'
 
 BaseExtractor = get.model-extractor 'base'
 
 ClazzExtractor = new Class(BaseExtractor,
   initialize: (@obj) ->
+    @call-super! if @call-super?
     @
 
-  extract: (obj, nested) ->
-    @str-obj-clazz(nested) or @normalized-obj-clazz! or @recurse-clazz!
+  extract: ->
+    @str-obj-clazz! or @obj-clazz! or @recurse-clazz! or @none!
+
+  none: ->
+    throw new Error "Model clazz could not be extracted from: #{util.inspect @obj}"
 
   recurse-clazz: ->
-    @clazz @inner-obj!, true if @inner-obj!
+    new ClazzExtractor(@inner-obj!).extract! if @inner-obj!
 
-  str-obj-clazz: (nested) ->
-    @obj if @is-string and not nested
+  str-obj-clazz: ->
+    @obj if @valid-string! and not nested
 
-  normalized-obj-clazz: ->
-    @normalized(@obj._clazz) if @valid-clazz!
-
-  valid-clazz: ->
-    typeof! obj._clazz is 'String'
+  obj-clazz: ->
+    @obj._clazz if @valid-clazz!
 )
 
 module.exports = ClazzExtractor
