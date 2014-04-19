@@ -1,29 +1,39 @@
-Class       = require('jsclass/src/core').Class
-
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+Class = require('jsclass/src/core').Class
+_     = require 'prelude-ls'
+lo    = require 'lodash'
 require 'sugar'
 
 ValueObject = new Class(
-  initialize: (@container, options = {}) ->
-    @set-value(options.value, options) if options.value
+  initialize: (@options = {}) ->
+    @validate-args!
+    @valid = true
+    @set-value @options.value
     @
 
-  set-value: (value, options = {}) ->
-    @valid = @validate value
-    @value = value if @valid
+  validate-args: ->
+    throw new Error "Missing value" unless @options.value
+
+  set-value: (@value) ->
+    @valid = @validate!
+    @value = void if @is-invalid!
+    @
 
   # alias
-  set: (value, options = {}) ->
+  set: (value) ->
     @set-value value
 
-  valid: true
+  is-valid: ->
+    @valid
+
+  is-invalid: ->
+    not @valid
+
 
   # use container to determine what validation to perform
   # fx, if container is an AttributePipe called email
   # - check it is a non-empty string
   # - use email validation
-  validate: (value, options = {}) ->
+  validate: ->
     true
 )
 

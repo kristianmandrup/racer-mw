@@ -1,16 +1,9 @@
-requires  = require '../../../requires'
-
+get    = require '../../../requires' .get!
 expect = require('chai').expect
-
-requires.test 'test_setup'
-
-console.log requires.pipe!base!file 'pipe_parser'
+get.test 'test_setup'
 
 # Parser            = requires.pipe!.base 'pipe_parser'
-
 # ArrayValueObject = requires.value-object!.named 'array'
-
-# console.log ArrayValueObject
 
 describe 'ArrayValueObject' ->
   var val-obj

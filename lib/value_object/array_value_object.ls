@@ -1,13 +1,11 @@
-Class       = require('jsclass/src/core').Class
-
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+Class   = require('jsclass/src/core').Class
+get     = require '../../requires' .get!
+_       = require 'prelude-ls'
+lo      = require 'lodash'
 require 'sugar'
 
-requires = require '../../requires'
-
-BaseValueObject   = requires.value-object!.named 'base'
-Parser            = requires.pipe!.base 'pipe_parser'
+BaseValueObject   = get.value-object 'base'
+Parser            = get.base-module 'parser'
 
 # Also enable contract: true option, to contract original array or false: ignore remaining elements
 
@@ -20,7 +18,6 @@ ArrayValueObject = new Class(BaseValueObject,
   set-value: (list, options = {}) ->
     @valid = @validate list
     val = @set-list list, options if @valid
-    console.log 'DONE set-value', val
     val
 
   set-list: (list, options = {}) ->
