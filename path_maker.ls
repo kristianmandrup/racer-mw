@@ -22,7 +22,6 @@ PathMaker = new Class(
     @[prop-name] = value unless @[prop-name] is void or typeof! prop-name is 'Function'
     @
 
-
   resolve: (paths) ->
     req-path = @full-path paths
     return req-path unless @auto-resolve
@@ -59,6 +58,12 @@ protos =
       @paths.push args unless lo.is-empty args
       @
 
+    @["o#{fun-name}"] = (name, ...args) ->
+      @paths.push fun-name
+      @paths.push name unless name is void
+      @paths.push args unless lo.is-empty args
+      @resolve!
+
     @["a#{fun-name}"] = (name, ...args) ->
       unless name is void
         @paths.push name
@@ -79,6 +84,7 @@ protos =
     * \extractor
     * \family
     * \helpers
+    * \item
     * \model
     * \modules
     * \parser

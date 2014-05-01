@@ -86,20 +86,42 @@ describe 'ArraySetter' ->
 
     describe 'set(@list, @options = {})' ->
       # @validate-index! ;  ; @set-list!
+      specify 'does not throw' ->
+        expect(arr-setter.set [1,2], at: 0).to.not.throw
 
     describe 'set-it(index)' ->
       # @settter.set index unless @no-item-at index
+      specify 'does not throw' ->
+        arr-setter.list = [1,2]
+        expect(arr-setter.set-it 0).to.not.throw
 
     describe 'no-item-at(index)' ->
       # @sliced[index] is void
+      specify 'no item in pos 3' ->
+        arr-setter._sliced = [1,2]
+        expect(arr-setter.no-item-at 3).to.be.true
+
+      specify 'an item in pos 1' ->
+        arr-setter._sliced = [1,2]
+        expect(arr-setter.no-item-at 1).to.be.false
 
     describe 'push-it(index)' ->
       # @pusher.push! index
+      specify 'push [3] at pos 2' ->
+        arr-setter.list = [3]
+        arr-setter.push-it 2
+        expect(arr-setter.list).to.include 3
 
     describe 'set-list' ->
       # @sliced!
       # for let item, index in @longest-list!
         # @set-it(index) or @push-it(index)
+      specify 'push [3] at pos 2' ->
+        arr-setter.value = [1,2]
+        arr-setter.list = [3]
+        arr-setter.set-it 1
+        expect(arr-setter.list).to.eql [2,3]
+
 
     validate-index: ->
       # @index! ; @index-error! unless @valid-index!

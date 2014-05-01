@@ -121,6 +121,8 @@ get = {
   value-object-setter: (name) ->
     api.value-object!setter!named name
 
+  value-object-item: (name) ->
+    api.value-object!oitem "item_#{name}"
 }
 
 module.exports = get

@@ -32,20 +32,23 @@ ArraySetter = new Class(
 
   set: (@list, @options = {}) ->
     @validate-at-pos!
-    # @set-list!
-
-  set-it: (index) ->
-    @item-settter.set index unless @no-item-at index
-
-  no-item-at: (index) ->
-    @sliced[index] is void
-
-  push-it: (index) ->
-    @item-pusher.push! index
+    @set-list!
 
   set-list: ->
     for let item, index in @longest-list!
       @set-it(index) or @push-it(index)
+
+  set-it: (index) ->
+    @item-settter!.set index unless @no-item-at index
+
+  no-item-at: (index) ->
+    not @item-at index
+
+  item-at: (index) ->
+    @sliced![index] isnt void
+
+  push-it: (index) ->
+    @item-pusher!.push index
 
   validate-at-pos: ->
     @valid-at-pos! or @at-pos-error!
@@ -57,10 +60,10 @@ ArraySetter = new Class(
     typeof! @at-pos! is 'Number' and @at-pos! >= 0
 
   item-pusher: ->
-    new ItemPusher @list
+    @_item-pusher ||= new ItemPusher @list
 
   item-setter: ->
-    new ItemSetter @list
+    @_item-pusher ||= new ItemSetter @list
 )
 
 module.exports = ArraySetter
