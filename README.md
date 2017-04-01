@@ -1,5 +1,7 @@
 # RacerMw
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/racer-mw.svg)](https://greenkeeper.io/)
+
 Abstract underlying Racer model API with a more convenient API/DSL which takes care of much of the underlying complexity
 of setting paths etc.
 
